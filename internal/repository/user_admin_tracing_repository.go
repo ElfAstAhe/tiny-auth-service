@@ -10,25 +10,25 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-type UserTraceRepository struct {
+type UserAdminTraceRepository struct {
 	*repository.BaseTraceRepository[*domain.User, string]
 
-	repo domain.UserRepository
+	repo domain.UserAdminRepository
 }
 
-func NewUserTraceRepository(repo domain.UserRepository) *UserTraceRepository {
-	return &UserTraceRepository{
+func NewUserAdminTraceRepository(repo domain.UserRepository) *UserAdminTraceRepository {
+	return &UserAdminTraceRepository{
 		repo:                repo,
-		BaseTraceRepository: repository.NewBaseTraceRepository[*domain.User, string]("UserRepository", repo),
+		BaseTraceRepository: repository.NewBaseTraceRepository[*domain.User, string]("UserAdminRepository", repo),
 	}
 }
 
-func (utr *UserTraceRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
-	ctx, span := utr.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", utr.BaseTraceRepository.GetRepositoryName()))
+func (uat *UserAdminTraceRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
+	ctx, span := uat.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", uat.BaseTraceRepository.GetRepositoryName()))
 	span.SetAttributes(attribute.String("param.name", name))
 	defer span.End()
 
-	res, err := utr.repo.FindByName(ctx, name)
+	res, err := uat.repo.FindByName(ctx, name)
 	if err != nil {
 		span.AddEvent("findByName_failed")
 		span.RecordError(err)

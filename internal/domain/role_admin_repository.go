@@ -6,8 +6,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 )
 
-type RoleRepository interface {
+type RoleAdminRepository interface {
 	domain.Repository[*Role, string]
 
-	FindByName(context.Context, string) (*Role, error)
+	FindByName(ctx context.Context, login string) (*Role, error)
 }

@@ -1,0 +1,6 @@
+edition = "2023";
+
+package auth.service;
+
+option go_package = "tiny-auth-service/grpc/admin";
+

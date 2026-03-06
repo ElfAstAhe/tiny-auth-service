@@ -1,1 +1,112 @@
 package domain
+
+import (
+	"time"
+
+	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
+	"github.com/google/uuid"
+)
+
+type User struct {
+	ID           string
+	Name         string
+	PasswordHash string
+	Active       bool
+	Deleted      bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+
+	Roles []*Role
+}
+
+func NewEmptyUser() *User {
+	return &User{
+		Roles: make([]*Role, 0),
+	}
+}
+
+func NewUser(id, name, passwordHash string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
+	return &User{
+		ID:           id,
+		Name:         name,
+		PasswordHash: passwordHash,
+		Active:       active,
+		Deleted:      deleted,
+		CreatedAt:    createdAt,
+		UpdatedAt:    createdAt,
+		Roles:        roles,
+	}
+}
+
+func (u *User) GetID() string {
+	return u.ID
+}
+
+func (u *User) SetID(id string) {
+	u.ID = id
+}
+
+func (u *User) IsExists() bool {
+	return u.ID != ""
+}
+
+func (u *User) GetDeleted() bool {
+	return u.Deleted
+}
+
+func (u *User) SetDeleted(deleted bool) {
+	u.Deleted = deleted
+}
+
+func (u *User) IsDeleted() bool {
+	return u.Deleted
+}
+
+func (u *User) BeforeCreate() error {
+	newID, err := uuid.NewRandom()
+	if err != nil {
+		return errs.NewBllError("Role.BeforeCreate", "generate new id", err)
+	}
+
+	u.ID = newID.String()
+	if u.CreatedAt.IsZero() {
+		u.CreatedAt = time.Now()
+	}
+	u.UpdatedAt = time.Now()
+
+	return nil
+}
+
+func (u *User) BeforeChange() error {
+	u.UpdatedAt = time.Now()
+
+	return nil
+}
+
+func (u *User) ValidateCreate() error {
+	if u.ID != "" {
+		return errs.NewBllValidateError("User.ValidateCreate", "id must be empty", nil)
+	}
+	if u.Name == "" {
+		return errs.NewBllValidateError("User.ValidateCreate", "name cannot be empty", nil)
+	}
+	if u.PasswordHash == "" {
+		return errs.NewBllValidateError("User.ValidateCreate", "password hash cannot be empty", nil)
+	}
+
+	return nil
+}
+
+func (u *User) ValidateChange() error {
+	if u.ID == "" {
+		return errs.NewBllValidateError("User.ValidateChange", "id cannot be empty", nil)
+	}
+	if u.Name == "" {
+		return errs.NewBllValidateError("User.ValidateChange", "name cannot be empty", nil)
+	}
+	if u.PasswordHash == "" {
+		return errs.NewBllValidateError("Role.ValidateChange", "password hash cannot be empty", nil)
+	}
+
+	return nil
+}

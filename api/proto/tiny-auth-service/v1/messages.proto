@@ -1,0 +1,14 @@
+edition = "2023";
+
+package auth.service;
+
+option go_package = "tiny-auth-service/grpc/messages";
+
+message Role {
+  string role = 1;
+}
+
+message User {
+  string username = 1;
+  repeated Role roles = 2;
+}

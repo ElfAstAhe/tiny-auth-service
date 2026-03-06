@@ -9,23 +9,23 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
-type RoleMetricsRepository struct {
+type RoleAdminMetricsRepository struct {
 	*repository.BaseMetricsRepository[*domain.Role, string]
 
 	repo domain.RoleRepository
 }
 
-func NewRoleMetricsRepository(repo domain.RoleRepository) *RoleMetricsRepository {
-	return &RoleMetricsRepository{
+func NewRoleAdminMetricsRepository(repo domain.RoleAdminRepository) *RoleAdminMetricsRepository {
+	return &RoleAdminMetricsRepository{
 		repo:                  repo,
 		BaseMetricsRepository: repository.NewBaseMetricsRepository[*domain.Role, string](repo),
 	}
 }
 
-func (rmr *RoleMetricsRepository) FindByName(ctx context.Context, name string) (res *domain.Role, err error) {
+func (ram *RoleAdminMetricsRepository) FindByName(ctx context.Context, name string) (res *domain.Role, err error) {
 	defer func(start time.Time) {
-		metrics.ObserveRepositoryOp(rmr.BaseMetricsRepository.GetRepositoryName(), "FindByName", err, start)
+		metrics.ObserveRepositoryOp(ram.BaseMetricsRepository.GetRepositoryName(), "FindByName", err, start)
 	}(time.Now())
 
-	return rmr.repo.FindByName(ctx, name)
+	return ram.repo.FindByName(ctx, name)
 }

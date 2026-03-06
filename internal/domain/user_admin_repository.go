@@ -6,8 +6,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 )
 
-type UserRepository interface {
+type UserAdminRepository interface {
 	domain.Repository[*User, string]
 
-	FindByName(ctx context.Context, login string) (*User, error)
+	FindByName(context.Context, string) (*User, error)
 }
