@@ -91,6 +91,7 @@ type RolePgRepository struct {
 	*repository.BaseRepository[*domain.Role, string]
 }
 
+//goland:noinspection DuplicatedCode
 func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RolePgRepository, error) {
 	// new instance
 	res := &RolePgRepository{}
