@@ -2,43 +2,42 @@ edition = "2023";
 
 package auth.service;
 
-option go_package = "tiny-auth-service/grpc/auth-service";
+option go_package = "tiny-auth-service/grpc/tiny-auth-service";
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
 import "tiny-auth-service/v1/messages.proto";
 
 service AuthService {
   // login
-  rpc Login(AuthSrvLoginRequest) returns (AuthSrvLoginResponse);
+  rpc Login(AuthLoginRequest) returns (AuthLoginResponse);
   // info
-  rpc GetInfo(google.protobuf.Empty) returns (AuthSrvGetInfoResponse);
+  rpc GetInfo(google.protobuf.Empty) returns (AuthGetInfoResponse);
   // change password
-  rpc ChangePassword(AuthSrvChangePasswordRequest) returns (google.protobuf.Empty);
+  rpc ChangePassword(AuthChangePasswordRequest) returns (google.protobuf.Empty);
   // change keys
-  rpc ChangeKeys(google.protobuf.Empty) returns (AuthSrvChangeKeysResponse);
+  rpc ChangeKeys(google.protobuf.Empty) returns (AuthChangeKeysResponse);
 }
 
-message AuthSrvLoginRequest {
+message AuthLoginRequest {
   string username = 1;
   string password = 2;
 }
 
-message AuthSrvLoginResponse {
+message AuthLoginResponse {
   string token = 1;
-  string refreshToken = 2;
+  string refresh_token = 2;
 }
 
-message AuthSrvChangePasswordRequest {
-  string oldPassword = 1;
-  string newPassword = 2;
+message AuthChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
 }
 
-message AuthSrvGetInfoResponse {
-  auth.service.User userInfo = 1;
+message AuthGetInfoResponse {
+  auth.service.User info = 1;
 }
 
-message AuthSrvChangeKeysResponse {
-  string publicKey = 1;
-  string privateKey = 2;
+message AuthChangeKeysResponse {
+  string public_key = 1;
+  string private_key = 2;
 }

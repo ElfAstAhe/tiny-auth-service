@@ -1,6 +1,7 @@
 # Переменные для сборки
+PROTO_ROOT=api/proto
 PROTO_PATH=api/proto/tiny-auth-service/v1
-PROTO_OUT=pkg/api/grpc/auth/v1
+PROTO_OUT=pkg/api/grpc/
 OPEN_API_OUT=pkg/api/http/auth/v1
 MODULE_NAME=github.com/ElfAstAhe/tiny-auth-service
 SERVER_BINARY_NAME=tiny-auth-service
@@ -14,7 +15,9 @@ STAGE=DEV
 # Генерация gRPC кода
 gen-proto:
 	mkdir -p $(PROTO_OUT)
-	protoc --proto_path=$(PROTO_PATH) \
+	protoc \
+        -I $(PROTO_ROOT) \
+		--proto_path=$(PROTO_PATH) \
 		--go_out=$(PROTO_OUT) --go_opt=paths=source_relative \
 		--go-grpc_out=$(PROTO_OUT) --go-grpc_opt=paths=source_relative \
 		--go_opt=default_api_level=API_OPAQUE \

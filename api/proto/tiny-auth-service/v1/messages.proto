@@ -2,13 +2,26 @@ edition = "2023";
 
 package auth.service;
 
-option go_package = "tiny-auth-service/grpc/messages";
+option go_package = "tiny-auth-service/grpc/tiny-auth-service";
+
+import "google/protobuf/timestamp.proto";
 
 message Role {
-  string role = 1;
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  bool deleted = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
 }
 
 message User {
-  string username = 1;
-  repeated Role roles = 2;
+  string id = 1;
+  string name = 2;
+  string password_hash = 3;
+  bool active = 4;
+  bool deleted = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  repeated Role roles = 8;
 }
