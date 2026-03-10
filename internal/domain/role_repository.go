@@ -7,7 +7,7 @@ import (
 )
 
 type RoleRepository interface {
-	domain.Repository[*Role, string]
+	domain.CRUDRepository[*Role, string]
 
 	FindByName(context.Context, string) (*Role, error)
 }

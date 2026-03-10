@@ -11,26 +11,25 @@ import (
 )
 
 type RoleAdminTraceRepository struct {
-	*repository.BaseTraceRepository[*domain.Role, string]
-
+	*repository.BaseCRUDTraceRepository[*domain.Role, string]
 	repo domain.RoleAdminRepository
 }
 
 func NewRoleAdminTraceRepository(repo domain.RoleAdminRepository) *RoleAdminTraceRepository {
 	return &RoleAdminTraceRepository{
-		repo:                repo,
-		BaseTraceRepository: repository.NewBaseTraceRepository[*domain.Role, string]("RoleAdminRepository", repo),
+		repo:                    repo,
+		BaseCRUDTraceRepository: repository.NewBaseCRUDTraceRepository[*domain.Role, string]("RoleAdminRepository", repo),
 	}
 }
 
 func (rat *RoleAdminTraceRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
-	ctx, span := rat.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", rat.BaseTraceRepository.GetRepositoryName()))
+	ctx, span := rat.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", rat.BaseCRUDTraceRepository.GetRepositoryName()))
 	span.SetAttributes(attribute.String("param.name", name))
 	defer span.End()
 
 	res, err := rat.repo.FindByName(ctx, name)
 	if err != nil {
-		span.AddEvent("findByName_failed")
+		span.AddEvent("FindByName_failed")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 

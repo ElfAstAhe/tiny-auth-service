@@ -7,7 +7,7 @@ import (
 )
 
 type RoleAdminRepository interface {
-	domain.Repository[*Role, string]
+	domain.CRUDRepository[*Role, string]
 
 	FindByName(ctx context.Context, login string) (*Role, error)
 }

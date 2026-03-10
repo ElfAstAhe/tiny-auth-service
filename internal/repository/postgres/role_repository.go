@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
@@ -88,7 +87,7 @@ where
 )
 
 type RolePgRepository struct {
-	*repository.BaseRepository[*domain.Role, string]
+	*repository.BaseCRUDRepository[*domain.Role, string]
 }
 
 //goland:noinspection DuplicatedCode
@@ -96,7 +95,7 @@ func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*Role
 	// new instance
 	res := &RolePgRepository{}
 	// sql builders
-	queryBuilders := repository.NewBaseQueryBuildersBuilder().NewInstance().
+	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlRoleFind
 		}).
@@ -127,7 +126,7 @@ func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*Role
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseRepository[*domain.Role, string](
+	base, err := repository.NewBaseCRUDRepository[*domain.Role, string](
 		executor,
 		decipher,
 		repository.NewEntityInfo("roles", "Role"),
@@ -138,55 +137,40 @@ func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*Role
 		return nil, errs.NewCommonError("error create RolePgRepository", err)
 	}
 
-	res.BaseRepository = base
+	res.BaseCRUDRepository = base
 
 	return res, nil
 }
 
 func (rr *RolePgRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
-	querier := rr.GetExecutor().GetQuerier(ctx)
-
-	row := querier.QueryRowContext(ctx, sqlRoleFindByName, name)
-
-	res := rr.GetCallbacks().NewEntityFactory()
-
-	err := rr.GetCallbacks().EntityScanner(row, res)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errs.NewDalNotFoundError(rr.GetInfo().Entity, name, err)
-		}
-
-		return nil, errs.NewDalError("RolePgRepository.FindByName", "get row", err)
+	if name == "" {
+		return nil, errs.NewInvalidArgumentError("name", "is required")
 	}
 
-	if rr.GetCallbacks().AfterFind != nil {
-		return rr.GetCallbacks().AfterFind(res)
-	}
-
-	return res, nil
+	return rr.GetHelper().Get(ctx, sqlRoleFindByName, name)
 }
 
-func (rr *RolePgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role) error {
+func (rr *RolePgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
 	return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
-func (rr *RolePgRepository) afterFind(entity *domain.Role) (*domain.Role, error) {
+func (rr *RolePgRepository) afterFind(entity *domain.Role, params ...any) (*domain.Role, error) {
 	if entity.IsDeleted() {
-		return nil, errs.NewDalSoftDeletedError(rr.GetInfo().Entity, entity.GetID())
+		return nil, errs.NewDalSoftDeletedError(rr.GetHelper().GetInfo().Entity, entity.GetID())
 	}
 
 	return entity, nil
 }
 
-func (rr *RolePgRepository) afterListYield(entity *domain.Role) (*domain.Role, bool, error) {
+func (rr *RolePgRepository) afterListYield(entity *domain.Role, params ...any) (*domain.Role, bool, error) {
 	if entity.IsDeleted() {
-		return nil, false, errs.NewDalSoftDeletedError(rr.GetInfo().Entity, entity.GetID())
+		return nil, false, errs.NewDalSoftDeletedError(rr.GetHelper().GetInfo().Entity, entity.GetID())
 	}
 
 	return entity, true, nil
 }
 
-func (rr *RolePgRepository) validateCreate(entity *domain.Role) error {
+func (rr *RolePgRepository) validateCreate(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
 	}
@@ -194,7 +178,7 @@ func (rr *RolePgRepository) validateCreate(entity *domain.Role) error {
 	return entity.ValidateCreate()
 }
 
-func (rr *RolePgRepository) beforeCreate(entity *domain.Role) error {
+func (rr *RolePgRepository) beforeCreate(entity *domain.Role, params ...any) error {
 	if err := entity.ValidateCreate(); err != nil {
 		return errs.NewDalError("RolePgRepository.beforeCreate", "before create entity", err)
 	}
@@ -202,11 +186,11 @@ func (rr *RolePgRepository) beforeCreate(entity *domain.Role) error {
 	return nil
 }
 
-func (rr *RolePgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role) (*sql.Row, error) {
+func (rr *RolePgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rr.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.Description, entity.CreatedAt, entity.UpdatedAt), nil
 }
 
-func (rr *RolePgRepository) validateChange(entity *domain.Role) error {
+func (rr *RolePgRepository) validateChange(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
 	}
@@ -214,18 +198,14 @@ func (rr *RolePgRepository) validateChange(entity *domain.Role) error {
 	return entity.ValidateChange()
 }
 
-func (rr *RolePgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role) (*sql.Row, error) {
+func (rr *RolePgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rr.GetQueryBuilders().GetChange()(), entity.ID, entity.Name, entity.Description, entity.UpdatedAt), nil
 }
 
-func (rr *RolePgRepository) beforeChange(entity *domain.Role) error {
+func (rr *RolePgRepository) beforeChange(entity *domain.Role, params ...any) error {
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("RolePgRepository.beforeChange", "before change entity", err)
 	}
 
-	return nil
-}
-
-func (rr *RolePgRepository) Close() error {
 	return nil
 }

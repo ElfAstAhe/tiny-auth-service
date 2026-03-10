@@ -17,6 +17,8 @@ select
     id,
     name,
     password_hash,
+    public_key,
+    private_key,
     active,
     deleted,
     created_at,
@@ -31,6 +33,8 @@ select
     id,
     name,
     password_hash,
+    public_key,
+    private_key,
     active,
     deleted,
     created_at,
@@ -45,6 +49,8 @@ select
     id,
     name,
     password_hash,
+    public_key,
+    private_key,
     active,
     deleted,
     created_at,
@@ -61,13 +67,15 @@ insert into users (
     id,
     name,
     password_hash,
+    public_key,
+    private_key,
     active,
     deleted,
     created_at,
     updated_at
 )
-values ($1, $2, $3, $4, $5, $6, $7)
-returning id, name, password_hash, active, deleted, created_at, updated_at
+values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserAdminChange string = `
 update
@@ -75,12 +83,14 @@ update
 set
     name = $2,
     password_hash = $3,
-    active = $4,
-    deleted = $5,
-    updated_at = $6
+    public_key = $4,
+    private_key = $5,
+    active = $6,
+    deleted = $7,
+    updated_at = $8
 where
     id = $1
-returning id, name, password_hash, active, deleted, created_at, updated_at
+returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserAdminDelete string = `
 delete
@@ -92,13 +102,16 @@ where
 )
 
 type UserAdminPgRepository struct {
-	*repository.BaseRepository[*domain.User, string]
+	*repository.BaseCRUDRepository[*domain.User, string]
+	userRolesRepo domain.UserRolesAdminRepository
 }
 
-func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*UserAdminPgRepository, error) {
-	res := &UserAdminPgRepository{}
+func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher, userRolesRepo domain.UserRolesAdminRepository) (*UserAdminPgRepository, error) {
+	res := &UserAdminPgRepository{
+		userRolesRepo: userRolesRepo,
+	}
 	// sql builders
-	queryBuilders := repository.NewBaseQueryBuildersBuilder().NewInstance().
+	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlUserAdminFind
 		}).
@@ -127,7 +140,7 @@ func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseRepository[*domain.User, string](
+	base, err := repository.NewBaseCRUDRepository[*domain.User, string](
 		executor,
 		decipher,
 		repository.NewEntityInfo("users", "User"),
@@ -138,39 +151,46 @@ func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		return nil, errs.NewCommonError("error create UserPgRepository", err)
 	}
 
-	res.BaseRepository = base
+	res.BaseCRUDRepository = base
+
+	return res, nil
+}
+
+func (uar *UserAdminPgRepository) Find(ctx context.Context, id string) (*domain.User, error) {
+	res, err := uar.BaseCRUDRepository.Find(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	res.Roles, err = uar.userRolesRepo.ListAll(ctx, res.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	return res, nil
 }
 
 func (uar *UserAdminPgRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
-	querier := uar.GetExecutor().GetQuerier(ctx)
-
-	row := querier.QueryRowContext(ctx, sqlUserAdminFindByName, name)
-
-	res := uar.GetCallbacks().NewEntityFactory()
-
-	err := uar.GetCallbacks().EntityScanner(row, res)
+	if name == "" {
+		return nil, errs.NewInvalidArgumentError("name", "name is empty")
+	}
+	res, err := uar.GetHelper().Get(ctx, sqlUserAdminFindByName, name)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errs.NewDalNotFoundError(uar.GetInfo().Entity, name, err)
-		}
-
-		return nil, errs.NewDalError("UserAdminPgRepository.FindByName", "get row", err)
+		return nil, err
 	}
-
-	if uar.GetCallbacks().AfterFind != nil {
-		return uar.GetCallbacks().AfterFind(res)
+	roles, err := uar.userRolesRepo.ListAll(ctx, res.ID)
+	if err != nil {
+		return nil, err
 	}
+	res.Roles = roles
 
 	return res, nil
 }
 
-func (uar *UserAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User) error {
+func (uar *UserAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User, params ...any) error {
 	return scanner.Scan(&dest.ID, dest.Name, &dest.PasswordHash, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
-func (uar *UserAdminPgRepository) validateCreate(entity *domain.User) error {
+func (uar *UserAdminPgRepository) validateCreate(entity *domain.User, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "user entity is nil")
 	}
@@ -178,7 +198,7 @@ func (uar *UserAdminPgRepository) validateCreate(entity *domain.User) error {
 	return entity.ValidateCreate()
 }
 
-func (uar *UserAdminPgRepository) beforeCreate(entity *domain.User) error {
+func (uar *UserAdminPgRepository) beforeCreate(entity *domain.User, params ...any) error {
 	if err := entity.ValidateCreate(); err != nil {
 		return errs.NewDalError("UserAdminPgRepository.beforeCreate", "before create entity", err)
 	}
@@ -186,11 +206,11 @@ func (uar *UserAdminPgRepository) beforeCreate(entity *domain.User) error {
 	return nil
 }
 
-func (uar *UserAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.User) (*sql.Row, error) {
+func (uar *UserAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.PasswordHash, entity.CreatedAt, entity.UpdatedAt), nil
 }
 
-func (uar *UserAdminPgRepository) validateChange(entity *domain.User) error {
+func (uar *UserAdminPgRepository) validateChange(entity *domain.User, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "user entity is nil")
 	}
@@ -198,18 +218,14 @@ func (uar *UserAdminPgRepository) validateChange(entity *domain.User) error {
 	return entity.ValidateChange()
 }
 
-func (uar *UserAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User) (*sql.Row, error) {
+func (uar *UserAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetChange()(), entity.ID, entity.PasswordHash, entity.Active, entity.Deleted, entity.UpdatedAt), nil
 }
 
-func (uar *UserAdminPgRepository) beforeChange(entity *domain.User) error {
+func (uar *UserAdminPgRepository) beforeChange(entity *domain.User, params ...any) error {
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("UserAdminPgRepository.beforeChange", "before change entity", err)
 	}
 
-	return nil
-}
-
-func (uar *UserAdminPgRepository) Close() error {
 	return nil
 }

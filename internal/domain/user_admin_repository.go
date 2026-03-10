@@ -7,7 +7,7 @@ import (
 )
 
 type UserAdminRepository interface {
-	domain.Repository[*User, string]
+	domain.CRUDRepository[*User, string]
 
 	FindByName(context.Context, string) (*User, error)
 }

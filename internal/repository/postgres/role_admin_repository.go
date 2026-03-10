@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
@@ -86,14 +85,14 @@ where
 )
 
 type RoleAdminPgRepository struct {
-	*repository.BaseRepository[*domain.Role, string]
+	*repository.BaseCRUDRepository[*domain.Role, string]
 }
 
 func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RoleAdminPgRepository, error) {
 	// new instance
 	res := &RoleAdminPgRepository{}
 	// sql builders
-	queryBuilders := repository.NewBaseQueryBuildersBuilder().NewInstance().
+	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlRoleAdminFind
 		}).
@@ -122,7 +121,7 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseRepository[*domain.Role, string](
+	base, err := repository.NewBaseCRUDRepository[*domain.Role, string](
 		executor,
 		decipher,
 		repository.NewEntityInfo("roles", "Role"),
@@ -133,39 +132,24 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		return nil, errs.NewCommonError("error create RolePgRepository", err)
 	}
 
-	res.BaseRepository = base
+	res.BaseCRUDRepository = base
 
 	return res, nil
 }
 
 func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
-	querier := rar.GetExecutor().GetQuerier(ctx)
-
-	row := querier.QueryRowContext(ctx, sqlRoleFindByName, name)
-
-	res := rar.GetCallbacks().NewEntityFactory()
-
-	err := rar.GetCallbacks().EntityScanner(row, res)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errs.NewDalNotFoundError(rar.GetInfo().Entity, name, err)
-		}
-
-		return nil, errs.NewDalError("RoleAdminPgRepository.FindByName", "get row", err)
+	if name == "" {
+		return nil, errs.NewInvalidArgumentError("name", "cannot be empty")
 	}
 
-	if rar.GetCallbacks().AfterFind != nil {
-		return rar.GetCallbacks().AfterFind(res)
-	}
-
-	return res, nil
+	return rar.GetHelper().Get(ctx, sqlRoleAdminFindByName, name)
 }
 
-func (rar *RoleAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role) error {
+func (rar *RoleAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
 	return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
-func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role) error {
+func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
 	}
@@ -173,7 +157,7 @@ func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role) error {
 	return entity.ValidateCreate()
 }
 
-func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role) error {
+func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role, params ...any) error {
 	if err := entity.ValidateCreate(); err != nil {
 		return errs.NewDalError("RoleAdminPgRepository.beforeCreate", "before create entity", err)
 	}
@@ -181,11 +165,11 @@ func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role) error {
 	return nil
 }
 
-func (rar *RoleAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role) (*sql.Row, error) {
+func (rar *RoleAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.Description, entity.CreatedAt, entity.UpdatedAt), nil
 }
 
-func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role) error {
+func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
 	}
@@ -193,18 +177,14 @@ func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role) error {
 	return entity.ValidateChange()
 }
 
-func (rar *RoleAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role) (*sql.Row, error) {
+func (rar *RoleAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetChange()(), entity.ID, entity.Name, entity.Description, entity.UpdatedAt), nil
 }
 
-func (rar *RoleAdminPgRepository) beforeChange(entity *domain.Role) error {
+func (rar *RoleAdminPgRepository) beforeChange(entity *domain.Role, params ...any) error {
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("RoleAdminPgRepository.beforeChange", "before change entity", err)
 	}
 
-	return nil
-}
-
-func (rar *RoleAdminPgRepository) Close() error {
 	return nil
 }

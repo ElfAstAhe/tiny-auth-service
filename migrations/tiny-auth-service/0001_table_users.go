@@ -14,6 +14,8 @@ create table if not exists users (
     id varchar(50) not null,
     name varchar(100) not null,
     password_hash varchar(100) not null,
+    public_key text null,
+    private_key text null,
     active bool null default true,
     deleted bool null default false,
     created_at timestamptz default now(),

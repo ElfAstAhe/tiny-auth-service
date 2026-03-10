@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	domain.Repository[*User, string]
+	domain.CRUDRepository[*User, string]
 
 	FindByName(ctx context.Context, login string) (*User, error)
 }

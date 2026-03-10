@@ -10,21 +10,20 @@ import (
 )
 
 type RoleMetricsRepository struct {
-	*repository.BaseMetricsRepository[*domain.Role, string]
-
+	*repository.BaseCRUDMetricsRepository[*domain.Role, string]
 	repo domain.RoleRepository
 }
 
 func NewRoleMetricsRepository(repo domain.RoleRepository) *RoleMetricsRepository {
 	return &RoleMetricsRepository{
-		repo:                  repo,
-		BaseMetricsRepository: repository.NewBaseMetricsRepository[*domain.Role, string](repo),
+		repo:                      repo,
+		BaseCRUDMetricsRepository: repository.NewBaseCRUDMetricsRepository[*domain.Role, string]("RoleRepository", repo),
 	}
 }
 
 func (rmr *RoleMetricsRepository) FindByName(ctx context.Context, name string) (res *domain.Role, err error) {
 	defer func(start time.Time) {
-		metrics.ObserveRepositoryOp(rmr.BaseMetricsRepository.GetRepositoryName(), "FindByName", err, start)
+		metrics.ObserveRepositoryOp(rmr.BaseCRUDMetricsRepository.GetRepositoryName(), "FindByName", err, start)
 	}(time.Now())
 
 	return rmr.repo.FindByName(ctx, name)

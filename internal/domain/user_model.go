@@ -11,6 +11,8 @@ type User struct {
 	ID           string
 	Name         string
 	PasswordHash string
+	PublicKey    string
+	PrivateKey   string
 	Active       bool
 	Deleted      bool
 	CreatedAt    time.Time
@@ -25,11 +27,13 @@ func NewEmptyUser() *User {
 	}
 }
 
-func NewUser(id, name, passwordHash string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
+func NewUser(id, name, passwordHash, publicKey, privateKey string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
 	return &User{
 		ID:           id,
 		Name:         name,
 		PasswordHash: passwordHash,
+		PublicKey:    publicKey,
+		PrivateKey:   privateKey,
 		Active:       active,
 		Deleted:      deleted,
 		CreatedAt:    createdAt,
@@ -65,7 +69,7 @@ func (u *User) IsDeleted() bool {
 func (u *User) BeforeCreate() error {
 	newID, err := uuid.NewRandom()
 	if err != nil {
-		return errs.NewBllError("Role.BeforeCreate", "generate new id", err)
+		return errs.NewBllError("User.BeforeCreate", "generate new id", err)
 	}
 
 	u.ID = newID.String()
@@ -105,7 +109,7 @@ func (u *User) ValidateChange() error {
 		return errs.NewBllValidateError("User.ValidateChange", "name cannot be empty", nil)
 	}
 	if u.PasswordHash == "" {
-		return errs.NewBllValidateError("Role.ValidateChange", "password hash cannot be empty", nil)
+		return errs.NewBllValidateError("User.ValidateChange", "password hash cannot be empty", nil)
 	}
 
 	return nil
