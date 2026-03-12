@@ -37,6 +37,16 @@ func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, 
 	}
 }
 
+// Login — основная точка входа в UseCase аутентификации.
+// Выполняет валидацию входных данных, поиск пользователя, расшифровку пароля через RSA,
+// проверку хэша и генерацию пары токенов (Access и Refresh).
+//
+// Параметры:
+//   - ctx: контекст выполнения запроса.
+//   - username: имя пользователя (логин).
+//   - encryptedPassword: пароль, зашифрованный на публичном ключе пользователя (Base64 RSA).
+//
+// ToDo: переделать передачу пароля через []byte
 func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword string) (token string, refreshToken string, err error) {
 	// fails-fast
 	if err := luc.validate(username, encryptedPassword); err != nil {
@@ -48,7 +58,7 @@ func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword 
 		return "", "", domerrs.NewBllError("LoginUseCase.Login", "load user", err)
 	}
 	// password hash
-	passwordHash, err := luc.preparePasswordHash(user, encryptedPassword)
+	passwordHash, err := luc.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
 		return "", "", domerrs.NewBllError("LoginUseCase.Login", "hash password", err)
 	}
@@ -61,6 +71,9 @@ func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword 
 	return luc.buildAnswer(user)
 }
 
+// validate выполняет первичную проверку входных параметров на пустоту (Fail-Fast).
+//
+// ToDo: переделать передачу пароля через []byte
 func (luc *LoginUseCase) validate(username, encryptedPassword string) error {
 	if strings.TrimSpace(username) == "" {
 		return domerrs.NewBllValidateError("LoginUseCase.validate", "username is empty", nil)
@@ -72,26 +85,36 @@ func (luc *LoginUseCase) validate(username, encryptedPassword string) error {
 	return nil
 }
 
-func (luc *LoginUseCase) preparePasswordHash(user *domain.User, encryptedPassword string) (string, error) {
+// buildPasswordHash расшифровывает полученный пароль с помощью приватного ключа пользователя
+// и вычисляет его хэш-сумму для последующего сравнения.
+//
+// Параметры:
+//   - user: объект доменной модели пользователя с данными о ключах и сохраненном хэше [domain.User].
+//   - encryptedPassword: зашифрованная строка пароля.
+//
+// ToDo: переделать передачу пароля через []byte
+func (luc *LoginUseCase) buildPasswordHash(user *domain.User, encryptedPassword string) (string, error) {
 	// private RSA
 	userPrivateKey, err := luc.keysHelper.ParsePrivateKey(user.PrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.preparePasswordHash", "parse private key", err)
+		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "parse private key", err)
 	}
 	// decrypt password
 	password, err := luc.keysHelper.DecryptString(encryptedPassword, userPrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.preparePasswordHash", "decrypt password", err)
+		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "decrypt password", err)
 	}
 	// password hash
 	passwordHash, err := luc.hashHelper.EncryptString(password)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.preparePasswordHash", "hash password", err)
+		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "hash password", err)
 	}
 
 	return passwordHash, nil
 }
 
+// validateUserAndPassword проверяет состояние аккаунта [domain.User] (активен/удален)
+// и соответствие вычисленного хэша пароля эталонному значению из базы данных.
 func (luc *LoginUseCase) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
@@ -109,14 +132,25 @@ func (luc *LoginUseCase) validateUserAndPassword(user *domain.User, passwordHash
 	return nil
 }
 
+// buildAnswer оркестрирует создание финального ответа из [domain.User], инициируя генерацию
+// JWT и Refresh-токена.
 func (luc *LoginUseCase) buildAnswer(user *domain.User) (string, string, error) {
+	// ToDo: implement
 
+	return "", "", nil
 }
 
+// buildToken формирует стандартный JWT Access-токен с данными пользователя и списком его ролей.
 func (luc *LoginUseCase) buildToken(ctx context.Context, user *domain.User) (string, error) {
+	// ToDo: implement
 
+	return "", nil
 }
 
+// buildRefreshToken генерирует уникальный токен обновления (Session-based)
+// и сохраняет его состояние в хранилище сессий.
 func (luc *LoginUseCase) buildRefreshToken(ctx context.Context, user *domain.User) (string, error) {
+	// ToDo: implement
 
+	return "", nil
 }
