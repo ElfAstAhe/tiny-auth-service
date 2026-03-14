@@ -86,6 +86,7 @@ where
 
 type RoleAdminPgRepository struct {
 	*repository.BaseCRUDRepository[*domain.Role, string]
+	userRolesRepo domain.UserRolesAdminRepository
 }
 
 func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RoleAdminPgRepository, error) {

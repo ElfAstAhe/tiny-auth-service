@@ -10,6 +10,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type LoginUseCase struct {
@@ -47,25 +48,25 @@ func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, 
 //   - encryptedPassword: пароль, зашифрованный на публичном ключе пользователя (Base64 RSA).
 //
 // ToDo: переделать передачу пароля через []byte
-func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword string) (token string, refreshToken string, err error) {
+func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
 	// fails-fast
 	if err := luc.validate(username, encryptedPassword); err != nil {
-		return "", "", domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("username [%s], password [censored], invalid income data", username), err)
+		return nil, nil, domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("username [%s], password [censored], invalid income data", username), err)
 	}
 	// пользователь
 	user, err := luc.userRepo.FindByName(ctx, username)
 	if err != nil {
-		return "", "", domerrs.NewBllError("LoginUseCase.Login", "load user", err)
+		return nil, nil, domerrs.NewBllError("LoginUseCase.Login", "load user", err)
 	}
 	// password hash
 	passwordHash, err := luc.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
-		return "", "", domerrs.NewBllError("LoginUseCase.Login", "hash password", err)
+		return nil, nil, domerrs.NewBllError("LoginUseCase.Login", "hash password", err)
 	}
 	// проверка пароля
 	err = luc.validateUserAndPassword(user, passwordHash)
 	if err != nil {
-		return "", "", domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
+		return nil, nil, domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
 	}
 
 	return luc.buildAnswer(user)
@@ -134,23 +135,30 @@ func (luc *LoginUseCase) validateUserAndPassword(user *domain.User, passwordHash
 
 // buildAnswer оркестрирует создание финального ответа из [domain.User], инициируя генерацию
 // JWT и Refresh-токена.
-func (luc *LoginUseCase) buildAnswer(user *domain.User) (string, string, error) {
-	// ToDo: implement
+func (luc *LoginUseCase) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
+	subject := ToSubject(user, nil)
+	token, err := luc.buildToken(subject)
+	if err != nil {
+		return nil, nil, domerrs.NewBllError("LoginUseCase.buildAnswer", "get token from subject", err)
+	}
+	refreshToken, err := luc.buildRefreshToken(user)
+	if err != nil {
+		return nil, nil, domerrs.NewBllError("LoginUseCase.buildAnswer", "get refresh token from user", err)
+	}
 
-	return "", "", nil
+	return token, refreshToken, nil
 }
 
 // buildToken формирует стандартный JWT Access-токен с данными пользователя и списком его ролей.
-func (luc *LoginUseCase) buildToken(ctx context.Context, user *domain.User) (string, error) {
-	// ToDo: implement
-
-	return "", nil
+func (luc *LoginUseCase) buildToken(subject *auth.Subject) (*jwt.Token, error) {
+	return luc.authHelper.TokenFromSubject(subject)
 }
 
 // buildRefreshToken генерирует уникальный токен обновления (Session-based)
 // и сохраняет его состояние в хранилище сессий.
-func (luc *LoginUseCase) buildRefreshToken(ctx context.Context, user *domain.User) (string, error) {
-	// ToDo: implement
+func (luc *LoginUseCase) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
+	// ToDo: реализовать в будущем :-)
+	// ..
 
-	return "", nil
+	return (*jwt.Token)(nil), nil
 }
