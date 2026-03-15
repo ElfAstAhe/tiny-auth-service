@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
@@ -28,6 +29,10 @@ func NewRoleAdminDeleteUseCase(tm usecase.TransactionManager, roleRepo domain.Ro
 }
 
 func (rad *RoleAdminDeleteInteractor) Delete(ctx context.Context, ID string) error {
+	if err := rad.validate(ID); err != nil {
+		return domerrs.NewBllValidateError("RoleAdminDeleteInteractor.Delete", "validate income data failed", err)
+	}
+
 	err := rad.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
 		return rad.roleRepo.Delete(ctx, ID)
 	})
@@ -37,6 +42,14 @@ func (rad *RoleAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 		}
 
 		return domerrs.NewBllError("RoleAdminDeleteInteractor.Delete", fmt.Sprintf("delete role model id [%v] failed", ID), err)
+	}
+
+	return nil
+}
+
+func (rad *RoleAdminDeleteInteractor) validate(ID string) error {
+	if strings.TrimSpace(ID) == "" {
+		return errs.NewInvalidArgumentError("ID", "id is empty")
 	}
 
 	return nil

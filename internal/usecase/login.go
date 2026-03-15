@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
@@ -13,7 +14,11 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type LoginUseCase struct {
+type LoginUseCase interface {
+	Login(ctx context.Context, username string, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error)
+}
+
+type LoginInteractor struct {
 	hashHelper utils.Cipher
 	keysHelper *helper.RSAKeysHelper
 	authHelper *auth.Helper
@@ -29,8 +34,8 @@ type LoginUseCase struct {
 //   - keysHelper: помощник для работы с RSA ключами
 //   - authHelper: логика генерации токенов
 //   - userRepo: репозиторий для доступа к данным пользователя
-func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginUseCase {
-	return &LoginUseCase{
+func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
+	return &LoginInteractor{
 		hashHelper: hashHelper,
 		keysHelper: keysHelper,
 		authHelper: authHelper,
@@ -48,25 +53,25 @@ func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, 
 //   - encryptedPassword: пароль, зашифрованный на публичном ключе пользователя (Base64 RSA).
 //
 // ToDo: переделать передачу пароля через []byte
-func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
+func (luc *LoginInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
 	// fails-fast
 	if err := luc.validate(username, encryptedPassword); err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("username [%s], password [censored], invalid income data", username), err)
+		return nil, nil, domerrs.NewBllValidateError("LoginInteractor.Login", "validate income data failed", err)
 	}
 	// пользователь
 	user, err := luc.userRepo.FindByName(ctx, username)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginUseCase.Login", "load user", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.Login", "load user", err)
 	}
 	// password hash
 	passwordHash, err := luc.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginUseCase.Login", "hash password", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.Login", "hash password", err)
 	}
 	// проверка пароля
 	err = luc.validateUserAndPassword(user, passwordHash)
 	if err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginUseCase.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
+		return nil, nil, domerrs.NewBllValidateError("LoginInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
 	}
 
 	return luc.buildAnswer(user)
@@ -75,12 +80,12 @@ func (luc *LoginUseCase) Login(ctx context.Context, username, encryptedPassword 
 // validate выполняет первичную проверку входных параметров на пустоту (Fail-Fast).
 //
 // ToDo: переделать передачу пароля через []byte
-func (luc *LoginUseCase) validate(username, encryptedPassword string) error {
+func (luc *LoginInteractor) validate(username, encryptedPassword string) error {
 	if strings.TrimSpace(username) == "" {
-		return domerrs.NewBllValidateError("LoginUseCase.validate", "username is empty", nil)
+		return errs.NewInvalidArgumentError("username", "username is required")
 	}
 	if strings.TrimSpace(encryptedPassword) == "" {
-		return domerrs.NewBllValidateError("LoginUseCase.validate", "encryptedPassword is empty", nil)
+		return errs.NewInvalidArgumentError("encryptedPassword", "encrypted password is required")
 	}
 
 	return nil
@@ -94,21 +99,21 @@ func (luc *LoginUseCase) validate(username, encryptedPassword string) error {
 //   - encryptedPassword: зашифрованная строка пароля.
 //
 // ToDo: переделать передачу пароля через []byte
-func (luc *LoginUseCase) buildPasswordHash(user *domain.User, encryptedPassword string) (string, error) {
+func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPassword string) (string, error) {
 	// private RSA
 	userPrivateKey, err := luc.keysHelper.ParsePrivateKey(user.PrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "parse private key", err)
+		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "parse private key", err)
 	}
 	// decrypt password
 	password, err := luc.keysHelper.DecryptString(encryptedPassword, userPrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "decrypt password", err)
+		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "decrypt password", err)
 	}
 	// password hash
 	passwordHash, err := luc.hashHelper.EncryptString(password)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginUseCase.buildPasswordHash", "hash password", err)
+		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "hash password", err)
 	}
 
 	return passwordHash, nil
@@ -116,18 +121,18 @@ func (luc *LoginUseCase) buildPasswordHash(user *domain.User, encryptedPassword 
 
 // validateUserAndPassword проверяет состояние аккаунта [domain.User] (активен/удален)
 // и соответствие вычисленного хэша пароля эталонному значению из базы данных.
-func (luc *LoginUseCase) validateUserAndPassword(user *domain.User, passwordHash string) error {
+func (luc *LoginInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
-		return domerrs.NewBllUnauthorizedError("LoginUseCase.validateUserAndPassword", "user is not active", nil)
+		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is not active", nil)
 	}
 	// deleted
 	if user.Deleted {
-		return domerrs.NewBllUnauthorizedError("LoginUseCase.validateUserAndPassword", "user is deleted", nil)
+		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is deleted", nil)
 	}
 	// passwords
 	if user.PasswordHash != passwordHash {
-		return domerrs.NewBllUnauthorizedError("LoginUseCase.validateUserAndPassword", "user password hash is invalid", nil)
+		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user password hash is invalid", nil)
 	}
 
 	return nil
@@ -135,28 +140,28 @@ func (luc *LoginUseCase) validateUserAndPassword(user *domain.User, passwordHash
 
 // buildAnswer оркестрирует создание финального ответа из [domain.User], инициируя генерацию
 // JWT и Refresh-токена.
-func (luc *LoginUseCase) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
+func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
 	subject := ToSubject(user, nil)
 	token, err := luc.buildToken(subject)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginUseCase.buildAnswer", "get token from subject", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get token from subject", err)
 	}
 	refreshToken, err := luc.buildRefreshToken(user)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginUseCase.buildAnswer", "get refresh token from user", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get refresh token from user", err)
 	}
 
 	return token, refreshToken, nil
 }
 
 // buildToken формирует стандартный JWT Access-токен с данными пользователя и списком его ролей.
-func (luc *LoginUseCase) buildToken(subject *auth.Subject) (*jwt.Token, error) {
+func (luc *LoginInteractor) buildToken(subject *auth.Subject) (*jwt.Token, error) {
 	return luc.authHelper.TokenFromSubject(subject)
 }
 
 // buildRefreshToken генерирует уникальный токен обновления (Session-based)
 // и сохраняет его состояние в хранилище сессий.
-func (luc *LoginUseCase) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
+func (luc *LoginInteractor) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
 	// ToDo: реализовать в будущем :-)
 	// ..
 

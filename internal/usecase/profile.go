@@ -11,29 +11,41 @@ import (
 	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
-type ProfileUseCase struct {
+type ProfileUseCase interface {
+	Get(ctx context.Context, username string) (*domain.User, error)
+}
+
+type ProfileInteractor struct {
 	userRepo domain.UserRepository
 }
 
-func NewProfileUseCase(userRepo domain.UserRepository) *ProfileUseCase {
-	return &ProfileUseCase{
+func NewProfileUseCase(userRepo domain.UserRepository) *ProfileInteractor {
+	return &ProfileInteractor{
 		userRepo: userRepo,
 	}
 }
 
-func (p *ProfileUseCase) Get(ctx context.Context, username string) (*domain.User, error) {
-	if strings.TrimSpace(username) == "" {
-		return nil, errs.NewInvalidArgumentError("username", "must not be empty")
+func (p *ProfileInteractor) Get(ctx context.Context, username string) (*domain.User, error) {
+	if err := p.validate(username); err != nil {
+		return nil, domerrs.NewBllValidateError("ProfileInteractor.Get", "validate income data failed", err)
 	}
 
 	res, err := p.userRepo.FindByName(ctx, username)
 	if err != nil {
 		if errors.As(err, new(*errs.DalNotFoundError)) {
-			return nil, domerrs.NewBllNotFoundError("ProfileUseCase.Get", "User", username, err)
+			return nil, domerrs.NewBllNotFoundError("ProfileInteractor.Get", "User", username, err)
 		}
 
-		return nil, domerrs.NewBllError("ProfileUseCase.Get", fmt.Sprintf("get user name [%v] failed", username), err)
+		return nil, domerrs.NewBllError("ProfileInteractor.Get", fmt.Sprintf("get user name [%v] failed", username), err)
 	}
 
 	return res, nil
+}
+
+func (p *ProfileInteractor) validate(username string) error {
+	if strings.TrimSpace(username) == "" {
+		return errs.NewInvalidArgumentError("username", "must not be empty")
+	}
+
+	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
@@ -28,6 +29,10 @@ func NewUserAdminDeleteUseCase(tm usecase.TransactionManager, userRepo domain.Us
 }
 
 func (uad *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) error {
+	if err := uad.validate(ID); err != nil {
+		return domerrs.NewBllValidateError("UserAdminDeleteInteractor.Delete", "validate income data failed", err)
+	}
+
 	err := uad.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
 		return uad.userRepo.Delete(ctx, ID)
 	})
@@ -37,6 +42,14 @@ func (uad *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 		}
 
 		return domerrs.NewBllError("UserAdminDeleteInteractor.Delete", fmt.Sprintf("delete User model id [%s] failed", ID), err)
+	}
+
+	return nil
+}
+
+func (uad *UserAdminDeleteInteractor) validate(ID string) error {
+	if strings.TrimSpace(ID) == "" {
+		return errs.NewInvalidArgumentError("ID", "id is empty")
 	}
 
 	return nil
