@@ -27,7 +27,7 @@ func NewRoleAdminGetUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminGetIn
 
 func (rag *RoleAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.Role, error) {
 	if err := rag.validate(ID); err != nil {
-		return nil, domerrs.NewBllValidateError("UserAdminGetInteractor.Get", "validate income data failed", err)
+		return nil, domerrs.NewBllValidateError("RoleAdminGetInteractor.Get", "validate income data failed", err)
 	}
 
 	res, err := rag.roleRepo.Find(ctx, ID)
@@ -36,7 +36,7 @@ func (rag *RoleAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.
 			return nil, domerrs.NewBllNotFoundError("RoleAdminGetInteractor.Get", "Role", ID, err)
 		}
 
-		return nil, domerrs.NewBllError("RoleAdminGetInteractor.Get", fmt.Sprintf("find role model id [%s] failed", ID), err)
+		return nil, domerrs.NewBllError("RoleAdminGetInteractor.Get", fmt.Sprintf("find Role model id [%s] failed", ID), err)
 	}
 
 	return res, nil

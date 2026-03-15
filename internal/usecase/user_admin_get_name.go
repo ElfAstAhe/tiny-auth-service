@@ -36,7 +36,7 @@ func (uag *UserAdminGetNameInteractor) Get(ctx context.Context, name string) (*d
 			return nil, domerrs.NewBllNotFoundError("UserAdminGetNameInteractor.Get", "User", name, err)
 		}
 
-		return nil, domerrs.NewBllError("UserAdminGetNameInteractor.Get", fmt.Sprintf("find user model name [%s] failed", name), err)
+		return nil, domerrs.NewBllError("UserAdminGetNameInteractor.Get", fmt.Sprintf("find User model name [%s] failed", name), err)
 	}
 
 	return res, nil
