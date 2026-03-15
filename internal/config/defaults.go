@@ -5,5 +5,6 @@ const (
 )
 
 const (
-	keyAppEnv string = "app.env"
+	keyAppEnv          string = "app.env"
+	keyAppMaxListLimit        = "app.max-list-limit"
 )

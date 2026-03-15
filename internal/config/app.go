@@ -2,21 +2,24 @@ package config
 
 import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 )
 
 // AppConfig — метаданные сервиса
 type AppConfig struct {
-	Env AppEnv `mapstructure:"env"` // dev, prod, test
+	Env          AppEnv `mapstructure:"env"` // dev, prod, test
+	MaxListLimit int    `mapstructure:"max_list_limit"`
 }
 
-func NewAppConfig(env AppEnv) *AppConfig {
+func NewAppConfig(env AppEnv, maxListLimit int) *AppConfig {
 	return &AppConfig{
-		Env: env,
+		Env:          env,
+		MaxListLimit: maxListLimit,
 	}
 }
 
 func NewDefaultAppConfig() *AppConfig {
-	return NewAppConfig(defaultAppEnv)
+	return NewAppConfig(defaultAppEnv, usecase.DefaultMaxLimit)
 }
 
 func (ac *AppConfig) Validate() error {
@@ -26,6 +29,10 @@ func (ac *AppConfig) Validate() error {
 
 	if !ac.Env.Exists() {
 		return errs.NewConfigValidateError("app", "env", "env value not match", nil)
+	}
+
+	if ac.MaxListLimit < 0 {
+		return errs.NewConfigValidateError("app", "max_list_limit", "must be positive", nil)
 	}
 
 	return nil

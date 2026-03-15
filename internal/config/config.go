@@ -9,6 +9,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -145,6 +146,7 @@ func Load() (*Config, error) {
 func applyDefaults(v *viper.Viper) {
 	// App
 	v.SetDefault(keyAppEnv, defaultAppEnv)
+	v.SetDefault(keyAppMaxListLimit, usecase.DefaultMaxLimit)
 
 	// HTTP
 	v.SetDefault(config.KeyHTTPAddress, config.DefaultHTTPAddress)
@@ -203,6 +205,7 @@ func initFLags() (res *pflag.FlagSet, err error) {
 	// Используем константы Flag...
 	res.String(FlagConfig, "config/config.yaml", "path to config file")
 	res.String(FlagAppEnv, string(defaultAppEnv), "application environment")
+	res.Int(FlagAppMaxListLimit, usecase.DefaultMaxLimit, "max list limit")
 
 	// Auth
 	res.String(FlagAuthJWTSecret, "", "JWT secret")
@@ -264,6 +267,7 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 	err := errors.Join(
 		// App
 		v.BindPFlag(keyAppEnv, flags.Lookup(FlagAppEnv)),
+		v.BindPFlag(keyAppMaxListLimit, flags.Lookup(FlagAppMaxListLimit)),
 		// Auth
 		v.BindPFlag(config.KeyAuthJWTSecret, flags.Lookup(FlagAuthJWTSecret)),
 		v.BindPFlag(config.KeyAuthAccessTokenTTL, flags.Lookup(FlagAuthAccessTokenTTL)),

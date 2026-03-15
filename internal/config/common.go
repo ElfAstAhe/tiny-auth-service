@@ -3,9 +3,10 @@ package config
 // FlagConfig - файл конфигурации
 const FlagConfig = "config-path"
 
-// FlagAppEnv App config flags
+// App config flags
 const (
-	FlagAppEnv string = "env"
+	FlagAppEnv          string = "env"
+	FlagAppMaxListLimit string = "app-max-list-limit"
 )
 
 // Auth config flags
