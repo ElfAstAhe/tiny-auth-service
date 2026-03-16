@@ -1,21 +1,22 @@
-package usecase
+package telemetry
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/telemetry"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
 
 type ChangeKeysTraceInteractor struct {
 	*telemetry.BaseTelemetry
-	next     ChangeKeysUseCase
+	next     usecase.ChangeKeysUseCase
 	spanName string
 }
 
-func NewChangeKeysTraceInteractor(ucName string, next ChangeKeysUseCase) *ChangeKeysTraceInteractor {
+func NewChangeKeysTraceInteractor(ucName string, next usecase.ChangeKeysUseCase) *ChangeKeysTraceInteractor {
 	return &ChangeKeysTraceInteractor{
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
 		next:          next,

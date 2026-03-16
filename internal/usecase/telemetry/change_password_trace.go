@@ -1,10 +1,11 @@
-package usecase
+package telemetry
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/telemetry"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
@@ -12,10 +13,10 @@ import (
 type ChangePasswordTraceInteractor struct {
 	*telemetry.BaseTelemetry
 	spanName string
-	next     ChangePasswordUseCase
+	next     usecase.ChangePasswordUseCase
 }
 
-func NewChangePasswordTraceUseCase(ucName string, next ChangePasswordUseCase) *ChangePasswordTraceInteractor {
+func NewChangePasswordTraceUseCase(ucName string, next usecase.ChangePasswordUseCase) *ChangePasswordTraceInteractor {
 	return &ChangePasswordTraceInteractor{
 		next:          next,
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),

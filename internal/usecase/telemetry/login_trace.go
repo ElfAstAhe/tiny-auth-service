@@ -1,10 +1,11 @@
-package usecase
+package telemetry
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/telemetry"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/golang-jwt/jwt/v5"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -12,11 +13,11 @@ import (
 
 type LoginTraceInteractor struct {
 	*telemetry.BaseTelemetry
-	next     LoginUseCase
+	next     usecase.LoginUseCase
 	spanName string
 }
 
-func NewLoginTraceUseCase(ucName string, next LoginUseCase) *LoginTraceInteractor {
+func NewLoginTraceUseCase(ucName string, next usecase.LoginUseCase) *LoginTraceInteractor {
 	return &LoginTraceInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Login", ucName),
