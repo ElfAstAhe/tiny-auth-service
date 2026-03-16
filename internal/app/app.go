@@ -15,6 +15,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/hellofresh/health-go/v5"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -50,6 +52,23 @@ type App struct {
 	// gRPC
 	//grpcExampleService *grpcsvc.ExampleGRPCService
 	grpcServer *grpc.Server
+
+	// use cases
+	userAdminGetUC       usecase.UserAdminGetUseCase
+	userAdminGetByNameUC usecase.UserAdminGetNameUseCase
+	userAdminListUC      usecase.UserAdminListUseCase
+	userAdminSaveUC      usecase.UserAdminSaveUseCase
+	userAdminDeleteUC    usecase.UserAdminDeleteUseCase
+
+	roleAdminGetUC       usecase.RoleAdminGetUseCase
+	roleAdminGetByNameUC usecase.RoleAdminGetNameUseCase
+	roleAdminListUC      usecase.RoleAdminListUseCase
+	roleAdminSaveUC      usecase.RoleAdminSaveUseCase
+	roleAdminDeleteUC    usecase.RoleAdminDeleteUseCase
+
+	// facade
+	roleAdminFacade facade.RoleAdminFacade
+	userAdminFacade facade.UserAdminFacade
 }
 
 func NewApp(config *config.Config, logger logger.Logger) *App {
