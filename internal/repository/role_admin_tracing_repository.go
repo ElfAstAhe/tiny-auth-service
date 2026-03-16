@@ -23,9 +23,10 @@ func NewRoleAdminTraceRepository(repo domain.RoleAdminRepository) *RoleAdminTrac
 }
 
 func (rat *RoleAdminTraceRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
-	ctx, span := rat.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", rat.BaseCRUDTraceRepository.GetRepositoryName()))
-	span.SetAttributes(attribute.String("param.name", name))
+	ctx, span := rat.StartSpan(ctx, fmt.Sprintf("%s.FindByName", rat.BaseCRUDTraceRepository.GetRepositoryName()))
 	defer span.End()
+
+	span.SetAttributes(attribute.String("param.name", name))
 
 	res, err := rat.repo.FindByName(ctx, name)
 	if err != nil {

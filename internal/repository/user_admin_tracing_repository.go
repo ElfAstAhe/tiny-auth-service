@@ -23,9 +23,10 @@ func NewUserAdminTraceRepository(repo domain.UserRepository) *UserAdminTraceRepo
 }
 
 func (uat *UserAdminTraceRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
-	ctx, span := uat.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", uat.BaseCRUDTraceRepository.GetRepositoryName()))
-	span.SetAttributes(attribute.String("param.name", name))
+	ctx, span := uat.StartSpan(ctx, fmt.Sprintf("%s.FindByName", uat.BaseCRUDTraceRepository.GetRepositoryName()))
 	defer span.End()
+
+	span.SetAttributes(attribute.String("param.name", name))
 
 	res, err := uat.repo.FindByName(ctx, name)
 	if err != nil {

@@ -23,9 +23,10 @@ func NewRoleTraceRepository(repo domain.RoleRepository) *RoleTraceRepository {
 }
 
 func (rtr *RoleTraceRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
-	ctx, span := rtr.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", rtr.BaseCRUDTraceRepository.GetRepositoryName()))
-	span.SetAttributes(attribute.String("param.name", name))
+	ctx, span := rtr.StartSpan(ctx, fmt.Sprintf("%s.FindByName", rtr.BaseCRUDTraceRepository.GetRepositoryName()))
 	defer span.End()
+
+	span.SetAttributes(attribute.String("param.name", name))
 
 	res, err := rtr.repo.FindByName(ctx, name)
 	if err != nil {

@@ -24,9 +24,10 @@ func NewUserTraceRepository(repo domain.UserRepository) *UserTraceRepository {
 
 //goland:noinspection DuplicatedCode
 func (utr *UserTraceRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
-	ctx, span := utr.GetTracer().Start(ctx, fmt.Sprintf("%s.FindByName", utr.BaseCRUDTraceRepository.GetRepositoryName()))
-	span.SetAttributes(attribute.String("param.name", name))
+	ctx, span := utr.StartSpan(ctx, fmt.Sprintf("%s.FindByName", utr.BaseCRUDTraceRepository.GetRepositoryName()))
 	defer span.End()
+
+	span.SetAttributes(attribute.String("param.name", name))
 
 	res, err := utr.repo.FindByName(ctx, name)
 	if err != nil {
