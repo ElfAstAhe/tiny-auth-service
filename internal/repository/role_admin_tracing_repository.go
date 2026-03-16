@@ -33,9 +33,7 @@ func (rat *RoleAdminTraceRepository) FindByName(ctx context.Context, name string
 		span.AddEvent("FindByName_failed")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-
-		return nil, err
 	}
 
-	return res, nil
+	return res, err
 }

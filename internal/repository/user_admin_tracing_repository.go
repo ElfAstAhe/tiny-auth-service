@@ -30,12 +30,10 @@ func (uat *UserAdminTraceRepository) FindByName(ctx context.Context, name string
 
 	res, err := uat.repo.FindByName(ctx, name)
 	if err != nil {
-		span.AddEvent("find_by_name_failed")
+		span.AddEvent("FindByName_failed")
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
-
-		return nil, err
 	}
 
-	return res, nil
+	return res, err
 }
