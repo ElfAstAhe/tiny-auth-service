@@ -19,14 +19,14 @@ type ChangePasswordUseCase interface {
 }
 
 type ChangePasswordInteractor struct {
-	hashHelper utils.Cipher
+	hashCipher utils.Cipher
 	tm         usecase.TransactionManager
 	userRepo   domain.UserRepository
 }
 
-func NewChangePasswordUseCase(hashHelper utils.Cipher, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangePasswordInteractor {
+func NewChangePasswordUseCase(hashCipher utils.Cipher, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangePasswordInteractor {
 	return &ChangePasswordInteractor{
-		hashHelper: hashHelper,
+		hashCipher: hashCipher,
 		tm:         tm,
 		userRepo:   userRepo,
 	}
@@ -44,12 +44,12 @@ func (cp *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, 
 			return err
 		}
 		// хэш сумма новый пароль
-		newPasswordHash, err := cp.hashHelper.EncryptString(newPassword)
+		newPasswordHash, err := cp.hashCipher.EncryptString(newPassword)
 		if err != nil {
 			return domerrs.NewBllError("ChangePasswordInteractor.ChangePassword", "new password hash build failed", err)
 		}
 		// хэш сумма старый пароль
-		oldPasswordHash, err := cp.hashHelper.EncryptString(oldPassword)
+		oldPasswordHash, err := cp.hashCipher.EncryptString(oldPassword)
 		if err != nil {
 			return domerrs.NewBllError("ChangePasswordInteractor.ChangePassword", "old password hash build failed", err)
 		}

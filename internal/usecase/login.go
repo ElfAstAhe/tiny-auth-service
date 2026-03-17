@@ -19,8 +19,8 @@ type LoginUseCase interface {
 }
 
 type LoginInteractor struct {
-	hashHelper utils.Cipher
-	keysHelper *helper.RSAKeysHelper
+	hashCipher utils.Cipher
+	keysHelper helper.RSAKeys
 	authHelper *auth.Helper
 	userRepo   domain.UserRepository
 	// нотификация о логине пользователя (например аудит)
@@ -30,13 +30,13 @@ type LoginInteractor struct {
 // NewLoginUseCase создаёт новый экземпляр use case для аутентификации пользователя
 //
 // Параметры:
-//   - hashHelper: помощник для работы с hash
+//   - hashCipher: помощник для работы с hash
 //   - keysHelper: помощник для работы с RSA ключами
 //   - authHelper: логика генерации токенов
 //   - userRepo: репозиторий для доступа к данным пользователя
-func NewLoginUseCase(hashHelper utils.Cipher, keysHelper *helper.RSAKeysHelper, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
+func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
 	return &LoginInteractor{
-		hashHelper: hashHelper,
+		hashCipher: hashCipher,
 		keysHelper: keysHelper,
 		authHelper: authHelper,
 		userRepo:   userRepo,
@@ -111,7 +111,7 @@ func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPasswo
 		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "decrypt password", err)
 	}
 	// password hash
-	passwordHash, err := luc.hashHelper.EncryptString(password)
+	passwordHash, err := luc.hashCipher.EncryptString(password)
 	if err != nil {
 		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "hash password", err)
 	}

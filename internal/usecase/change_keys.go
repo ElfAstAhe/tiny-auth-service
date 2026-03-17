@@ -18,12 +18,12 @@ type ChangeKeysUseCase interface {
 }
 
 type ChangeKeysInteractor struct {
-	keysHelper *helper.RSAKeysHelper
+	keysHelper helper.RSAKeys
 	tm         usecase.TransactionManager
 	userRepo   domain.UserRepository
 }
 
-func NewChangeKeysUseCase(keysHelper *helper.RSAKeysHelper, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangeKeysInteractor {
+func NewChangeKeysUseCase(keysHelper helper.RSAKeys, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangeKeysInteractor {
 	return &ChangeKeysInteractor{
 		keysHelper: keysHelper,
 		tm:         tm,
