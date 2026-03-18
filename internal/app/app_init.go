@@ -1,5 +1,9 @@
 package app
 
+import (
+	_ "expvar"
+)
+
 // Init инициализирует тяжелые ресурсы: БД, Кеш, Репозитории
 func (app *App) Init() error {
 	log := app.logger.GetLogger("App.Init")

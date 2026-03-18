@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,10 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName          = "/auth.service.AuthService/Login"
-	AuthService_GetInfo_FullMethodName        = "/auth.service.AuthService/GetInfo"
-	AuthService_ChangePassword_FullMethodName = "/auth.service.AuthService/ChangePassword"
-	AuthService_ChangeKeys_FullMethodName     = "/auth.service.AuthService/ChangeKeys"
+	AuthService_Login_FullMethodName = "/auth.service.AuthService/Login"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -32,12 +28,6 @@ const (
 type AuthServiceClient interface {
 	// login
 	Login(ctx context.Context, in *AuthLoginRequest, opts ...grpc.CallOption) (*AuthLoginResponse, error)
-	// info
-	GetInfo(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthGetInfoResponse, error)
-	// change password
-	ChangePassword(ctx context.Context, in *AuthChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// change keys
-	ChangeKeys(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthChangeKeysResponse, error)
 }
 
 type authServiceClient struct {
@@ -58,48 +48,12 @@ func (c *authServiceClient) Login(ctx context.Context, in *AuthLoginRequest, opt
 	return out, nil
 }
 
-func (c *authServiceClient) GetInfo(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthGetInfoResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthGetInfoResponse)
-	err := c.cc.Invoke(ctx, AuthService_GetInfo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) ChangePassword(ctx context.Context, in *AuthChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, AuthService_ChangePassword_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) ChangeKeys(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthChangeKeysResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AuthChangeKeysResponse)
-	err := c.cc.Invoke(ctx, AuthService_ChangeKeys_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
 type AuthServiceServer interface {
 	// login
 	Login(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error)
-	// info
-	GetInfo(context.Context, *emptypb.Empty) (*AuthGetInfoResponse, error)
-	// change password
-	ChangePassword(context.Context, *AuthChangePasswordRequest) (*emptypb.Empty, error)
-	// change keys
-	ChangeKeys(context.Context, *emptypb.Empty) (*AuthChangeKeysResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -112,15 +66,6 @@ type UnimplementedAuthServiceServer struct{}
 
 func (UnimplementedAuthServiceServer) Login(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
-}
-func (UnimplementedAuthServiceServer) GetInfo(context.Context, *emptypb.Empty) (*AuthGetInfoResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetInfo not implemented")
-}
-func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *AuthChangePasswordRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method ChangePassword not implemented")
-}
-func (UnimplementedAuthServiceServer) ChangeKeys(context.Context, *emptypb.Empty) (*AuthChangeKeysResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ChangeKeys not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -161,60 +106,6 @@ func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_GetInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).GetInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_GetInfo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetInfo(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthChangePasswordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ChangePassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ChangePassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ChangePassword(ctx, req.(*AuthChangePasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_ChangeKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).ChangeKeys(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_ChangeKeys_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ChangeKeys(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -225,18 +116,6 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _AuthService_Login_Handler,
-		},
-		{
-			MethodName: "GetInfo",
-			Handler:    _AuthService_GetInfo_Handler,
-		},
-		{
-			MethodName: "ChangePassword",
-			Handler:    _AuthService_ChangePassword_Handler,
-		},
-		{
-			MethodName: "ChangeKeys",
-			Handler:    _AuthService_ChangeKeys_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type UserDto struct {
+type UserDTO struct {
 	ID           string    `json:"id,omitempty"`
 	Name         string    `json:"name"`
 	PasswordHash string    `json:"password_hash,omitempty"`
@@ -15,5 +15,5 @@ type UserDto struct {
 	CreatedAt    time.Time `json:"created_at,omitempty"`
 	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 
-	Roles []*RoleDto `json:"roles,omitempty"`
+	Roles []*RoleDTO `json:"roles,omitempty"`
 }

@@ -12,11 +12,11 @@ import (
 )
 
 type UserAdminFacade interface {
-	Get(ctx context.Context, ID string) (*dto.UserDto, error)
-	GetByName(ctx context.Context, name string) (*dto.UserDto, error)
-	List(ctx context.Context, limit, offset int) ([]*dto.UserDto, error)
-	Create(ctx context.Context, user *dto.UserDto) (*dto.UserDto, error)
-	Change(ctx context.Context, ID string, user *dto.UserDto) (*dto.UserDto, error)
+	Get(ctx context.Context, ID string) (*dto.UserDTO, error)
+	GetByName(ctx context.Context, name string) (*dto.UserDTO, error)
+	List(ctx context.Context, limit, offset int) ([]*dto.UserDTO, error)
+	Create(ctx context.Context, user *dto.UserDTO) (*dto.UserDTO, error)
+	Change(ctx context.Context, ID string, user *dto.UserDTO) (*dto.UserDTO, error)
 	Delete(ctx context.Context, ID string) error
 }
 
@@ -47,7 +47,7 @@ func NewUserAdminFacade(
 	}
 }
 
-func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDto, error) {
+func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDTO, error) {
 	if strings.TrimSpace(ID) == "" {
 		return nil, errs.NewInvalidArgumentError("ID", "id is required")
 	}
@@ -60,7 +60,7 @@ func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDt
 	return mapper.MapUserModelToDTO(model), nil
 }
 
-func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.UserDto, error) {
+func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.UserDTO, error) {
 	if strings.TrimSpace(name) == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is required")
 	}
@@ -73,7 +73,7 @@ func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 	return mapper.MapUserModelToDTO(model), nil
 }
 
-func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.UserDto, error) {
+func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.UserDTO, error) {
 	if err := uaf.validateList(limit, offset); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (uaf *UserAdminFacadeImpl) validateList(limit, offset int) error {
 	return nil
 }
 
-func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDto) (*dto.UserDto, error) {
+func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (*dto.UserDTO, error) {
 	if user == nil {
 		return nil, errs.NewInvalidArgumentError("user", "is required")
 	}
@@ -117,7 +117,7 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDto) (
 	return mapper.MapUserModelToDTO(model), nil
 }
 
-func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto.UserDto) (*dto.UserDto, error) {
+func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto.UserDTO) (*dto.UserDTO, error) {
 	if user == nil {
 		return nil, errs.NewInvalidArgumentError("user", "is required")
 	}

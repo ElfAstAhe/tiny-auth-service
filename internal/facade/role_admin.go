@@ -12,11 +12,11 @@ import (
 )
 
 type RoleAdminFacade interface {
-	Get(ctx context.Context, ID string) (*dto.RoleDto, error)
-	GetByName(ctx context.Context, name string) (*dto.RoleDto, error)
-	List(ctx context.Context, limit, offset int) ([]*dto.RoleDto, error)
-	Create(ctx context.Context, role *dto.RoleDto) (*dto.RoleDto, error)
-	Change(ctx context.Context, ID string, role *dto.RoleDto) (*dto.RoleDto, error)
+	Get(ctx context.Context, ID string) (*dto.RoleDTO, error)
+	GetByName(ctx context.Context, name string) (*dto.RoleDTO, error)
+	List(ctx context.Context, limit, offset int) ([]*dto.RoleDTO, error)
+	Create(ctx context.Context, role *dto.RoleDTO) (*dto.RoleDTO, error)
+	Change(ctx context.Context, ID string, role *dto.RoleDTO) (*dto.RoleDTO, error)
 	Delete(ctx context.Context, ID string) error
 }
 
@@ -47,7 +47,7 @@ func NewRoleAdminFacade(
 	}
 }
 
-func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDto, error) {
+func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDTO, error) {
 	if strings.TrimSpace(ID) == "" {
 		return nil, errs.NewInvalidArgumentError("ID", "id is required")
 	}
@@ -60,7 +60,7 @@ func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDt
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
-func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.RoleDto, error) {
+func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.RoleDTO, error) {
 	if strings.TrimSpace(name) == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is required")
 	}
@@ -73,7 +73,7 @@ func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
-func (raf *RoleAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.RoleDto, error) {
+func (raf *RoleAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.RoleDTO, error) {
 	if err := raf.validateList(limit, offset); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (raf *RoleAdminFacadeImpl) validateList(limit, offset int) error {
 	return nil
 }
 
-func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDto) (*dto.RoleDto, error) {
+func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (*dto.RoleDTO, error) {
 	if role == nil {
 		return nil, errs.NewInvalidArgumentError("role", "is required")
 	}
@@ -117,7 +117,7 @@ func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDto) (
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
-func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto.RoleDto) (*dto.RoleDto, error) {
+func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto.RoleDTO) (*dto.RoleDTO, error) {
 	if role == nil {
 		return nil, errs.NewInvalidArgumentError("role", "is required")
 	}

@@ -6,11 +6,13 @@ import (
 	"sync"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
+	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/hellofresh/health-go/v5"
 	"google.golang.org/grpc"
@@ -28,7 +30,11 @@ type App struct {
 	telemetryShutdown func(ctx context.Context) error
 
 	// helpers
-	cipher utils.Cipher
+	hashCipher   utils.Cipher
+	dataCipher   utils.Cipher
+	cipherHelper helper.Cipher
+	keysHelper   helper.RSAKeys
+	jwtHelper    *helper.JWTHelper
 
 	// DB
 	db db.DB
@@ -47,8 +53,10 @@ type App struct {
 	httpServer *http.Server
 
 	// gRPC
-	//grpcExampleService *grpcsvc.ExampleGRPCService
-	grpcServer *grpc.Server
+	grpcAuthService      *grpcsvc.AuthGRPCService
+	grpcRoleAdminService *grpcsvc.RoleAdminGRPCService
+	grpcUserAdminService *grpcsvc.UserAdminGRPCService
+	grpcServer           *grpc.Server
 
 	// use cases
 	userAdminGetUC       usecase.UserAdminGetUseCase

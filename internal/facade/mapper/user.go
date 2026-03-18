@@ -5,12 +5,12 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
-func MapUserModelToDTO(model *domain.User) *dto.UserDto {
+func MapUserModelToDTO(model *domain.User) *dto.UserDTO {
 	if model == nil {
 		return nil
 	}
 
-	return &dto.UserDto{
+	return &dto.UserDTO{
 		ID:           model.ID,
 		Name:         model.Name,
 		PasswordHash: model.PasswordHash,
@@ -24,12 +24,12 @@ func MapUserModelToDTO(model *domain.User) *dto.UserDto {
 	}
 }
 
-func MapUserModelsToDTO(models []*domain.User) []*dto.UserDto {
+func MapUserModelsToDTO(models []*domain.User) []*dto.UserDTO {
 	if len(models) == 0 {
-		return make([]*dto.UserDto, 0)
+		return make([]*dto.UserDTO, 0)
 	}
 
-	res := make([]*dto.UserDto, 0, len(models))
+	res := make([]*dto.UserDTO, 0, len(models))
 	for _, model := range models {
 		res = append(res, MapUserModelToDTO(model))
 	}
@@ -37,7 +37,7 @@ func MapUserModelsToDTO(models []*domain.User) []*dto.UserDto {
 	return res
 }
 
-func MapUserDTOToModel(user *dto.UserDto) *domain.User {
+func MapUserDTOToModel(user *dto.UserDTO) *domain.User {
 	if user == nil {
 		return nil
 	}

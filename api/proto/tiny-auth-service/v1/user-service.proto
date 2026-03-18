@@ -1,0 +1,31 @@
+edition = "2023";
+
+package auth.service;
+
+option go_package = "tiny-auth-service/grpc/tiny-auth-service";
+
+import "google/protobuf/empty.proto";
+import "tiny-auth-service/v1/messages.proto";
+
+service UserService {
+  // info
+  rpc Profile(google.protobuf.Empty) returns (ProfileResponse);
+  // change password
+  rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty);
+  // change keys
+  rpc ChangeKeys(google.protobuf.Empty) returns (ChangeKeysResponse);
+}
+
+message ChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
+}
+
+message ProfileResponse {
+  auth.service.User info = 1;
+}
+
+message ChangeKeysResponse {
+  string public_key = 1;
+  string private_key = 2;
+}

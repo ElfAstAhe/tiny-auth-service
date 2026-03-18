@@ -4,18 +4,9 @@ package auth.service;
 
 option go_package = "tiny-auth-service/grpc/tiny-auth-service";
 
-import "google/protobuf/empty.proto";
-import "tiny-auth-service/v1/messages.proto";
-
 service AuthService {
   // login
   rpc Login(AuthLoginRequest) returns (AuthLoginResponse);
-  // info
-  rpc GetInfo(google.protobuf.Empty) returns (AuthGetInfoResponse);
-  // change password
-  rpc ChangePassword(AuthChangePasswordRequest) returns (google.protobuf.Empty);
-  // change keys
-  rpc ChangeKeys(google.protobuf.Empty) returns (AuthChangeKeysResponse);
 }
 
 message AuthLoginRequest {
@@ -26,18 +17,4 @@ message AuthLoginRequest {
 message AuthLoginResponse {
   string token = 1;
   string refresh_token = 2;
-}
-
-message AuthChangePasswordRequest {
-  string old_password = 1;
-  string new_password = 2;
-}
-
-message AuthGetInfoResponse {
-  auth.service.User info = 1;
-}
-
-message AuthChangeKeysResponse {
-  string public_key = 1;
-  string private_key = 2;
 }

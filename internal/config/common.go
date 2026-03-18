@@ -7,11 +7,14 @@ const FlagConfig = "config-path"
 const (
 	FlagAppEnv          string = "env"
 	FlagAppMaxListLimit string = "app-max-list-limit"
+	FlagAppTokenIssuer  string = "app-token-issuer"
+	FlagAppCipherKey    string = "app-cipher-key"
 )
 
 // Auth config flags
 const (
 	FlagAuthJWTSecret          string = "auth-jwt-secret"
+	FlagAuthJWTSigningMethod   string = "auth-jwt-signing-method"
 	FlagAuthAccessTokenTTL     string = "auth-access-token-ttl"
 	FlagAuthRefreshTokenTTL    string = "auth-refresh-token-ttl"
 	FlagAuthRSAPrivateKeyPath  string = "auth-rsa-private-key-path"

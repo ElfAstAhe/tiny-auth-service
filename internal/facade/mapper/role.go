@@ -5,12 +5,12 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
-func MapRoleModelToDTO(model *domain.Role) *dto.RoleDto {
+func MapRoleModelToDTO(model *domain.Role) *dto.RoleDTO {
 	if model == nil {
 		return nil
 	}
 
-	return &dto.RoleDto{
+	return &dto.RoleDTO{
 		ID:          model.ID,
 		Name:        model.Name,
 		Description: model.Description,
@@ -20,12 +20,12 @@ func MapRoleModelToDTO(model *domain.Role) *dto.RoleDto {
 	}
 }
 
-func MapRolesModelToDTO(models []*domain.Role) []*dto.RoleDto {
+func MapRolesModelToDTO(models []*domain.Role) []*dto.RoleDTO {
 	if len(models) == 0 {
-		return make([]*dto.RoleDto, 0)
+		return make([]*dto.RoleDTO, 0)
 	}
 
-	res := make([]*dto.RoleDto, 0, len(models))
+	res := make([]*dto.RoleDTO, 0, len(models))
 	for _, model := range models {
 		res = append(res, MapRoleModelToDTO(model))
 	}
@@ -33,7 +33,7 @@ func MapRolesModelToDTO(models []*domain.Role) []*dto.RoleDto {
 	return res
 }
 
-func MapRoleDTOToModel(role *dto.RoleDto) *domain.Role {
+func MapRoleDTOToModel(role *dto.RoleDTO) *domain.Role {
 	if role == nil {
 		return nil
 	}
@@ -48,7 +48,7 @@ func MapRoleDTOToModel(role *dto.RoleDto) *domain.Role {
 	}
 }
 
-func MapRolesDTOToModel(roles []*dto.RoleDto) []*domain.Role {
+func MapRolesDTOToModel(roles []*dto.RoleDTO) []*domain.Role {
 	if len(roles) == 0 {
 		return make([]*domain.Role, 0)
 	}
