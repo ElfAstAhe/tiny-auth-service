@@ -9,6 +9,7 @@ import (
 type AppConfig struct {
 	Env          AppEnv `mapstructure:"env"` // dev, prod, test
 	MaxListLimit int    `mapstructure:"max_list_limit"`
+	TokenIssuer  string `mapstructure:"token-issuer"`
 }
 
 func NewAppConfig(env AppEnv, maxListLimit int) *AppConfig {
