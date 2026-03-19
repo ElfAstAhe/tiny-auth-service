@@ -72,7 +72,7 @@ func (ura *UserRolesAdminPgRepository) ListByUser(ctx context.Context, userID st
 		return nil, errs.NewDalError("UserRolesPgRepository.ListByUser", "validate income params", err)
 	}
 
-	res, err := ura.internalList(ctx, sqlUserRolesListByUser, userID)
+	res, err := ura.internalList(ctx, sqlUserRolesAdminListByUser, userID)
 	if err != nil {
 		return nil, errs.NewDalError("UserRolesPgRepository.ListByUser", "internal list", err)
 	}

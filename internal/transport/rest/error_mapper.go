@@ -16,6 +16,16 @@ func mapToHTTPStatus(err error) int {
 		return http.StatusBadRequest
 	}
 
+	// 401 Unauthorized
+	if transport.IsUnauthorized(err) {
+		return http.StatusUnauthorized
+	}
+
+	// 403 Forbidden
+	if transport.IsForbidden(err) {
+		return http.StatusForbidden
+	}
+
 	// 404 NotFound
 	if transport.IsNotFound(err) {
 		return http.StatusNotFound

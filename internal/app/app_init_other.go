@@ -32,7 +32,7 @@ func (app *App) initHelpers() error {
 	}
 	app.dataCipher, err = utils.NewAesGcmCipher(dataCipherKey)
 	if err != nil {
-		return errs.NewCommonError("create data cipher instance", err)
+		return errs.NewCommonError("create data cipher", err)
 	}
 	// data cipher helper
 	app.cipherHelper = helper.NewCipherHelper(app.dataCipher)
@@ -61,7 +61,7 @@ func (app *App) initDB() error {
 	var err error
 	app.db, err = postgres.NewPgDB(app.config.DB)
 	if err != nil {
-		return errs.NewCommonError("create db client instance", err)
+		return errs.NewCommonError("create db client", err)
 	}
 
 	return nil
