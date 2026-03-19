@@ -1,0 +1,47 @@
+edition = "2023";
+
+package auth.service;
+
+option go_package = "tiny-auth-service/grpc/tiny-auth-service";
+
+import "google/protobuf/empty.proto";
+import "tiny-auth-service/v1/messages.proto";
+
+service AdminRolesService {
+  rpc Find(AdminRolesFindRequest) returns (AdminRolesInstanceResponse);
+  rpc FindByName(AdminRolesFindByNameRequest) returns (AdminRolesInstanceResponse);
+  rpc List(AdminRolesListRequest) returns (AdminRolesInstancesResponse);
+  rpc Save(AdminRolesSaveRequest) returns (AdminRolesInstanceResponse);
+  rpc Delete(AdminRolesDeleteRequest) returns (google.protobuf.Empty);
+}
+
+message AdminRolesFindRequest {
+  string id = 1;
+}
+
+message AdminRolesFindByNameRequest {
+  string name = 1;
+}
+
+message AdminRolesListRequest {
+  uint32 limit = 1;
+  uint32 offset = 2;
+}
+
+message AdminRolesSaveRequest {
+  auth.service.Role instance = 1;
+}
+
+message AdminRolesDeleteRequest {
+  string id = 1;
+}
+
+message AdminRolesInstanceResponse {
+  auth.service.Role instance = 1;
+}
+
+message AdminRolesInstancesResponse {
+  uint32 offset = 1;
+  uint32 limit = 2;
+  repeated auth.service.Role instances = 3;
+}

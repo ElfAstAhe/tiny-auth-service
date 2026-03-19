@@ -1,0 +1,22 @@
+package app
+
+import (
+	"net/http"
+
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/rest"
+)
+
+func (app *App) initHTTPRouter() error {
+	app.httpRouter = rest.NewAppChiRouter(app.config.HTTP, app.config.Telemetry, app.logger, app.health, nil, nil)
+
+	return nil
+}
+
+func (app *App) initHTTPServer() error {
+	app.httpServer = &http.Server{
+		Addr:    app.config.HTTP.Address,
+		Handler: app.httpRouter.GetRouter(),
+	}
+
+	return nil
+}

@@ -35,3 +35,4 @@ go.work.sum
 /vendor/
 /.run/example-service.run.xml
 /.run/
+/bin/tiny-auth-service

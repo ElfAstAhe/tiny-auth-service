@@ -1,0 +1,47 @@
+edition = "2023";
+
+package auth.service;
+
+option go_package = "tiny-auth-service/grpc/tiny-auth-service";
+
+import "google/protobuf/empty.proto";
+import "tiny-auth-service/v1/messages.proto";
+
+service AdminUsersService {
+  rpc Find(AdminUsersFindRequest) returns (AdminUsersInstanceResponse);
+  rpc FindByName(AdminUsersFindByNameRequest) returns (AdminUsersInstanceResponse);
+  rpc List(AdminUsersListRequest) returns (AdminUsersInstancesResponse);
+  rpc Save(AdminUsersSaveRequest) returns (AdminUsersInstanceResponse);
+  rpc Delete(AdminUsersDeleteRequest) returns (google.protobuf.Empty);
+}
+
+message AdminUsersFindRequest {
+  string id = 1;
+}
+
+message AdminUsersFindByNameRequest {
+  string name = 1;
+}
+
+message AdminUsersListRequest {
+  uint32 limit = 1;
+  uint32 offset = 2;
+}
+
+message AdminUsersSaveRequest {
+  auth.service.User instance = 1;
+}
+
+message AdminUsersDeleteRequest {
+  string id = 1;
+}
+
+message AdminUsersInstanceResponse {
+  auth.service.User instance = 1;
+}
+
+message AdminUsersInstancesResponse {
+  uint32 offset = 1;
+  uint32 limit = 2;
+  repeated auth.service.User instances = 3;
+}
