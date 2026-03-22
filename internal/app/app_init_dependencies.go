@@ -96,9 +96,9 @@ func (app *App) initDependencies() error {
 		// user admin
 		userAdminGetUC = telemetry.NewUserAdminGetTraceUseCase("UserAdminGetUseCase", usecase.NewUserAdminGetUseCase(userAdminRepo))
 		userAdminGetByNameUC = telemetry.NewUserAdminGetNameTraceUseCase("UserAdminGetNameUseCase", usecase.NewUserAdminGetNameUseCase(userAdminRepo))
-		userAdminListUC = telemetry.NewUserAdminListTraceUseCase("", usecase.NewUserAdminListUseCase(userAdminRepo, app.config.App.MaxListLimit))
+		userAdminListUC = telemetry.NewUserAdminListTraceUseCase("UserAdminListUseCase", usecase.NewUserAdminListUseCase(userAdminRepo, app.config.App.MaxListLimit))
 		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, userAdminRepo))
-		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
+		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("UserAdminDeleteUseCase", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
 	}
 	// facades
 	{
