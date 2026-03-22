@@ -21,6 +21,7 @@ import (
 
 func (app *App) initGRPCService() error {
 	app.grpcAuthService = grpcsvc.NewAuthGRPCService()
+	app.grpcUserService = grpcsvc.NewUserGRPCService()
 	app.grpcRoleAdminService = grpcsvc.NewRoleAdminGRPCService()
 	app.grpcUserAdminService = grpcsvc.NewUserAdminGRPCService()
 
@@ -54,6 +55,7 @@ func (app *App) initGRPCServer() error {
 		if span := trace.SpanContextFromContext(ctx); span.IsSampled() {
 			return prometheus.Labels{"traceID": span.TraceID().String()}
 		}
+
 		return nil
 	}
 	// Extract the tenant name value from gRPC metadata
@@ -110,6 +112,7 @@ func (app *App) initGRPCServer() error {
 
 	// Регистрация
 	pb.RegisterAuthServiceServer(app.grpcServer, app.grpcAuthService)
+	pb.RegisterUserServiceServer(app.grpcServer, app.grpcUserService)
 	pb.RegisterAdminUsersServiceServer(app.grpcServer, app.grpcUserAdminService)
 	pb.RegisterAdminRolesServiceServer(app.grpcServer, app.grpcRoleAdminService)
 

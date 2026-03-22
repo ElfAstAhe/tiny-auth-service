@@ -14,7 +14,6 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/hellofresh/health-go/v5"
 	"google.golang.org/grpc"
 )
@@ -58,29 +57,10 @@ type App struct {
 
 	// gRPC
 	grpcAuthService      *grpcsvc.AuthGRPCService
+	grpcUserService      *grpcsvc.UserGRPCService
 	grpcRoleAdminService *grpcsvc.RoleAdminGRPCService
 	grpcUserAdminService *grpcsvc.UserAdminGRPCService
 	grpcServer           *grpc.Server
-
-	// use cases <-- под удаление, не нужны app ссылки на инстансы
-	// а по сути это контейнер DI
-	loginUC usecase.LoginUseCase
-
-	profileUC        usecase.ProfileUseCase
-	changeKeysUC     usecase.ChangeKeysUseCase
-	changePasswordUC usecase.ChangePasswordUseCase
-
-	userAdminGetUC       usecase.UserAdminGetUseCase
-	userAdminGetByNameUC usecase.UserAdminGetNameUseCase
-	userAdminListUC      usecase.UserAdminListUseCase
-	userAdminSaveUC      usecase.UserAdminSaveUseCase
-	userAdminDeleteUC    usecase.UserAdminDeleteUseCase
-
-	roleAdminGetUC       usecase.RoleAdminGetUseCase
-	roleAdminGetByNameUC usecase.RoleAdminGetNameUseCase
-	roleAdminListUC      usecase.RoleAdminListUseCase
-	roleAdminSaveUC      usecase.RoleAdminSaveUseCase
-	roleAdminDeleteUC    usecase.RoleAdminDeleteUseCase
 
 	// facade
 	authFacade      facade.AuthFacade

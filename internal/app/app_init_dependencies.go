@@ -9,6 +9,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
 )
 
+//goland:noinspection DuplicatedCode
 func (app *App) initDependencies() error {
 	var err error
 	var (
