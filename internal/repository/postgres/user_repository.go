@@ -7,8 +7,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
-	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
@@ -104,15 +104,15 @@ where
 
 type UserPgRepository struct {
 	*repository.BaseCRUDRepository[*domain.User, string]
-	userRolesRepo   domain.UserRolesRepository
-	keyCipherHelper utils.Cipher
+	userRolesRepo domain.UserRolesRepository
+	cipherHelper  helper.Cipher
 }
 
 //goland:noinspection DuplicatedCode
-func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, keyCipherHelper utils.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
+func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
 	res := &UserPgRepository{
-		userRolesRepo:   userRolesRepo,
-		keyCipherHelper: keyCipherHelper,
+		userRolesRepo: userRolesRepo,
+		cipherHelper:  cipherHelper,
 	}
 	// sql builders
 	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
@@ -257,14 +257,11 @@ func (ur *UserPgRepository) validateCreate(entity *domain.User, params ...any) e
 }
 
 func (ur *UserPgRepository) beforeCreate(entity *domain.User, params ...any) error {
-	if err := entity.ValidateCreate(); err != nil {
+	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("UserPgRepository.beforeCreate", "before create entity", err)
 	}
-	var err error
-	entity.PublicKey, err = ur.keyCipherHelper.EncryptString(entity.PublicKey)
-	if err != nil {
-		return errs.NewDalError("UserPgRepository.beforeCreate", "before create entity", err)
-	}
+	entity.PublicKey = ur.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.EncryptString(entity.PrivateKey)
 
 	return nil
 }
@@ -289,6 +286,8 @@ func (ur *UserPgRepository) beforeChange(entity *domain.User, params ...any) err
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("UserPgRepository.beforeChange", "before change entity", err)
 	}
+	entity.PublicKey = ur.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.EncryptString(entity.PrivateKey)
 
 	return nil
 }

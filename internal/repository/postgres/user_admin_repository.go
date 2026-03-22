@@ -6,6 +6,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
@@ -103,11 +104,13 @@ where
 type UserAdminPgRepository struct {
 	*repository.BaseCRUDRepository[*domain.User, string]
 	userRolesRepo domain.UserRolesAdminRepository
+	cipherHelper  helper.Cipher
 }
 
-func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher, userRolesRepo domain.UserRolesAdminRepository) (*UserAdminPgRepository, error) {
+func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesAdminRepository) (*UserAdminPgRepository, error) {
 	res := &UserAdminPgRepository{
 		userRolesRepo: userRolesRepo,
+		cipherHelper:  cipherHelper,
 	}
 	// sql builders
 	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
@@ -141,7 +144,7 @@ func NewUserAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher, u
 	// base CRUD
 	base, err := repository.NewBaseCRUDRepository[*domain.User, string](
 		executor,
-		decipher,
+		errDecipher,
 		repository.NewEntityInfo("users", "User"),
 		queryBuilders,
 		callbacks,
@@ -198,9 +201,11 @@ func (uar *UserAdminPgRepository) validateCreate(entity *domain.User, params ...
 }
 
 func (uar *UserAdminPgRepository) beforeCreate(entity *domain.User, params ...any) error {
-	if err := entity.ValidateCreate(); err != nil {
+	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("UserAdminPgRepository.beforeCreate", "before create entity", err)
 	}
+	entity.PublicKey = uar.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = uar.cipherHelper.EncryptString(entity.PrivateKey)
 
 	return nil
 }
@@ -225,6 +230,8 @@ func (uar *UserAdminPgRepository) beforeChange(entity *domain.User, params ...an
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("UserAdminPgRepository.beforeChange", "before change entity", err)
 	}
+	entity.PublicKey = uar.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = uar.cipherHelper.EncryptString(entity.PrivateKey)
 
 	return nil
 }

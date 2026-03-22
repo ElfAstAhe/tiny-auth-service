@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
@@ -30,11 +31,14 @@ type App struct {
 	telemetryShutdown func(ctx context.Context) error
 
 	// helpers
-	hashCipher   utils.Cipher
-	dataCipher   utils.Cipher
-	cipherHelper helper.Cipher
-	keysHelper   helper.RSAKeys
-	jwtHelper    *helper.JWTHelper
+	hashCipher    utils.Cipher
+	dataCipher    utils.Cipher
+	cipherHelper  helper.Cipher
+	keysHelper    helper.RSAKeys
+	jwtHelper     *helper.JWTHelper
+	jwtHTTPHelper *helper.JWTHTTPHelper
+	jwtGRPCHelper *helper.JWTGRPCHelper
+	authHelper    *auth.Helper
 
 	// DB
 	db db.DB
@@ -58,7 +62,14 @@ type App struct {
 	grpcUserAdminService *grpcsvc.UserAdminGRPCService
 	grpcServer           *grpc.Server
 
-	// use cases
+	// use cases <-- под удаление, не нужны app ссылки на инстансы
+	// а по сути это контейнер DI
+	loginUC usecase.LoginUseCase
+
+	profileUC        usecase.ProfileUseCase
+	changeKeysUC     usecase.ChangeKeysUseCase
+	changePasswordUC usecase.ChangePasswordUseCase
+
 	userAdminGetUC       usecase.UserAdminGetUseCase
 	userAdminGetByNameUC usecase.UserAdminGetNameUseCase
 	userAdminListUC      usecase.UserAdminListUseCase
@@ -72,8 +83,10 @@ type App struct {
 	roleAdminDeleteUC    usecase.RoleAdminDeleteUseCase
 
 	// facade
+	authFacade      facade.AuthFacade
 	roleAdminFacade facade.RoleAdminFacade
 	userAdminFacade facade.UserAdminFacade
+	userFacade      facade.UserFacade
 }
 
 func NewApp(config *config.Config, logger logger.Logger) *App {

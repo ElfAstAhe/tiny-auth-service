@@ -1,0 +1,18 @@
+package repository
+
+import (
+	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+)
+
+type UserRolesAdminMetricsRepository struct {
+	*repository.BaseOwnedMetricsRepository[*domain.Role, string, string]
+	repo domain.UserRolesAdminRepository
+}
+
+func NewUserRolesAdminMetricsRepository(repo domain.UserRolesAdminRepository) *UserRolesAdminMetricsRepository {
+	return &UserRolesAdminMetricsRepository{
+		repo:                       repo,
+		BaseOwnedMetricsRepository: repository.NewBaseOwnedMetricsRepository[*domain.Role, string, string]("UserRolesAdminRepository", repo),
+	}
+}

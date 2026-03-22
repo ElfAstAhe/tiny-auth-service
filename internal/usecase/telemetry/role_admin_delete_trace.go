@@ -16,8 +16,8 @@ type RoleAdminDeleteTraceInteractor struct {
 	spanName string
 }
 
-func NewRoleAdminDeleteTraceUseCase(ucName string, next usecase.RoleAdminDeleteUseCase) RoleAdminDeleteTraceInteractor {
-	return RoleAdminDeleteTraceInteractor{
+func NewRoleAdminDeleteTraceUseCase(ucName string, next usecase.RoleAdminDeleteUseCase) *RoleAdminDeleteTraceInteractor {
+	return &RoleAdminDeleteTraceInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Delete", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
