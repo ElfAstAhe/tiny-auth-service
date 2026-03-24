@@ -5,7 +5,7 @@ package auth.service;
 option go_package = "tiny-auth-service/grpc/tiny-auth-service";
 
 import "google/protobuf/empty.proto";
-import "tiny-auth-service/v1/messages.proto";
+import "google/protobuf/timestamp.proto";
 
 service UserService {
   // info
@@ -22,7 +22,13 @@ message ChangePasswordRequest {
 }
 
 message ProfileResponse {
-  auth.service.User info = 1;
+  string id = 1;
+  string name = 2;
+  string public_key = 3;
+  bool active = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  repeated string roles = 7;
 }
 
 message ChangeKeysResponse {
