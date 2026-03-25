@@ -20,16 +20,31 @@ func NewUserGRPCService(userFacade facade.UserFacade) *UserGRPCService {
 }
 
 // Profile get user profile info
-func (us *UserGRPCService) Profile(context.Context, *emptypb.Empty) (*pb.ProfileResponse, error) {
+func (us *UserGRPCService) Profile(ctx context.Context, req *emptypb.Empty) (*pb.ProfileResponse, error) {
+	res, err := us.userFacade.Profile(ctx)
+	if err != nil {
+		return nil, MapToGrpcError(err)
+	}
 
+	return MapProfileDTOToGRPC(res), nil
 }
 
 // ChangePassword changes user password
-func (us *UserGRPCService) ChangePassword(context.Context, *pb.ChangePasswordRequest) (*emptypb.Empty, error) {
+func (us *UserGRPCService) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*emptypb.Empty, error) {
+	err := us.userFacade.ChangePassword(ctx, MapChangePasswordGRPCToDTO(req))
+	if err != nil {
+		return nil, MapToGrpcError(err)
+	}
 
+	return &emptypb.Empty{}, nil
 }
 
 // ChangeKeys generate new RSA key pair
-func (us *UserGRPCService) ChangeKeys(context.Context, *emptypb.Empty) (*pb.ChangeKeysResponse, error) {
+func (us *UserGRPCService) ChangeKeys(ctx context.Context, req *emptypb.Empty) (*pb.ChangeKeysResponse, error) {
+	res, err := us.userFacade.ChangeKeys(ctx)
+	if err != nil {
+		return nil, MapToGrpcError(err)
+	}
 
+	return MapChangedKeysDTOToGRPC(res), nil
 }
