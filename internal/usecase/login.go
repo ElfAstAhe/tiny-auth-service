@@ -144,11 +144,11 @@ func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Tok
 	subject := ToSubject(user, nil)
 	token, err := luc.buildToken(subject)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get token from subject", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build token from subject", err)
 	}
 	refreshToken, err := luc.buildRefreshToken(user)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get refresh token from user", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build refresh token from user", err)
 	}
 
 	return token, refreshToken, nil
