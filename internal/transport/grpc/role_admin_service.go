@@ -10,7 +10,7 @@ import (
 )
 
 type RoleAdminGRPCService struct {
-	pb.UnimplementedAuthServiceServer
+	pb.UnimplementedAdminRolesServiceServer
 	roleAdminFacade facade.RoleAdminFacade
 }
 

@@ -20,10 +20,10 @@ import (
 )
 
 func (app *App) initGRPCService() error {
-	app.grpcAuthService = grpcsvc.NewAuthGRPCService()
-	app.grpcUserService = grpcsvc.NewUserGRPCService()
-	app.grpcRoleAdminService = grpcsvc.NewRoleAdminGRPCService()
-	app.grpcUserAdminService = grpcsvc.NewUserAdminGRPCService()
+	app.grpcAuthService = grpcsvc.NewAuthGRPCService(app.authFacade)
+	app.grpcUserService = grpcsvc.NewUserGRPCService(app.userFacade)
+	app.grpcRoleAdminService = grpcsvc.NewRoleAdminGRPCService(app.roleAdminFacade)
+	app.grpcUserAdminService = grpcsvc.NewUserAdminGRPCService(app.userAdminFacade)
 
 	return nil
 }
