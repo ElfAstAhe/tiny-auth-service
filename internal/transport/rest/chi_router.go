@@ -116,7 +116,7 @@ func (cr *AppChiRouter) setupRoutes() {
 			r.Post("/auth", cr.postAPIV1Auth)
 			// users sub-router
 			r.Route("/users", func(r chi.Router) {
-				r.Get("/profile/{username}", cr.getAPIV1UserProfile)
+				r.Get("/profile", cr.getAPIV1UserProfile)
 				r.Put("/password", cr.putAPIV1UserChangePassword)
 				r.Put("/keys", cr.putAPIV1UserChangeKeys)
 			})
