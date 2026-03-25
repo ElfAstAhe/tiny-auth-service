@@ -7,6 +7,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/hellofresh/health-go/v5"
@@ -23,7 +24,10 @@ type AppChiRouter struct {
 	health          *health.Health
 	healthz         transport.HealthzFunc
 	readyz          transport.ReadyzFunc
-	//    testFacade      facade.TestFacade
+	authFacade      facade.AuthFacade
+	userFacade      facade.UserFacade
+	userAdminFacade facade.UserAdminFacade
+	roleAdminFacade facade.RoleAdminFacade
 }
 
 func NewAppChiRouter(
@@ -33,7 +37,10 @@ func NewAppChiRouter(
 	health *health.Health,
 	healthz transport.HealthzFunc,
 	readyz transport.ReadyzFunc,
-	// testFacade facade.TestFacade,
+	authFacade facade.AuthFacade,
+	userFacade facade.UserFacade,
+	userAdminFacade facade.UserAdminFacade,
+	roleAdminFacade facade.RoleAdminFacade,
 ) *AppChiRouter {
 	res := &AppChiRouter{
 		router:          chi.NewRouter(),
@@ -43,7 +50,10 @@ func NewAppChiRouter(
 		health:          health,
 		healthz:         healthz,
 		readyz:          readyz,
-		//        testFacade:      testFacade,
+		authFacade:      authFacade,
+		userFacade:      userFacade,
+		userAdminFacade: userAdminFacade,
+		roleAdminFacade: roleAdminFacade,
 	}
 
 	// setup middleware
@@ -101,27 +111,36 @@ func (cr *AppChiRouter) setupRoutes() {
 
 	// api
 	cr.router.Route("/api", func(r chi.Router) {
-		//r.Route("/test", func(r chi.Router) {
-		//    r.Get("/{id}", cr.getAPITest)
-		//    r.Get("/search", cr.getAPITestSearch)
-		//    r.Get("/", cr.getAPITestList)
-		//    r.Post("/", cr.postAPITest)
-		//    r.Put("/{id}", cr.putAPITest)
-		//    r.Delete("/{id}", cr.deleteAPITest)
-		//})
-		/*
-			// auth sub-router
-			r.Route("/auth", func(r chi.Router) {
-				r.Post("/login", cr.postAPIAuthLogin)       // POST /api/auth/login
-				r.Post("/register", cr.postAPIAuthRegister) // POST /api/auth/register
-			})
+		r.Route("/v1", func(r chi.Router) {
+			// /auth
+			r.Post("/auth", cr.postAPIV1Auth)
 			// users sub-router
 			r.Route("/users", func(r chi.Router) {
-				r.Get("/profile", cr.getAPIUsersProfile)
-				r.Put("/keys", cr.putAPIUsersKeys)
-				r.Put("/password", cr.putAPIUsersPassword)
+				r.Get("/profile/{username}", cr.getAPIV1UserProfile)
+				r.Put("/password", cr.putAPIV1UserChangePassword)
+				r.Put("/keys", cr.putAPIV1UserChangeKeys)
 			})
-
-		*/
+			// admin sub-router
+			r.Route("/admin", func(r chi.Router) {
+				// /users sub-router
+				r.Route("/users", func(r chi.Router) {
+					r.Get("/{id}", cr.getAPIV1AdminUser)
+					r.Get("/search", cr.getAPIV1AdminUserSearch)
+					r.Get("/", cr.getAPIV1AdminUsers)
+					r.Post("/", cr.postAPIV1AdminUser)
+					r.Put("/{id}", cr.putAPIV1AdminUser)
+					r.Delete("/{id}", cr.deleteAPIV1AdminUser)
+				})
+				// /roles sub-route
+				r.Route("/roles", func(r chi.Router) {
+					r.Get("/{id}", cr.getAPIV1AdminRole)
+					r.Get("/search", cr.getAPIV1AdminRoleSearch)
+					r.Get("/", cr.getAPIV1AdminRoles)
+					r.Post("/", cr.postAPIV1AdminRole)
+					r.Put("/{id}", cr.putAPIV1AdminRole)
+					r.Delete("/{id}", cr.deleteAPIV1AdminRole)
+				})
+			})
+		})
 	})
 }

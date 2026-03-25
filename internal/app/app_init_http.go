@@ -14,6 +14,10 @@ func (app *App) initHTTPRouter() error {
 		app.health,
 		nil,
 		nil,
+		app.authFacade,
+		app.userFacade,
+		app.userAdminFacade,
+		app.roleAdminFacade,
 	)
 
 	return nil
