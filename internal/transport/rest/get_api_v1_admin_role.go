@@ -13,7 +13,7 @@ import (
 // getAPIV1AdminRole godoc
 // @Summary      Получить
 // @Description  Получает запись по её ID
-// @Tags         test
+// @Tags         role
 // @Produce      json
 // @Param        id   path      string  true  "ID записи" format(string)
 // @Success      200  {object}  RoleDTO "Роль"

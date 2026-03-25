@@ -13,7 +13,7 @@ import (
 // getAPIV1AdminUsers godoc
 // @Summary      Получить
 // @Description  Получить список
-// @Tags         User
+// @Tags         user
 // @Produce      json
 // @Param        limit   query   int  false  "limit row count, max 1000" format(int)
 // @Param        offset  query   int  false  "offset, min 0, max n" format(int)
@@ -21,7 +21,7 @@ import (
 // @Failure      400  {object} ErrorDTO
 // @Failure      403  {object} ErrorDTO "В доступе отказано"
 // @Failure      500  "Внутренняя ошибка сервера (пустое тело)"
-// @Router       /api/v1/users [get]
+// @Router       /api/v1/admin/users [get]
 func (cr *AppChiRouter) getAPIV1AdminUsers(rw http.ResponseWriter, r *http.Request) {
 	cr.log.Debugf("getAPIV1AdminRoles start, requestID [%s]", middleware.GetReqID(r.Context()))
 	defer cr.log.Debugf("getAPIV1AdminRoles finish, requestID [%s]", middleware.GetReqID(r.Context()))

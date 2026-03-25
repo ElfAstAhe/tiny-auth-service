@@ -13,7 +13,7 @@ import (
 // deleteAPIV1AdminRole godoc
 // @Summary      Удаление роли
 // @Description  Удаляет запись по её ID
-// @Tags         Role
+// @Tags         role
 // @Param        id   path      string  true  "ID записи" format(string)
 // @Success      204  "Запись успешно удалена, тело ответа отсутствует"
 // @Failure      403  {object   ErrorDTO "В доступе отказано"

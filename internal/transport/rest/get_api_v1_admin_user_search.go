@@ -13,14 +13,14 @@ import (
 // getAPIV1AdminUserSearch godoc
 // @Summary      Получить
 // @Description  Поиск записи
-// @Tags         User
+// @Tags         user
 // @Produce      json
 // @Param        name   query      string  true  "name записи" format(string)
 // @Success      200  {object}  UserDTO "Пользователь"
 // @Failure      403  {object}  ErrorDTO "В доступе отказано"
 // @Failure      404  {object}  ErrorDTO "Запись не найдена"
 // @Failure      500  "Внутренняя ошибка сервера (пустое тело)"
-// @Router       /api/v1/users/search [get]
+// @Router       /api/v1/admin/users/search [get]
 func (cr *AppChiRouter) getAPIV1AdminUserSearch(rw http.ResponseWriter, r *http.Request) {
 	cr.log.Debugf("getAPIV1AdminUserSearch start, requestID [%s]", middleware.GetReqID(r.Context()))
 	defer cr.log.Debugf("getAPIV1AdminUserSearch finish, requestID [%s]", middleware.GetReqID(r.Context()))

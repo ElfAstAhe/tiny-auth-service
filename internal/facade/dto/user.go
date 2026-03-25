@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+// UserDTO represent user model
+// @Description User DTO
 type UserDTO struct {
 	ID           string    `json:"id,omitempty"`
 	Name         string    `json:"name"`
@@ -16,4 +18,4 @@ type UserDTO struct {
 	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 
 	Roles []*RoleDTO `json:"roles,omitempty"`
-}
+} // @name UserDTO

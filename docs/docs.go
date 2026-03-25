@@ -9,22 +9,949 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "Free use",
+        "contact": {
+            "name": "API Support",
+            "url": "https://github.com/ElfAstAhe/tiny-auth-service",
+            "email": "elf.ast.ahe@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/api/v1/admin/roles": {
+            "get": {
+                "description": "Получить список",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "limit row count, max 1000",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "offset, min 0, max n",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Набор ролей",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/RoleDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "post": {
+                "description": "Сохраняет новые тестовые данные",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Создание роли",
+                "parameters": [
+                    {
+                        "description": "Роль",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Кривые данные",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Уже существует",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/roles/search": {
+            "get": {
+                "description": "Поиск записи",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "name записи",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Роль",
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/roles/{id}": {
+            "get": {
+                "description": "Получает запись по её ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Роль",
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "put": {
+                "description": "Изменение атрибутов роли",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "Изменяет роль",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Роль",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RoleDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет запись по её ID",
+                "tags": [
+                    "role"
+                ],
+                "summary": "Удаление роли",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Запись успешно удалена, тело ответа отсутствует"
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/users": {
+            "get": {
+                "description": "Получить список",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "limit row count, max 1000",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "offset, min 0, max n",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Набор пользователей",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/UserDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "post": {
+                "description": "Создаёт нового пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Создание пользователя",
+                "parameters": [
+                    {
+                        "description": "Пользователь",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Кривые данные",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Уже существует",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/users/search": {
+            "get": {
+                "description": "Поиск записи",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "name записи",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь",
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/users/{id}": {
+            "get": {
+                "description": "Получает запись по её ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Получить",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь",
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "put": {
+                "description": "Изменение атрибутов пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Изменяет пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Роль",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет запись по её ID",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Удаление пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "string",
+                        "description": "ID записи",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Запись успешно удалена, тело ответа отсутствует"
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth": {
+            "post": {
+                "description": "Аутентификация и авторизация пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Аутентификация",
+                "parameters": [
+                    {
+                        "description": "login информация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/LoginDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/LoggedInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Кривые данные",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/users/keys": {
+            "put": {
+                "description": "Изменение атрибутов роли",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Изменяет роль",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ChangedKeysDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/users/password": {
+            "put": {
+                "description": "Изменяет пароль пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Смена пароля пользователя",
+                "parameters": [
+                    {
+                        "description": "Смена пароля",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ChangePasswordDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успех (пустое тело)"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
+        "/api/v1/users/profile": {
+            "get": {
+                "description": "Получает запись по её ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Получить",
+                "responses": {
+                    "200": {
+                        "description": "Профиль",
+                        "schema": {
+                            "$ref": "#/definitions/ProfileDTO"
+                        }
+                    },
+                    "403": {
+                        "description": "В доступе отказано",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "404": {
+                        "description": "Запись не найдена",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ChangePasswordDTO": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "ChangedKeysDTO": {
+            "type": "object",
+            "properties": {
+                "private_key": {
+                    "type": "string"
+                },
+                "public_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "ErrorDTO": {
+            "description": "Error dto",
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "LoggedInDTO": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "LoginDTO": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "ProfileDTO": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "public_key": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "RoleDTO": {
+            "description": "Role DTO",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserDTO": {
+            "description": "User DTO",
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password_hash": {
+                    "type": "string"
+                },
+                "private_key": {
+                    "type": "string"
+                },
+                "public_key": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RoleDTO"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Auth Service API",
+	Description:      "Сервис аутентификации",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

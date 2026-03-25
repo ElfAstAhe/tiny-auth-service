@@ -13,7 +13,7 @@ import (
 // getAPIV1AdminUser godoc
 // @Summary      Получить
 // @Description  Получает запись по её ID
-// @Tags         User
+// @Tags         user
 // @Produce      json
 // @Param        id   path      string  true  "ID записи" format(string)
 // @Success      200  {object}  UserDTO "Пользователь"
