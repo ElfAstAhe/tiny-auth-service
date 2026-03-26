@@ -91,7 +91,7 @@ func (app *App) initDependencies() error {
 		// role admin
 		roleAdminGetUC = telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepo))
 		roleAdminGetByNameUC = telemetry.NewROleAdminGetNameTraceUseCase("RoleAdminGetNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepo))
-		roleAdminListUC = telemetry.NewRoleAdminListTraceUseCase("RoleAdminListUseCase", usecase.NewRoleAdminListUseCase(roleAdminRepo))
+		roleAdminListUC = telemetry.NewRoleAdminListTraceUseCase("RoleAdminListUseCase", usecase.NewRoleAdminListUseCase(roleAdminRepo, app.config.App.MaxListLimit))
 		roleAdminSaveUC = telemetry.NewRoleAdminSaveTraceUseCase("RoleAdminSaveUseCase", usecase.NewRoleAdminSaveUseCase(app.tm, roleAdminRepo))
 		roleAdminDeleteUC = telemetry.NewRoleAdminDeleteTraceUseCase("RoleAdminDeleteUseCase", usecase.NewRoleAdminDeleteUseCase(app.tm, roleAdminRepo))
 		// user admin

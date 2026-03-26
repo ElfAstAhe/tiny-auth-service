@@ -180,7 +180,7 @@ func (ur *UserPgRepository) FindByName(ctx context.Context, name string) (*domai
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := ur.GetHelper().Get(ctx, name)
+	res, err := ur.GetHelper().Get(ctx, sqlUserFindByName, name)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +229,7 @@ func (ur *UserPgRepository) Create(ctx context.Context, user *domain.User) (*dom
 }
 
 func (ur *UserPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User, params ...any) error {
-	return scanner.Scan(&dest.ID, dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (ur *UserPgRepository) afterFind(entity *domain.User, params ...any) (*domain.User, error) {

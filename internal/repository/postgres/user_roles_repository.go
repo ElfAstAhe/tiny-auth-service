@@ -10,6 +10,7 @@ import (
 const (
 	sqlUserRolesListAll string = `
 select
+    ur.user_id,
     r.id,
     r.name,
     r.description,
@@ -95,10 +96,10 @@ func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 
 func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
 	if len(params) == 0 {
-		return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 	}
 
-	return scanner.Scan(&params[0], &dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(&params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (urr *UserRolesPgRepository) afterListYield(entity *domain.Role, params ...any) (*domain.Role, bool, error) {

@@ -33,7 +33,7 @@ func (uag *UserAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.
 	res, err := uag.userRepo.Find(ctx, ID)
 	if err != nil {
 		if errors.As(err, new(*errs.DalNotFoundError)) {
-			return nil, domerrs.NewBllNotFoundError("UserAdminGetInteractor.Get", "Role", ID, err)
+			return nil, domerrs.NewBllNotFoundError("UserAdminGetInteractor.Get", "User", ID, err)
 		}
 
 		return nil, domerrs.NewBllError("UserAdminGetInteractor.Get", fmt.Sprintf("find User model id [%s] failed", ID), err)

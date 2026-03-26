@@ -14,6 +14,7 @@ func MapUserModelToProfileDTO(model *domain.User) *dto.ProfileDTO {
 		ID:        model.ID,
 		Name:      model.Name,
 		PublicKey: model.PublicKey,
+		Active:    model.Active,
 		CreatedAt: model.CreatedAt,
 		UpdatedAt: model.UpdatedAt,
 		Roles:     MapRolesModelToNames(model.Roles),

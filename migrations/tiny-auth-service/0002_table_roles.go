@@ -13,10 +13,10 @@ const (
 create table if not exists roles (
     id varchar(50) not null,
     name varchar(100) not null,
-    description varchar(512) null,
-    deleted bool default false,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now(),
+    description varchar(512) not null default '',
+    deleted bool not null default false,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
     constraint roles_pk primary key (id),
     constraint roles_uk unique(name)
 )
