@@ -8,8 +8,7 @@ import (
 
 func (app *App) initHTTPRouter() error {
 	app.httpRouter = rest.NewAppChiRouter(
-		app.config.HTTP,
-		app.config.Telemetry,
+		app.config,
 		app.logger,
 		app.health,
 		nil,

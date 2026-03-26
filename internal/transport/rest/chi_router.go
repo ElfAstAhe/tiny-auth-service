@@ -3,10 +3,10 @@ package rest
 import (
 	"net/http"
 
-	conf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,8 +19,7 @@ import (
 type AppChiRouter struct {
 	router          *chi.Mux
 	log             logger.Logger
-	config          *conf.HTTPConfig
-	telemetryConfig *conf.TelemetryConfig
+	config          *config.Config
 	health          *health.Health
 	healthz         transport.HealthzFunc
 	readyz          transport.ReadyzFunc
@@ -31,8 +30,7 @@ type AppChiRouter struct {
 }
 
 func NewAppChiRouter(
-	config *conf.HTTPConfig,
-	telemetryConfig *conf.TelemetryConfig,
+	config *config.Config,
 	logger logger.Logger,
 	health *health.Health,
 	healthz transport.HealthzFunc,
@@ -46,7 +44,6 @@ func NewAppChiRouter(
 		router:          chi.NewRouter(),
 		log:             logger,
 		config:          config,
-		telemetryConfig: telemetryConfig,
 		health:          health,
 		healthz:         healthz,
 		readyz:          readyz,
@@ -80,7 +77,7 @@ func (cr *AppChiRouter) GetRouter() http.Handler {
 
 func (cr *AppChiRouter) setupMiddleware(logger logger.Logger) {
 	// tracing
-	cr.router.Use(otelchi.Middleware(cr.telemetryConfig.ServiceName, otelchi.WithChiRoutes(cr.router)))
+	cr.router.Use(otelchi.Middleware(cr.config.Telemetry.ServiceName, otelchi.WithChiRoutes(cr.router)))
 	// metrics
 	cr.router.Use(libmware.HTTPMetricsMiddleware)
 	// requestID
@@ -90,13 +87,13 @@ func (cr *AppChiRouter) setupMiddleware(logger logger.Logger) {
 	// recoverer
 	cr.router.Use(middleware.Recoverer)
 	// timeout
-	cr.router.Use(middleware.Timeout(cr.config.ReadTimeout))
+	cr.router.Use(middleware.Timeout(cr.config.HTTP.ReadTimeout))
 	// compress (add any content-types)
 	cr.router.Use(libmware.NewHTTPCompress(logger,
 		"application/json", "plain/text",
 	).Handle)
 	// decompress
-	cr.router.Use(libmware.NewHTTPDecompress(int64(cr.config.MaxRequestBodySize), logger).Handle)
+	cr.router.Use(libmware.NewHTTPDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
 	// jwt auth extractor - extract user info from token
 	// .. cr.router.Use(appmware.NewAuthExtractorMiddleware(cr.authHelper, cr.jwtHTTPHelper, logger).Handle)
 	// income/outcome logger
@@ -108,6 +105,10 @@ func (cr *AppChiRouter) setupRoutes() {
 	cr.router.Get("/healthz", cr.getHealthz)
 	// readiness check
 	cr.router.Get("/readyz", cr.getReadyz)
+	// config (debug)
+	if cr.config.App.Env != config.AppEnvProduction {
+		cr.router.Get("/config", cr.getConfig)
+	}
 
 	// api
 	cr.router.Route("/api", func(r chi.Router) {
