@@ -56,7 +56,7 @@ func (app *App) initDependencies() error {
 		// user roles metrics repo
 		userRolesRepo = repository.NewUserRolesTraceRepository(repository.NewUserRolesMetricsRepository(userRolesRepo))
 		// user repo
-		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.cipherHelper, userRolesRepo)
+		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesRepo)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (app *App) initDependencies() error {
 		}
 		userRolesAdminRepo = repository.NewUserRolesAdminTraceRepository(repository.NewUserRolesAdminMetricsRepository(userRolesAdminRepo))
 		// user admin repo
-		userAdminRepo, err = postgres.NewUserAdminPgRepository(app.db, app.db, app.cipherHelper, userRolesAdminRepo)
+		userAdminRepo, err = postgres.NewUserAdminPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesAdminRepo)
 		if err != nil {
 			return err
 		}

@@ -9,6 +9,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
@@ -106,13 +107,15 @@ type UserPgRepository struct {
 	*repository.BaseCRUDRepository[*domain.User, string]
 	userRolesRepo domain.UserRolesRepository
 	cipherHelper  helper.Cipher
+	hashCipher    utils.Cipher
 }
 
 //goland:noinspection DuplicatedCode
-func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
+func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipherHelper helper.Cipher, hashCipher utils.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
 	res := &UserPgRepository{
 		userRolesRepo: userRolesRepo,
 		cipherHelper:  cipherHelper,
+		hashCipher:    hashCipher,
 	}
 	// sql builders
 	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
@@ -237,6 +240,9 @@ func (ur *UserPgRepository) afterFind(entity *domain.User, params ...any) (*doma
 		return nil, errs.NewDalSoftDeletedError(ur.GetHelper().GetInfo().Entity, entity.GetID())
 	}
 
+	entity.PublicKey = ur.cipherHelper.DecryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.DecryptString(entity.PrivateKey)
+
 	return entity, nil
 }
 
@@ -260,8 +266,13 @@ func (ur *UserPgRepository) beforeCreate(entity *domain.User, params ...any) err
 	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("UserPgRepository.beforeCreate", "before create entity", err)
 	}
+	var err error
 	entity.PublicKey = ur.cipherHelper.EncryptString(entity.PublicKey)
 	entity.PrivateKey = ur.cipherHelper.EncryptString(entity.PrivateKey)
+	entity.PasswordHash, err = ur.hashCipher.EncryptString(entity.PasswordHash)
+	if err != nil {
+		return errs.NewDalError("UserPgRepository.beforeCreate", "encrypt (hash) password", err)
+	}
 
 	return nil
 }
