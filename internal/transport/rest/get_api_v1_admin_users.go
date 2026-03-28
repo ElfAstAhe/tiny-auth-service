@@ -3,11 +3,10 @@ package rest
 import (
 	"net/http"
 
-	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
-	"github.com/go-chi/chi/v5/middleware"
-
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/transport"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 // getAPIV1AdminUsers godoc
@@ -23,8 +22,8 @@ import (
 // @Failure      500  "Внутренняя ошибка сервера (пустое тело)"
 // @Router       /api/v1/admin/users [get]
 func (cr *AppChiRouter) getAPIV1AdminUsers(rw http.ResponseWriter, r *http.Request) {
-	cr.log.Debugf("getAPIV1AdminRoles start, requestID [%s]", middleware.GetReqID(r.Context()))
-	defer cr.log.Debugf("getAPIV1AdminRoles finish, requestID [%s]", middleware.GetReqID(r.Context()))
+	cr.log.Debugf("getAPIV1AdminUsers start, requestID [%s]", middleware.GetReqID(r.Context()))
+	defer cr.log.Debugf("getAPIV1AdminUsers finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
 	limit, err := cr.getQueryInt(r, "limit", transport.DefaultListLimit)
 	if err != nil {
@@ -41,6 +40,8 @@ func (cr *AppChiRouter) getAPIV1AdminUsers(rw http.ResponseWriter, r *http.Reque
 
 	res, err := cr.userAdminFacade.List(r.Context(), limit, offset)
 	if err != nil {
+		cr.log.Errorf("getAPIV1AdminUsers list users error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

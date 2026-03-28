@@ -8,9 +8,10 @@ import (
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 const (
@@ -104,7 +105,7 @@ where
 )
 
 type UserAdminPgRepository struct {
-	*repository.BaseCRUDRepository[*domain.User, string]
+	*librepository.BaseCRUDRepository[*domain.User, string]
 	userRolesRepo domain.UserRolesAdminRepository
 	cipherHelper  helper.Cipher
 	hashCipher    utils.Cipher
@@ -117,7 +118,7 @@ func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		hashCipher:    hashCipher,
 	}
 	// sql builders
-	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
+	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlUserAdminFind
 		}).
@@ -135,7 +136,7 @@ func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		}).
 		Build()
 	// callbacks
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
@@ -147,10 +148,10 @@ func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseCRUDRepository[*domain.User, string](
+	base, err := librepository.NewBaseCRUDRepository[*domain.User, string](
 		executor,
 		errDecipher,
-		repository.NewEntityInfo("users", "User"),
+		librepository.NewEntityInfo("users", "User"),
 		queryBuilders,
 		callbacks,
 	)
@@ -180,7 +181,7 @@ func (uar *UserAdminPgRepository) FindByName(ctx context.Context, name string) (
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := uar.GetHelper().Get(ctx, sqlUserAdminFindByName, name)
+	res, err := uar.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlUserAdminFindByName, name)
 	if err != nil {
 		return nil, err
 	}
@@ -263,8 +264,8 @@ func (uar *UserAdminPgRepository) afterFind(entity *domain.User, params ...any) 
 	return entity, nil
 }
 
-func (uar *UserAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User, params ...any) error {
-	return scanner.Scan(&dest.ID, dest.Name, &dest.PasswordHash, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+func (uar *UserAdminPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
+	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (uar *UserAdminPgRepository) validateCreate(entity *domain.User, params ...any) error {

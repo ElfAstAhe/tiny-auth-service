@@ -150,7 +150,7 @@ func (rr *RolePgRepository) FindByName(ctx context.Context, name string) (*domai
 	return rr.GetHelper().Get(ctx, sqlRoleFindByName, name)
 }
 
-func (rr *RolePgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
+func (rr *RolePgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 

@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
@@ -127,12 +128,17 @@ func NewUserRolesAdminPgRepository(exec db.Executor, errDecipher db.ErrorDeciphe
 	return res, nil
 }
 
-func (ura *UserRolesAdminPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
-	if len(params) == 0 {
+func (ura *UserRolesAdminPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
+	switch sourceLabel {
+	case repository.SourceLabelFind:
 		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	case repository.SourceLabelListAll:
+		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	case repository.SourceLabelListAllByOwners:
+		return scanner.Scan(params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 	}
 
-	return scanner.Scan(&params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return errs.NewDalError("UserRolesAdminPgRepository.entityScanner", fmt.Sprintf("unknown source label [%v]", sourceLabel), nil)
 }
 
 func (ura *UserRolesAdminPgRepository) validateCreate(role *domain.Role, params ...any) error {

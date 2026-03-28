@@ -34,6 +34,8 @@ func (cr *AppChiRouter) getAPIV1AdminUserSearch(rw http.ResponseWriter, r *http.
 
 	res, err := cr.userAdminFacade.GetByName(r.Context(), name)
 	if err != nil {
+		cr.log.Errorf("getAPIV1AdminUserSearch get user error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

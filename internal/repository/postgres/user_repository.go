@@ -8,9 +8,10 @@ import (
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 const (
@@ -104,7 +105,7 @@ where
 )
 
 type UserPgRepository struct {
-	*repository.BaseCRUDRepository[*domain.User, string]
+	*librepository.BaseCRUDRepository[*domain.User, string]
 	userRolesRepo domain.UserRolesRepository
 	cipherHelper  helper.Cipher
 	hashCipher    utils.Cipher
@@ -118,7 +119,7 @@ func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipher
 		hashCipher:    hashCipher,
 	}
 	// sql builders
-	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
+	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlUserFind
 		}).
@@ -136,7 +137,7 @@ func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipher
 		}).
 		Build()
 	// callbacks
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
@@ -149,10 +150,10 @@ func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipher
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseCRUDRepository[*domain.User, string](
+	base, err := librepository.NewBaseCRUDRepository[*domain.User, string](
 		executor,
 		decipher,
-		repository.NewEntityInfo("users", "User"),
+		librepository.NewEntityInfo("users", "User"),
 		queryBuilders,
 		callbacks,
 	)
@@ -183,7 +184,7 @@ func (ur *UserPgRepository) FindByName(ctx context.Context, name string) (*domai
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := ur.GetHelper().Get(ctx, sqlUserFindByName, name)
+	res, err := ur.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlUserFindByName, name)
 	if err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (ur *UserPgRepository) Create(ctx context.Context, user *domain.User) (*dom
 	return res, nil
 }
 
-func (ur *UserPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User, params ...any) error {
+func (ur *UserPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
 	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 

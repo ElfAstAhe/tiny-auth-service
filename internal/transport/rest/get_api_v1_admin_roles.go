@@ -3,11 +3,10 @@ package rest
 import (
 	"net/http"
 
-	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
-	"github.com/go-chi/chi/v5/middleware"
-
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/transport"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 // getAPIV1AdminRoles godoc
@@ -41,6 +40,8 @@ func (cr *AppChiRouter) getAPIV1AdminRoles(rw http.ResponseWriter, r *http.Reque
 
 	res, err := cr.roleAdminFacade.List(r.Context(), limit, offset)
 	if err != nil {
+		cr.log.Errorf("getAPIV1AdminRoles list roles error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

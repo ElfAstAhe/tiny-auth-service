@@ -29,6 +29,8 @@ func (cr *AppChiRouter) getAPIV1AdminUser(rw http.ResponseWriter, r *http.Reques
 
 	res, err := cr.userAdminFacade.Get(r.Context(), id)
 	if err != nil {
+		cr.log.Errorf("getAPIV1AdminUser get user error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

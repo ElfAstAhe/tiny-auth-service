@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"fmt"
+
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
@@ -10,7 +12,6 @@ import (
 const (
 	sqlUserRolesListAll string = `
 select
-    ur.user_id,
     r.id,
     r.name,
     r.description,
@@ -94,12 +95,15 @@ func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 	return res, nil
 }
 
-func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
-	if len(params) == 0 {
+func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
+	switch sourceLabel {
+	case repository.SourceLabelListAll:
 		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	case repository.SourceLabelListAllByOwners:
+		return scanner.Scan(params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 	}
 
-	return scanner.Scan(&params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return errs.NewDalError("UserRolesPgRepository.entityScanner", fmt.Sprintf("unknown source label [%v]", sourceLabel), nil)
 }
 
 func (urr *UserRolesPgRepository) afterListYield(entity *domain.Role, params ...any) (*domain.Role, bool, error) {

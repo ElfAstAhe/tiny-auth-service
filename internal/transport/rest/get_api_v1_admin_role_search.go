@@ -34,6 +34,8 @@ func (cr *AppChiRouter) getAPIV1AdminRoleSearch(rw http.ResponseWriter, r *http.
 
 	res, err := cr.roleAdminFacade.GetByName(r.Context(), name)
 	if err != nil {
+		cr.log.Errorf("getAPIV1AdminRoleSearch get role error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return
