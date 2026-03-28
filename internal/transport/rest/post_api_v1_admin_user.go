@@ -37,6 +37,8 @@ func (cr *AppChiRouter) postAPIV1AdminUser(rw http.ResponseWriter, r *http.Reque
 
 	res, err := cr.userAdminFacade.Create(r.Context(), income)
 	if err != nil {
+		cr.log.Errorf("postAPIV1AdminUser post user error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

@@ -147,7 +147,7 @@ func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (
 }
 
 func (rar *RoleAdminPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
-	return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role, params ...any) error {

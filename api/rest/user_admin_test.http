@@ -1,4 +1,22 @@
-### GET request to example server
+### GET resource
 GET http://localhost:8080/api/v1/admin/users/1
 
-###
+### GET resource by name
+GET http://localhost:8080/api/v1/admin/users/search?name=Guest
+
+### GET resource list
+GET http://localhost:8080/api/v1/admin/users
+
+### POST resource
+POST http://localhost:8080/api/v1/admin/users
+Content-Type: application/json
+
+{
+  "name": "test001",
+  "password_hash": "password"
+}
+
+### PUT resource
+
+### DELETE resource
+DELETE http://loclahost:8080/api/v1/admin/users/33

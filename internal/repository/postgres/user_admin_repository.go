@@ -292,7 +292,17 @@ func (uar *UserAdminPgRepository) beforeCreate(entity *domain.User, params ...an
 }
 
 func (uar *UserAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.PasswordHash, entity.CreatedAt, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetCreate()(),
+		entity.ID,
+		entity.Name,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.Deleted,
+		entity.CreatedAt,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (uar *UserAdminPgRepository) validateChange(entity *domain.User, params ...any) error {
@@ -304,7 +314,15 @@ func (uar *UserAdminPgRepository) validateChange(entity *domain.User, params ...
 }
 
 func (uar *UserAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetChange()(), entity.ID, entity.PasswordHash, entity.Active, entity.Deleted, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetChange()(),
+		entity.ID,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.Deleted,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (uar *UserAdminPgRepository) beforeChange(entity *domain.User, params ...any) error {

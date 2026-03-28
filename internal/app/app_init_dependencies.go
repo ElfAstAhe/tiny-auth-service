@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
@@ -12,6 +13,9 @@ import (
 //goland:noinspection DuplicatedCode
 func (app *App) initDependencies() error {
 	var err error
+	// transaction manager
+	app.tm = db.NewTxManager(app.db)
+
 	var (
 		roleAdminRepo      domain.RoleAdminRepository
 		userRolesAdminRepo domain.UserRolesAdminRepository
@@ -98,7 +102,7 @@ func (app *App) initDependencies() error {
 		userAdminGetUC = telemetry.NewUserAdminGetTraceUseCase("UserAdminGetUseCase", usecase.NewUserAdminGetUseCase(userAdminRepo))
 		userAdminGetByNameUC = telemetry.NewUserAdminGetNameTraceUseCase("UserAdminGetNameUseCase", usecase.NewUserAdminGetNameUseCase(userAdminRepo))
 		userAdminListUC = telemetry.NewUserAdminListTraceUseCase("UserAdminListUseCase", usecase.NewUserAdminListUseCase(userAdminRepo, app.config.App.MaxListLimit))
-		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, userAdminRepo))
+		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, app.hashCipher, app.keysHelper, userAdminRepo))
 		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("UserAdminDeleteUseCase", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
 	}
 	// facades

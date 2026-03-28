@@ -37,6 +37,8 @@ func (cr *AppChiRouter) postAPIV1AdminRole(rw http.ResponseWriter, r *http.Reque
 
 	res, err := cr.roleAdminFacade.Create(r.Context(), income)
 	if err != nil {
+		cr.log.Errorf("postAPIV1AdminRole post role error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

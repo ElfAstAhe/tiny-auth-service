@@ -28,6 +28,8 @@ func (cr *AppChiRouter) deleteAPIV1AdminRole(rw http.ResponseWriter, r *http.Req
 
 	err := cr.roleAdminFacade.Delete(r.Context(), id)
 	if err != nil {
+		cr.log.Errorf("deleteAPIV1AdminRole delete role error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return

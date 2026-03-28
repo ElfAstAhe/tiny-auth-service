@@ -41,6 +41,8 @@ func (cr *AppChiRouter) putAPIV1AdminRole(rw http.ResponseWriter, r *http.Reques
 
 	res, err := cr.roleAdminFacade.Change(r.Context(), id, income)
 	if err != nil {
+		cr.log.Errorf("putAPIV1AdminRole put role error, [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return
