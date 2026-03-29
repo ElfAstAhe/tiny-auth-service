@@ -35,7 +35,7 @@ func (af *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto.
 		return nil, domerrs.NewBllValidateError("AuthFacadeImpl.Login", "validate income failed", err)
 	}
 
-	token, refreshToken, err := af.loginUC.Login(ctx, login.Username, login.Password)
+	token, _, err := af.loginUC.Login(ctx, login.Username, login.Password)
 	if err != nil {
 		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.Login", "unauthorized", err)
 	}
@@ -43,10 +43,11 @@ func (af *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto.
 	if err != nil {
 		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.Login", "unauthorized", err)
 	}
-	refreshTokenStr, err := af.jwtHelper.BuildTokenStr(refreshToken)
-	if err != nil {
-		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.Login", "unauthorized", err)
-	}
+	// refreshTokenStr, err := af.jwtHelper.BuildTokenStr(refreshToken)
+	refreshTokenStr := ""
+	//if err != nil {
+	//	return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.Login", "unauthorized", err)
+	//}
 
 	return mapper.MapAuthToDTO(tokenStr, refreshTokenStr), nil
 }
@@ -56,7 +57,7 @@ func (af *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO) 
 		return nil, domerrs.NewBllValidateError("AuthFacadeImpl.LoginSimple", "validate income failed", err)
 	}
 
-	token, refreshToken, err := af.loginSimpleUC.Login(ctx, login.Username, login.Password)
+	token, _, err := af.loginSimpleUC.Login(ctx, login.Username, login.Password)
 	if err != nil {
 		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.LoginSimple", "unauthorized", err)
 	}
@@ -64,10 +65,11 @@ func (af *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO) 
 	if err != nil {
 		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.LoginSimple", "unauthorized", err)
 	}
-	refreshTokenStr, err := af.jwtHelper.BuildTokenStr(refreshToken)
-	if err != nil {
-		return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.LoginSimple", "unauthorized", err)
-	}
+	//refreshTokenStr, err := af.jwtHelper.BuildTokenStr(refreshToken)
+	//if err != nil {
+	//	return nil, domerrs.NewBllUnauthorizedError("AuthFacadeImpl.LoginSimple", "unauthorized", err)
+	//}
+	refreshTokenStr := ""
 
 	return mapper.MapAuthToDTO(tokenStr, refreshTokenStr), nil
 }

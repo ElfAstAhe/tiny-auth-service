@@ -25,7 +25,8 @@ func (app *App) initDependencies() error {
 		userRolesRepo domain.UserRolesRepository
 		userRepo      domain.UserRepository
 
-		loginUC usecase.LoginUseCase
+		loginUC       usecase.LoginUseCase
+		loginSimpleUC usecase.LoginSimpleUseCase
 
 		profileUC        usecase.ProfileUseCase
 		changeKeysUC     usecase.ChangeKeysUseCase
@@ -88,6 +89,7 @@ func (app *App) initDependencies() error {
 	{
 		// auth
 		loginUC = telemetry.NewLoginTraceUseCase("LoginUseCase", usecase.NewLoginUseCase(app.hashCipher, app.keysHelper, app.authHelper, userRepo))
+		loginSimpleUC = telemetry.NewLoginSimpleTraceUseCase("LoginSimpleUseCase", usecase.NewLoginSimpleUseCase(app.hashCipher, app.authHelper, userRepo))
 		// users
 		profileUC = telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepo))
 		changeKeysUC = telemetry.NewChangeKeysTraceUseCase("ChangeKeysUseCase", usecase.NewChangeKeysUseCase(app.keysHelper, app.tm, userRepo))
@@ -108,7 +110,7 @@ func (app *App) initDependencies() error {
 	// facades
 	{
 		// auth
-		app.authFacade = facade.NewAuthFacade(app.jwtHelper, loginUC)
+		app.authFacade = facade.NewAuthFacade(app.jwtHelper, loginUC, loginSimpleUC)
 		app.userFacade = facade.NewUserFacade(app.authHelper, profileUC, changePasswordUC, changeKeysUC)
 		app.roleAdminFacade = facade.NewRoleAdminFacade(
 			roleAdminGetUC,
