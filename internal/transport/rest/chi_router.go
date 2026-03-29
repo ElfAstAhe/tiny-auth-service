@@ -115,6 +115,10 @@ func (cr *AppChiRouter) setupRoutes() {
 		r.Route("/v1", func(r chi.Router) {
 			// /auth
 			r.Post("/auth", cr.postAPIV1Auth)
+			// /auth/simple
+			if cr.config.App.Env != config.AppEnvProduction {
+				r.Post("/auth/simple", cr.postAPIV1AuthSimple)
+			}
 			// users sub-router
 			r.Route("/users", func(r chi.Router) {
 				r.Get("/profile", cr.getAPIV1UserProfile)
