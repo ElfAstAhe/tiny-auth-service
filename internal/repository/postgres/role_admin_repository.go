@@ -6,8 +6,9 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 const (
@@ -61,7 +62,7 @@ insert into roles (
     created_at,
     updated_at
 )
-values ($1, $2, $3, $4, $5, $6)
+values ($1, $2, $3, false, $4, $5)
 returning id, name, description, deleted, created_at, updated_at
 `
 	sqlRoleAdminChange string = `
@@ -74,6 +75,7 @@ set
     updated_at = $5
 where
     id = $1
+returning id, name, description, deleted, created_at, updated_at
 `
 	sqlRoleAdminDelete string = `
 delete
@@ -85,7 +87,7 @@ where
 )
 
 type RoleAdminPgRepository struct {
-	*repository.BaseCRUDRepository[*domain.Role, string]
+	*librepository.BaseCRUDRepository[*domain.Role, string]
 	userRolesRepo domain.UserRolesAdminRepository
 }
 
@@ -93,7 +95,7 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 	// new instance
 	res := &RoleAdminPgRepository{}
 	// sql builders
-	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
+	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlRoleAdminFind
 		}).
@@ -111,7 +113,7 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		}).
 		Build()
 	// callbacks
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithValidateCreate(res.validateCreate).
@@ -122,10 +124,10 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseCRUDRepository[*domain.Role, string](
+	base, err := librepository.NewBaseCRUDRepository[*domain.Role, string](
 		executor,
 		decipher,
-		repository.NewEntityInfo("roles", "Role"),
+		librepository.NewEntityInfo("roles", "Role"),
 		queryBuilders,
 		callbacks,
 	)
@@ -143,10 +145,10 @@ func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (
 		return nil, errs.NewInvalidArgumentError("name", "cannot be empty")
 	}
 
-	return rar.GetHelper().Get(ctx, sqlRoleAdminFindByName, name)
+	return rar.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlRoleAdminFindByName, name)
 }
 
-func (rar *RoleAdminPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
+func (rar *RoleAdminPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
@@ -159,7 +161,7 @@ func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role, params ...
 }
 
 func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role, params ...any) error {
-	if err := entity.ValidateCreate(); err != nil {
+	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("RoleAdminPgRepository.beforeCreate", "before create entity", err)
 	}
 
@@ -179,7 +181,7 @@ func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role, params ...
 }
 
 func (rar *RoleAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetChange()(), entity.ID, entity.Name, entity.Description, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetChange()(), entity.ID, entity.Name, entity.Description, entity.Deleted, entity.UpdatedAt), nil
 }
 
 func (rar *RoleAdminPgRepository) beforeChange(entity *domain.Role, params ...any) error {

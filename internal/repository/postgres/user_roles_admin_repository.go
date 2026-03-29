@@ -72,8 +72,12 @@ insert into user_roles (
     role_id
 )
 values ($1, $2)
+returning role_id
 `
 	sqlUserRolesAdminDelete string = `
+delete from user_roles where user_id = $1 and role_id = $2
+`
+	sqlUserRolesAdminDeleteAll string = `
 delete from user_roles where user_id = $1
 `
 )
@@ -100,6 +104,9 @@ func NewUserRolesAdminPgRepository(exec db.Executor, errDecipher db.ErrorDeciphe
 		}).
 		WithDelete(func() string {
 			return sqlUserRolesAdminDelete
+		}).
+		WithDeleteAll(func() string {
+			return sqlUserRolesAdminDeleteAll
 		}).
 		Build()
 
@@ -130,6 +137,9 @@ func NewUserRolesAdminPgRepository(exec db.Executor, errDecipher db.ErrorDeciphe
 
 func (ura *UserRolesAdminPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	switch sourceLabel {
+	case repository.SourceLabelCreate:
+		// ВНИМАНИЕ!!! Scan нужен, ибо без него получим driver: bad connection
+		return scanner.Scan(&dest.ID)
 	case repository.SourceLabelFind:
 		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 	case repository.SourceLabelListAll:

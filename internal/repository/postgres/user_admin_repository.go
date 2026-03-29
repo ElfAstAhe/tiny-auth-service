@@ -140,6 +140,7 @@ func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
+		WithAfterListYield(res.afterListYield).
 		WithValidateCreate(res.validateCreate).
 		WithBeforeCreate(res.beforeCreate).
 		WithCreator(res.creator).
@@ -264,6 +265,13 @@ func (uar *UserAdminPgRepository) afterFind(entity *domain.User, params ...any) 
 	return entity, nil
 }
 
+func (uar *UserAdminPgRepository) afterListYield(entity *domain.User, params ...any) (*domain.User, bool, error) {
+	entity.PublicKey = uar.cipherHelper.DecryptString(entity.PublicKey)
+	entity.PrivateKey = uar.cipherHelper.DecryptString(entity.PrivateKey)
+
+	return entity, true, nil
+}
+
 func (uar *UserAdminPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
 	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
@@ -316,6 +324,7 @@ func (uar *UserAdminPgRepository) validateChange(entity *domain.User, params ...
 func (uar *UserAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetChange()(),
 		entity.ID,
+		entity.Name,
 		entity.PasswordHash,
 		entity.PublicKey,
 		entity.PrivateKey,

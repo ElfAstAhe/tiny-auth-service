@@ -151,7 +151,7 @@ func (rr *RolePgRepository) FindByName(ctx context.Context, name string) (*domai
 }
 
 func (rr *RolePgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
-	return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (rr *RolePgRepository) afterFind(entity *domain.Role, params ...any) (*domain.Role, error) {

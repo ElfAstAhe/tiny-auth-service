@@ -1,22 +1,56 @@
-### GET resource
+### GET resource (find)
 GET http://localhost:8080/api/v1/admin/users/1
 
-### GET resource by name
+### GET resource by name (find by name)
 GET http://localhost:8080/api/v1/admin/users/search?name=Guest
 
-### GET resource list
+### GET resource list (list)
 GET http://localhost:8080/api/v1/admin/users
 
-### POST resource
+### POST resource (create)
 POST http://localhost:8080/api/v1/admin/users
 Content-Type: application/json
 
 {
-  "name": "test001",
-  "password_hash": "password"
+  "name": "test",
+  "password_hash": "password",
+  "active": true,
+  "roles": [
+    {
+      "id": "2",
+      "name": "user",
+      "description": "default user role",
+      "deleted": false,
+      "created_at": "2026-03-26T09:43:51.711175+03:00",
+      "updated_at": "2026-03-26T09:43:51.711175+03:00"
+    }
+  ]
 }
 
-### PUT resource
+### PUT resource (change)
+PUT http://localhost:8080/api/v1/admin/users/8c15b867-f6ac-4d8c-a5c1-c8466d9f9c53
+Content-Type: application/json
 
-### DELETE resource
+{
+  "id": "8c15b867-f6ac-4d8c-a5c1-c8466d9f9c53",
+  "name": "test001",
+  "password_hash": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+  "public_key": "-----BEGIN RSA PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0WxroEtZEmojqGFZk7eA\ngBoOxqe1C01+X2VtGzudoXagFaM8aNfvWydlyKB36fCE6uYH3x9JXii8WqC2us5P\n46yw6EwngfWa3rYKUwNQoNY2Qo+fTT72UjOM/I/DXrnTK9l7mBl5BsCw0o6JwFYW\n5ODlX1ysK/al6vVTEApNgtc9MHMjSI1L29VjKhODjZi4SBDqV541UF/LT4AbbDy5\nVM/iX1KnN+Vt8YjUqPDHnwrkCjjl0QJx0WWHra8x9oRu20KeFwoWzeG5hJMTctMB\nA8FR04TdScFW13CCz1tDBLUp5uhjh3hFfEfak7DvQg1uJWGbySOTP7hQkWocJIns\nywIDAQAB\n-----END RSA PUBLIC KEY-----\n",
+  "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA0WxroEtZEmojqGFZk7eAgBoOxqe1C01+X2VtGzudoXagFaM8\naNfvWydlyKB36fCE6uYH3x9JXii8WqC2us5P46yw6EwngfWa3rYKUwNQoNY2Qo+f\nTT72UjOM/I/DXrnTK9l7mBl5BsCw0o6JwFYW5ODlX1ysK/al6vVTEApNgtc9MHMj\nSI1L29VjKhODjZi4SBDqV541UF/LT4AbbDy5VM/iX1KnN+Vt8YjUqPDHnwrkCjjl\n0QJx0WWHra8x9oRu20KeFwoWzeG5hJMTctMBA8FR04TdScFW13CCz1tDBLUp5uhj\nh3hFfEfak7DvQg1uJWGbySOTP7hQkWocJInsywIDAQABAoIBABRSplfIssJKjN73\nDNd8vBpyV5MSoks7AB5SJuuOIPwSxB06w+QpaapvC9MTiMop05RCB2sxIOW4zp0o\nMc4LXbhVQVkBpDyEhjzCQ1qOnKFHDb6ZgRbgxcxGAWgJrCbB92AEJm4lBq16Pzk8\n/i7X4TfhKpEoWp2Xkr6sLkfaYBmStuwX4W2IDEFLqA1OQj7Sv53a4nli2fPOSvyc\nR9X63DlEMg0S2r1YgAiOeho9P++TL2f20sXECyJvJy93+y6TjpD05HE7fDXnYeIL\ntWQSzl2gDOZJU9Y0Q30dhu+7XIWWksMEL7UOGjRj9F1Pg+H0drtIzK6TkfbrWuqX\nkzTZHYUCgYEA2GgRFDPu0QeI7gaZI3DyCEEgV6WwbC9EQdP1Pcv7yGgWbM6sgcZ8\nk8dqWLgmxnNGxjBwqwu0wPYzoelNyRXFVv2UGiGwJKxvsZNzezI0BjW0shDB7iQJ\np9abQiQMG34msyDCtz4ZaAXKsPyBQEMfkBtkNbbE2cK0x14w3hxPL+cCgYEA971J\nt/h/Mt0oZbktr3d3zyNih0QL08vxeYUElBLuplu7JM6zxcgCmhtdtvE2Ajztz/gj\nBfSnmV6l/qUhjK4oz55faOIshC2oiqpJ3M+5fsagRsMYLyywyuqnNwZjjxj/mZoz\nOPCPkShWt7f4XKq/OidkpC/B+PQnykAeQtNHD30CgYBbVokm2siIh0KfHD/Uep5d\nJ4fMFo3BC64mjpyq6Yaqzmvwnsamu6zm/rr/GTKcfhk4G0fimb0/2GpwgzUmkz7I\neZzh7qgWwoUeERsju0vD9zT+Fx6TMbi1k1nSb76AeB1Da6djih1VD2S+kMTI58vR\nmg4QscSiGJEOuM2tYYt2rwKBgQC+VJDEZIfk3gBhVomA2zoSy86wuViU2YSlpcpE\nsN7ktGjs+FkpRGarWwb+vAaQZZsXQj42HyZ8MDk7kEZcPJliGPyYKdulmSZ5kia5\nHGYYviT4+H4mECGrY+gf4CqxD7WfntZnknnaPbGR6CdJmmzcEtPBSGewCnRfcC9P\ni952SQKBgF0J2QPlt7jefrDgSkSyP8GQbng52hRDBdHKOY8vcANRbD/ZHT2M1FXh\ni026lY83QhAgse2i5ZikwQnLom2IznjpUATyl/X7WGneqxodhdFDAGQwemYUt2UY\n3CX6gbILvWVUs7FeXjCalJGFolydst/YiWbWlwsCp0SFMnMgKDWk\n-----END RSA PRIVATE KEY-----\n",
+  "active": true,
+  "deleted": false,
+  "created_at": "2026-03-28T21:51:53.080357+03:00",
+  "roles": [
+    {
+      "id": "3",
+      "name": "guest",
+      "description": "default guest role",
+      "deleted": false,
+      "created_at": "2026-03-26T09:43:51.711175+03:00",
+      "updated_at": "2026-03-26T09:43:51.711175+03:00"
+    }
+  ]
+}
+
+### DELETE resource (delete)
 DELETE http://loclahost:8080/api/v1/admin/users/33
