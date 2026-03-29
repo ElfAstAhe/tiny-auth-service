@@ -656,6 +656,55 @@
                 }
             }
         },
+        "/api/v1/auth/simple": {
+            "post": {
+                "description": "Аутентификация и авторизация пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Аутентификация",
+                "parameters": [
+                    {
+                        "description": "login информация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/LoginDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/LoggedInDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Кривые данные",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
         "/api/v1/users/keys": {
             "put": {
                 "description": "Изменение атрибутов роли",

@@ -536,6 +536,38 @@ paths:
       summary: Аутентификация
       tags:
       - auth
+  /api/v1/auth/simple:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация и авторизация пользователя
+      parameters:
+      - description: login информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoggedInDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "401":
+          description: Не авторизован
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Аутентификация
+      tags:
+      - auth
   /api/v1/users/keys:
     put:
       description: Изменение атрибутов роли

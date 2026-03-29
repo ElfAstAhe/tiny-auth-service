@@ -113,6 +113,7 @@ func (app *App) initDependencies() error {
 		app.authFacade = facade.NewAuthFacade(app.jwtHelper, loginUC, loginSimpleUC)
 		app.userFacade = facade.NewUserFacade(app.authHelper, profileUC, changePasswordUC, changeKeysUC)
 		app.roleAdminFacade = facade.NewRoleAdminFacade(
+			app.authHelper,
 			roleAdminGetUC,
 			roleAdminGetByNameUC,
 			roleAdminListUC,
@@ -121,6 +122,7 @@ func (app *App) initDependencies() error {
 			app.config.App.MaxListLimit,
 		)
 		app.userAdminFacade = facade.NewUserAdminFacade(
+			app.authHelper,
 			userAdminGetUC,
 			userAdminGetByNameUC,
 			userAdminListUC,
