@@ -28,6 +28,7 @@ func (app *App) initDependencies() error {
 		loginUC       usecase.LoginUseCase
 		loginSimpleUC usecase.LoginSimpleUseCase
 
+		registerUC       usecase.RegisterUseCase
 		profileUC        usecase.ProfileUseCase
 		changeKeysUC     usecase.ChangeKeysUseCase
 		changePasswordUC usecase.ChangePasswordUseCase
@@ -61,7 +62,7 @@ func (app *App) initDependencies() error {
 		// user roles metrics repo
 		userRolesRepo = repository.NewUserRolesTraceRepository(repository.NewUserRolesMetricsRepository(userRolesRepo))
 		// user repo
-		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesRepo)
+		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.hashCipher, app.cipherHelper, userRolesRepo)
 		if err != nil {
 			return err
 		}
@@ -91,6 +92,7 @@ func (app *App) initDependencies() error {
 		loginUC = telemetry.NewLoginTraceUseCase("LoginUseCase", usecase.NewLoginUseCase(app.hashCipher, app.keysHelper, app.authHelper, userRepo))
 		loginSimpleUC = telemetry.NewLoginSimpleTraceUseCase("LoginSimpleUseCase", usecase.NewLoginSimpleUseCase(app.hashCipher, app.authHelper, userRepo))
 		// users
+		registerUC = telemetry.NewRegisterTraceUseCase("RegisterUseCase", usecase.NewRegisterUseCase(app.tm, app.hashCipher, app.keysHelper, userRepo))
 		profileUC = telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepo))
 		changeKeysUC = telemetry.NewChangeKeysTraceUseCase("ChangeKeysUseCase", usecase.NewChangeKeysUseCase(app.keysHelper, app.tm, userRepo))
 		changePasswordUC = telemetry.NewChangePasswordTraceUseCase("ChangePasswordUseCase", usecase.NewChangePasswordUseCase(app.hashCipher, app.tm, userRepo))
@@ -111,7 +113,13 @@ func (app *App) initDependencies() error {
 	{
 		// auth
 		app.authFacade = facade.NewAuthFacade(app.jwtHelper, loginUC, loginSimpleUC)
-		app.userFacade = facade.NewUserFacade(app.authHelper, profileUC, changePasswordUC, changeKeysUC)
+		app.userFacade = facade.NewUserFacade(
+			app.authHelper,
+			registerUC,
+			profileUC,
+			changePasswordUC,
+			changeKeysUC,
+		)
 		app.roleAdminFacade = facade.NewRoleAdminFacade(
 			app.authHelper,
 			roleAdminGetUC,

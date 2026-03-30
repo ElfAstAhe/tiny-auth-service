@@ -49,11 +49,27 @@ where
 order by
     1 asc, 2 asc
 `
+	sqlUserRolesDeleteAll string = `
+delete from
+    user_roles
+where
+    user_id = $1
+`
+	sqlUserRolesCreate string = `
+insert into user_roles(
+    user_id,
+    role_id
+)
+values ($1, $2)
+returning role_id
+`
 )
 
 type UserRolesPgRepository struct {
 	*repository.BaseOwnedRepository[*domain.Role, string, string]
 }
+
+var _ domain.UserRolesRepository = (*UserRolesPgRepository)(nil)
 
 func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher) (*UserRolesPgRepository, error) {
 	res := &UserRolesPgRepository{}
@@ -65,6 +81,12 @@ func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		}).
 		WithListAllByOwners(func() string {
 			return sqlUserRolesListAllByOwners
+		}).
+		WithDeleteAll(func() string {
+			return sqlUserRolesDeleteAll
+		}).
+		WithCreate(func() string {
+			return sqlUserRolesCreate
 		}).
 		Build()
 

@@ -33,6 +33,8 @@ type UserAdminFacadeImpl struct {
 	maxListLimit int
 }
 
+var _ UserAdminFacade = (*UserAdminFacadeImpl)(nil)
+
 func NewUserAdminFacade(
 	authHelper *auth.Helper,
 	getUC usecase.UserAdminGetUseCase,

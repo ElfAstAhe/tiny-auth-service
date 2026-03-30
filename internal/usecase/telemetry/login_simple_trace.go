@@ -17,6 +17,8 @@ type LoginSimpleTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.LoginSimpleUseCase = (*LoginSimpleTraceInteractor)(nil)
+
 func NewLoginSimpleTraceUseCase(ucName string, next usecase.LoginUseCase) *LoginTraceInteractor {
 	return &LoginTraceInteractor{
 		next:          next,
@@ -25,13 +27,13 @@ func NewLoginSimpleTraceUseCase(ucName string, next usecase.LoginUseCase) *Login
 	}
 }
 
-func (lt *LoginTraceInteractor) LoginSimple(ctx context.Context, username string, encryptedPassword string) (*jwt.Token, *jwt.Token, error) {
-	ctx, span := lt.StartSpan(ctx, lt.spanName)
+func (lst *LoginSimpleTraceInteractor) Login(ctx context.Context, username string, encryptedPassword string) (*jwt.Token, *jwt.Token, error) {
+	ctx, span := lst.StartSpan(ctx, lst.spanName)
 	defer span.End()
 
 	span.SetAttributes(attribute.String("param.username", username))
 
-	token, refreshToken, err := lt.next.Login(ctx, username, encryptedPassword)
+	token, refreshToken, err := lst.next.Login(ctx, username, encryptedPassword)
 	if err != nil {
 		span.AddEvent("Login_simple_failed")
 		span.RecordError(err)

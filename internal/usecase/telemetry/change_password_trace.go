@@ -16,6 +16,8 @@ type ChangePasswordTraceInteractor struct {
 	next     usecase.ChangePasswordUseCase
 }
 
+var _ usecase.ChangePasswordUseCase = (*ChangePasswordTraceInteractor)(nil)
+
 func NewChangePasswordTraceUseCase(ucName string, next usecase.ChangePasswordUseCase) *ChangePasswordTraceInteractor {
 	return &ChangePasswordTraceInteractor{
 		next:          next,

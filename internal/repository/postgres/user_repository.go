@@ -77,7 +77,7 @@ insert into users (
     created_at,
     updated_at
 )
-values($1, $2, $3, $4, $5, true, false, $6, $7)
+values($1, $2, $3, $4, $5, $6, false, $7, $8)
 returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserChange string = `
@@ -106,17 +106,19 @@ where
 
 type UserPgRepository struct {
 	*librepository.BaseCRUDRepository[*domain.User, string]
-	userRolesRepo domain.UserRolesRepository
-	cipherHelper  helper.Cipher
 	hashCipher    utils.Cipher
+	cipherHelper  helper.Cipher
+	userRolesRepo domain.UserRolesRepository
 }
 
+var _ domain.UserRepository = (*UserPgRepository)(nil)
+
 //goland:noinspection DuplicatedCode
-func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, cipherHelper helper.Cipher, hashCipher utils.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
+func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, hashCipher utils.Cipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
 	res := &UserPgRepository{
-		userRolesRepo: userRolesRepo,
-		cipherHelper:  cipherHelper,
 		hashCipher:    hashCipher,
+		cipherHelper:  cipherHelper,
+		userRolesRepo: userRolesRepo,
 	}
 	// sql builders
 	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
@@ -279,7 +281,16 @@ func (ur *UserPgRepository) beforeCreate(entity *domain.User, params ...any) err
 }
 
 func (ur *UserPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.PasswordHash, entity.CreatedAt, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetCreate()(),
+		entity.ID,
+		entity.Name,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.CreatedAt,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (ur *UserPgRepository) validateChange(entity *domain.User, params ...any) error {
@@ -291,7 +302,15 @@ func (ur *UserPgRepository) validateChange(entity *domain.User, params ...any) e
 }
 
 func (ur *UserPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetChange()(), entity.ID, entity.PasswordHash, entity.Active, entity.Deleted, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetChange()(),
+		entity.ID,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.Deleted,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (ur *UserPgRepository) beforeChange(entity *domain.User, params ...any) error {

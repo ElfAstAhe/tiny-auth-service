@@ -27,6 +27,8 @@ type LoginInteractor struct {
 	// ...
 }
 
+var _ LoginUseCase = (*LoginInteractor)(nil)
+
 // NewLoginUseCase создаёт новый экземпляр use case для аутентификации пользователя
 //
 // Параметры:

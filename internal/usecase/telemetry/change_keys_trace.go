@@ -16,6 +16,8 @@ type ChangeKeysTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.ChangeKeysUseCase = (*ChangeKeysTraceInteractor)(nil)
+
 func NewChangeKeysTraceUseCase(ucName string, next usecase.ChangeKeysUseCase) *ChangeKeysTraceInteractor {
 	return &ChangeKeysTraceInteractor{
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),

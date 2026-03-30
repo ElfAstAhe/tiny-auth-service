@@ -23,6 +23,8 @@ type ChangeKeysInteractor struct {
 	userRepo   domain.UserRepository
 }
 
+var _ ChangeKeysUseCase = (*ChangeKeysInteractor)(nil)
+
 func NewChangeKeysUseCase(keysHelper helper.RSAKeys, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangeKeysInteractor {
 	return &ChangeKeysInteractor{
 		keysHelper: keysHelper,

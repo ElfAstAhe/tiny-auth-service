@@ -90,6 +90,8 @@ type RolePgRepository struct {
 	*repository.BaseCRUDRepository[*domain.Role, string]
 }
 
+var _ domain.RoleRepository = (*RolePgRepository)(nil)
+
 //goland:noinspection DuplicatedCode
 func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RolePgRepository, error) {
 	// new instance

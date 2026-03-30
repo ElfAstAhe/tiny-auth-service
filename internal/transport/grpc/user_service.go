@@ -13,6 +13,8 @@ type UserGRPCService struct {
 	userFacade facade.UserFacade
 }
 
+var _ pb.UserServiceServer = (*UserGRPCService)(nil)
+
 func NewUserGRPCService(userFacade facade.UserFacade) *UserGRPCService {
 	return &UserGRPCService{
 		userFacade: userFacade,

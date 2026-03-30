@@ -14,6 +14,8 @@ type UserAdminMetricsRepository struct {
 	repo domain.UserAdminRepository
 }
 
+var _ domain.UserAdminRepository = (*UserAdminMetricsRepository)(nil)
+
 func NewUserAdminMetricsRepository(repo domain.UserAdminRepository) *UserAdminMetricsRepository {
 	return &UserAdminMetricsRepository{
 		repo:                      repo,

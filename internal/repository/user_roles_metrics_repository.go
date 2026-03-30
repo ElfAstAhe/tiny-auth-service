@@ -10,6 +10,8 @@ type UserRolesMetricsRepository struct {
 	repo domain.UserRolesRepository
 }
 
+var _ domain.UserRolesRepository = (*UserRolesMetricsRepository)(nil)
+
 func NewUserRolesMetricsRepository(repo domain.UserRolesRepository) *UserRolesMetricsRepository {
 	return &UserRolesMetricsRepository{
 		repo:                       repo,

@@ -18,6 +18,8 @@ type RoleAdminListInteractor struct {
 	maxListLimit int
 }
 
+var _ RoleAdminListUseCase = (*RoleAdminListInteractor)(nil)
+
 func NewRoleAdminListUseCase(roleRepo domain.RoleAdminRepository, maxListLimit int) *RoleAdminListInteractor {
 	return &RoleAdminListInteractor{
 		roleRepo:     roleRepo,

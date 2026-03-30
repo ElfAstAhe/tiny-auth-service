@@ -17,6 +17,8 @@ type UserAdminSaveTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.UserAdminSaveUseCase = (*UserAdminSaveTraceInteractor)(nil)
+
 func NewUserAdminSaveTraceUseCase(ucName string, next usecase.UserAdminSaveUseCase) *UserAdminSaveTraceInteractor {
 	return &UserAdminSaveTraceInteractor{
 		next:          next,

@@ -55,6 +55,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  RegisterDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   RoleDTO:
     description: Role DTO
     properties:
@@ -568,6 +575,38 @@ paths:
       summary: Аутентификация
       tags:
       - auth
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация пользователя
+      parameters:
+      - description: register информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/RegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ProfileDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Уже существует
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Регистрация
+      tags:
+      - user
   /api/v1/users/keys:
     put:
       description: Изменение атрибутов роли

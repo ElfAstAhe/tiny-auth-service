@@ -17,6 +17,8 @@ type ProfileTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.ProfileUseCase = (*ProfileTraceInteractor)(nil)
+
 func NewProfileTraceUseCase(ucName string, next usecase.ProfileUseCase) *ProfileTraceInteractor {
 	return &ProfileTraceInteractor{
 		spanName:      fmt.Sprintf("%s.Get", ucName),

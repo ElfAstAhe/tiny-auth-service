@@ -12,6 +12,8 @@ type AuthGRPCService struct {
 	authFacade facade.AuthFacade
 }
 
+var _ pb.AuthServiceServer = (*AuthGRPCService)(nil)
+
 func NewAuthGRPCService(authFacade facade.AuthFacade) *AuthGRPCService {
 	return &AuthGRPCService{
 		authFacade: authFacade,

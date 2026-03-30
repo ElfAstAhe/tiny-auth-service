@@ -24,6 +24,8 @@ type ChangePasswordInteractor struct {
 	userRepo   domain.UserRepository
 }
 
+var _ ChangePasswordUseCase = (*ChangePasswordInteractor)(nil)
+
 func NewChangePasswordUseCase(hashCipher utils.Cipher, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangePasswordInteractor {
 	return &ChangePasswordInteractor{
 		hashCipher: hashCipher,

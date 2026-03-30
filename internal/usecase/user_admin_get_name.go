@@ -19,6 +19,8 @@ type UserAdminGetNameInteractor struct {
 	userRepo domain.UserAdminRepository
 }
 
+var _ UserAdminGetNameUseCase = (*UserAdminGetNameInteractor)(nil)
+
 func NewUserAdminGetNameUseCase(userRepo domain.UserAdminRepository) *UserAdminGetNameInteractor {
 	return &UserAdminGetNameInteractor{
 		userRepo: userRepo,

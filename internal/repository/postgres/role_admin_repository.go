@@ -91,6 +91,8 @@ type RoleAdminPgRepository struct {
 	userRolesRepo domain.UserRolesAdminRepository
 }
 
+var _ domain.RoleAdminRepository = (*RoleAdminPgRepository)(nil)
+
 func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RoleAdminPgRepository, error) {
 	// new instance
 	res := &RoleAdminPgRepository{}

@@ -712,6 +712,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/user/register": {
+            "post": {
+                "description": "Регистрация пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Регистрация",
+                "parameters": [
+                    {
+                        "description": "register информация",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegisterDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ProfileDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Кривые данные",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "409": {
+                        "description": "Уже существует",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера (пустое тело)"
+                    }
+                }
+            }
+        },
         "/api/v1/users/keys": {
             "put": {
                 "description": "Изменение атрибутов роли",
@@ -923,6 +972,17 @@ const docTemplate = `{
                     }
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "RegisterDTO": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

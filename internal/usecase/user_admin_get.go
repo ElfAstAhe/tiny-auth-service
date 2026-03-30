@@ -19,6 +19,8 @@ type UserAdminGetInteractor struct {
 	userRepo domain.UserAdminRepository
 }
 
+var _ UserAdminGetUseCase = (*UserAdminGetInteractor)(nil)
+
 func NewUserAdminGetUseCase(userRepo domain.UserAdminRepository) *UserAdminGetInteractor {
 	return &UserAdminGetInteractor{
 		userRepo: userRepo,

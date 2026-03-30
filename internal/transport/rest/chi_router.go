@@ -3,11 +3,14 @@ package rest
 import (
 	"net/http"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
+	trmware "github.com/ElfAstAhe/tiny-auth-service/internal/transport/rest/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/hellofresh/health-go/v5"
@@ -29,9 +32,13 @@ type AppChiRouter struct {
 	roleAdminFacade facade.RoleAdminFacade
 }
 
+var _ transport.HTTPRouter = (*AppChiRouter)(nil)
+
 func NewAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
+	jwtHTTPHelper *helper.JWTHTTPHelper,
+	authHelper *auth.Helper,
 	health *health.Health,
 	healthz transport.HealthzFunc,
 	readyz transport.ReadyzFunc,
@@ -42,7 +49,7 @@ func NewAppChiRouter(
 ) *AppChiRouter {
 	res := &AppChiRouter{
 		router:          chi.NewRouter(),
-		log:             logger,
+		log:             logger.GetLogger("app-chi-router"),
 		config:          config,
 		health:          health,
 		healthz:         healthz,
@@ -54,7 +61,7 @@ func NewAppChiRouter(
 	}
 
 	// setup middleware
-	res.setupMiddleware(logger)
+	res.setupMiddleware(jwtHTTPHelper, authHelper, logger)
 
 	// mount debug
 	res.router.Mount("/debug", middleware.Profiler())
@@ -75,7 +82,11 @@ func (cr *AppChiRouter) GetRouter() http.Handler {
 	return cr.router
 }
 
-func (cr *AppChiRouter) setupMiddleware(logger logger.Logger) {
+func (cr *AppChiRouter) setupMiddleware(
+	jwtHTTPHelper *helper.JWTHTTPHelper,
+	authHelper *auth.Helper,
+	logger logger.Logger,
+) {
 	// tracing
 	cr.router.Use(otelchi.Middleware(cr.config.Telemetry.ServiceName, otelchi.WithChiRoutes(cr.router)))
 	// metrics
@@ -95,7 +106,7 @@ func (cr *AppChiRouter) setupMiddleware(logger logger.Logger) {
 	// decompress
 	cr.router.Use(libmware.NewHTTPDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
 	// jwt auth extractor - extract user info from token
-	// .. cr.router.Use(appmware.NewAuthExtractorMiddleware(cr.authHelper, cr.jwtHTTPHelper, logger).Handle)
+	cr.router.Use(trmware.NewSubjectExtractorMiddleware(jwtHTTPHelper, authHelper, logger).Handle)
 	// income/outcome logger
 	cr.router.Use(libmware.NewHTTPRequestLogger(logger).Handle)
 }
@@ -122,6 +133,9 @@ func (cr *AppChiRouter) setupRoutes() {
 			// users sub-router
 			r.Route("/users", func(r chi.Router) {
 				r.Get("/profile", cr.getAPIV1UserProfile)
+				if cr.config.App.Env != config.AppEnvProduction {
+					r.Post("/register", cr.postAPIV1UserRegister)
+				}
 				r.Put("/password", cr.putAPIV1UserChangePassword)
 				r.Put("/keys", cr.putAPIV1UserChangeKeys)
 			})

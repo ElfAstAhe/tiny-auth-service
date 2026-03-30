@@ -14,6 +14,8 @@ type RoleAdminGRPCService struct {
 	roleAdminFacade facade.RoleAdminFacade
 }
 
+var _ pb.AdminRolesServiceServer = (*RoleAdminGRPCService)(nil)
+
 func NewRoleAdminGRPCService(roleAdminFacade facade.RoleAdminFacade) *RoleAdminGRPCService {
 	return &RoleAdminGRPCService{
 		roleAdminFacade: roleAdminFacade,

@@ -19,6 +19,8 @@ type ProfileInteractor struct {
 	userRepo domain.UserRepository
 }
 
+var _ ProfileUseCase = (*ProfileInteractor)(nil)
+
 func NewProfileUseCase(userRepo domain.UserRepository) *ProfileInteractor {
 	return &ProfileInteractor{
 		userRepo: userRepo,

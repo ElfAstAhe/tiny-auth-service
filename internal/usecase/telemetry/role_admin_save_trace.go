@@ -17,6 +17,8 @@ type RoleAdminSaveTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.RoleAdminSaveUseCase = (*RoleAdminSaveTraceInteractor)(nil)
+
 func NewRoleAdminSaveTraceUseCase(ucName string, next usecase.RoleAdminSaveUseCase) *RoleAdminSaveTraceInteractor {
 	return &RoleAdminSaveTraceInteractor{
 		next:          next,

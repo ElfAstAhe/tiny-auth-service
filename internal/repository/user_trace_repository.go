@@ -15,6 +15,8 @@ type UserTraceRepository struct {
 	repo domain.UserRepository
 }
 
+var _ domain.UserRepository = (*UserTraceRepository)(nil)
+
 func NewUserTraceRepository(repo domain.UserRepository) *UserTraceRepository {
 	return &UserTraceRepository{
 		repo:                    repo,

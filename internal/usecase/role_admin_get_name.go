@@ -18,6 +18,8 @@ type RoleAdminGetNameInteractor struct {
 	roleRepo domain.RoleAdminRepository
 }
 
+var _ RoleAdminGetNameUseCase = (*RoleAdminGetNameInteractor)(nil)
+
 func NewRoleAdminGetNameUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminGetNameInteractor {
 	return &RoleAdminGetNameInteractor{
 		roleRepo: roleRepo,

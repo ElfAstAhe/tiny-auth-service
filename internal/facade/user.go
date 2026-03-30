@@ -12,6 +12,7 @@ import (
 )
 
 type UserFacade interface {
+	Register(ctx context.Context, register *dto.RegisterDTO) (*dto.ProfileDTO, error)
 	Profile(ctx context.Context) (*dto.ProfileDTO, error)
 	ChangePassword(ctx context.Context, changePassword *dto.ChangePasswordDTO) error
 	ChangeKeys(ctx context.Context) (*dto.ChangedKeysDTO, error)
@@ -19,18 +20,37 @@ type UserFacade interface {
 
 type UserFacadeImpl struct {
 	authHelper       *auth.Helper
+	registerUC       usecase.RegisterUseCase
 	profileUC        usecase.ProfileUseCase
 	changePasswordUC usecase.ChangePasswordUseCase
 	changeKeysUC     usecase.ChangeKeysUseCase
 }
 
-func NewUserFacade(authHelper *auth.Helper, profileUC usecase.ProfileUseCase, changePasswordUC usecase.ChangePasswordUseCase, changeKeysUC usecase.ChangeKeysUseCase) *UserFacadeImpl {
+var _ UserFacade = (*UserFacadeImpl)(nil)
+
+func NewUserFacade(
+	authHelper *auth.Helper,
+	registerUC usecase.RegisterUseCase,
+	profileUC usecase.ProfileUseCase,
+	changePasswordUC usecase.ChangePasswordUseCase,
+	changeKeysUC usecase.ChangeKeysUseCase,
+) *UserFacadeImpl {
 	return &UserFacadeImpl{
 		authHelper:       authHelper,
+		registerUC:       registerUC,
 		profileUC:        profileUC,
 		changePasswordUC: changePasswordUC,
 		changeKeysUC:     changeKeysUC,
 	}
+}
+
+func (uf *UserFacadeImpl) Register(ctx context.Context, register *dto.RegisterDTO) (*dto.ProfileDTO, error) {
+	res, err := uf.registerUC.Register(ctx, register.Username, register.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.MapUserModelToProfileDTO(res), nil
 }
 
 func (uf *UserFacadeImpl) Profile(ctx context.Context) (*dto.ProfileDTO, error) {

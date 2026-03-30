@@ -15,6 +15,8 @@ type RoleTraceRepository struct {
 	repo domain.RoleRepository
 }
 
+var _ domain.RoleRepository = (*RoleTraceRepository)(nil)
+
 func NewRoleTraceRepository(repo domain.RoleRepository) *RoleTraceRepository {
 	return &RoleTraceRepository{
 		repo:                    repo,

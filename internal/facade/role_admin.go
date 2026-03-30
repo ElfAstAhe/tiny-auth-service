@@ -33,6 +33,8 @@ type RoleAdminFacadeImpl struct {
 	maxListLimit int
 }
 
+var _ RoleAdminFacade = (*RoleAdminFacadeImpl)(nil)
+
 func NewRoleAdminFacade(
 	authHelper *auth.Helper,
 	getUC usecase.RoleAdminGetUseCase,

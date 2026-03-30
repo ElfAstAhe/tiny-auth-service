@@ -19,6 +19,8 @@ type RoleAdminGetInteractor struct {
 	roleRepo domain.RoleAdminRepository
 }
 
+var _ RoleAdminGetUseCase = (*RoleAdminGetInteractor)(nil)
+
 func NewRoleAdminGetUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminGetInteractor {
 	return &RoleAdminGetInteractor{
 		roleRepo: roleRepo,

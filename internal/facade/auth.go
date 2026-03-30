@@ -22,6 +22,8 @@ type AuthFacadeImpl struct {
 	loginSimpleUC usecase.LoginSimpleUseCase
 }
 
+var _ AuthFacade = (*AuthFacadeImpl)(nil)
+
 func NewAuthFacade(jwtHelper *helper.JWTHelper, loginUC usecase.LoginUseCase, loginSimpleUC usecase.LoginSimpleUseCase) *AuthFacadeImpl {
 	return &AuthFacadeImpl{
 		jwtHelper:     jwtHelper,

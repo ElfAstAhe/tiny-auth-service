@@ -24,6 +24,8 @@ type UserAdminSaveInteractor struct {
 	userRepo   domain.UserAdminRepository
 }
 
+var _ UserAdminSaveUseCase = (*UserAdminSaveInteractor)(nil)
+
 func NewUserAdminSaveUseCase(tm usecase.TransactionManager, hashCipher utils.Cipher, keysHelper helper.RSAKeys, userRepo domain.UserAdminRepository) *UserAdminSaveInteractor {
 	return &UserAdminSaveInteractor{
 		tm:         tm,
