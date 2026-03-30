@@ -25,6 +25,8 @@ func (cr *AppChiRouter) getAPIV1UserProfile(rw http.ResponseWriter, r *http.Requ
 
 	res, err := cr.userFacade.Profile(r.Context())
 	if err != nil {
+		cr.log.Errorf("getAPIV1UserProfile err: [%v]", err)
+
 		cr.renderError(rw, err)
 
 		return
