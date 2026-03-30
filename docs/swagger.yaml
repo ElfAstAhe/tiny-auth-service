@@ -606,7 +606,7 @@ paths:
           description: Внутренняя ошибка сервера (пустое тело)
       summary: Регистрация
       tags:
-      - user
+      - profile
   /api/v1/users/keys:
     put:
       description: Изменение атрибутов роли

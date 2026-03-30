@@ -10,7 +10,7 @@ import (
 // postAPIV1UserRegister godoc
 // @Summary      Регистрация
 // @Description  Регистрация пользователя
-// @Tags         user
+// @Tags         profile
 // @Accept       json
 // @Produce      json
 // @Param        input  body      RegisterDTO  true  "register информация"

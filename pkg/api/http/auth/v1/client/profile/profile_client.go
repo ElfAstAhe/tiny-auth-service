@@ -58,6 +58,8 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error)
 
+	PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error)
+
 	PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error)
 
 	PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error)
@@ -107,6 +109,51 @@ func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts .
 	//
 	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetAPIV1UsersProfile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+PostAPIV1UserRegister регистрацияs
+
+Регистрация пользователя
+*/
+func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewPostAPIV1UserRegisterParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "PostAPIV1UserRegister",
+		Method:             "POST",
+		PathPattern:        "/api/v1/user/register",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &PostAPIV1UserRegisterReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*PostAPIV1UserRegisterOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for PostAPIV1UserRegister: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
