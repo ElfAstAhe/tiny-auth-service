@@ -106,7 +106,7 @@ func (cr *AppChiRouter) setupMiddleware(
 	// decompress
 	cr.router.Use(libmware.NewHTTPDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
 	// jwt auth extractor - extract user info from token
-	cr.router.Use(trmware.NewSubjectExtractorMiddleware(
+	cr.router.Use(trmware.NewAuthExtractor(
 		transport.NewHTTPPathMatchers([]*transport.HTTPPathMatcher{
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth", "/api/v1/auth"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),

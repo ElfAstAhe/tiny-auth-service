@@ -9,20 +9,20 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 )
 
-type SubjectExtractor struct {
+type AuthExtractor struct {
 	jwtHTTPHelper  *helper.JWTHTTPHelper
 	authHelper     *auth.Helper
 	log            logger.Logger
 	ignorancePaths *transport.HTTPPathMatchers
 }
 
-func NewSubjectExtractorMiddleware(
+func NewAuthExtractor(
 	ignorancePaths *transport.HTTPPathMatchers,
 	jwtHTTPHelper *helper.JWTHTTPHelper,
 	authHelper *auth.Helper,
 	logger logger.Logger,
-) *SubjectExtractor {
-	return &SubjectExtractor{
+) *AuthExtractor {
+	return &AuthExtractor{
 		ignorancePaths: ignorancePaths,
 		jwtHTTPHelper:  jwtHTTPHelper,
 		authHelper:     authHelper,
@@ -30,23 +30,24 @@ func NewSubjectExtractorMiddleware(
 	}
 }
 
-func (je *SubjectExtractor) Handle(next http.Handler) http.Handler {
+func (aem *AuthExtractor) Handle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		je.log.Info("AuthExtractorMiddleware.Handle start")
-		defer je.log.Info("AuthExtractorMiddleware.Handle finish")
+		aem.log.Debug("AuthExtractorMiddleware.Handle start")
+		defer aem.log.Debug("AuthExtractorMiddleware.Handle finish")
 
 		// check for ignorance
-		if je.ignorancePaths.Match(r.Method, r.RequestURI) {
+		if aem.ignorancePaths.Match(r.Method, r.RequestURI) {
 			next.ServeHTTP(rw, r)
 
 			return
 		}
 
 		// here and so on we extract subject and gen 401 or continue pipeline
+		// ToDo: check for header and check for cookies in future
 		// extract subject
-		subj, err := je.authHelper.SubjectFromHTTPRequest(r)
+		subj, err := aem.authHelper.SubjectFromHTTPRequest(r)
 		if err != nil {
-			je.log.Errorf("AuthExtractorMiddleware.Handle error [%v]", err)
+			aem.log.Errorf("AuthExtractorMiddleware.Handle error [%v]", err)
 
 			http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 
