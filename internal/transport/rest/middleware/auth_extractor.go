@@ -11,7 +11,7 @@ import (
 
 type AuthExtractor struct {
 	jwtHTTPHelper  *helper.JWTHTTPHelper
-	authHelper     *auth.Helper
+	authHelper     auth.Helper
 	log            logger.Logger
 	ignorancePaths *transport.HTTPPathMatchers
 }
@@ -19,7 +19,7 @@ type AuthExtractor struct {
 func NewAuthExtractor(
 	ignorancePaths *transport.HTTPPathMatchers,
 	jwtHTTPHelper *helper.JWTHTTPHelper,
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	logger logger.Logger,
 ) *AuthExtractor {
 	return &AuthExtractor{

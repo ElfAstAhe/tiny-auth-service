@@ -37,7 +37,7 @@ type App struct {
 	jwtHelper     *helper.JWTHelper
 	jwtHTTPHelper *helper.JWTHTTPHelper
 	jwtGRPCHelper *helper.JWTGRPCHelper
-	authHelper    *auth.Helper
+	authHelper    auth.Helper
 
 	// DB
 	db db.DB

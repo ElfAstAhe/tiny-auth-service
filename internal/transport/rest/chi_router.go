@@ -38,7 +38,7 @@ func NewAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
 	jwtHTTPHelper *helper.JWTHTTPHelper,
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	health *health.Health,
 	healthz transport.HealthzFunc,
 	readyz transport.ReadyzFunc,
@@ -84,7 +84,7 @@ func (cr *AppChiRouter) GetRouter() http.Handler {
 
 func (cr *AppChiRouter) setupMiddleware(
 	jwtHTTPHelper *helper.JWTHTTPHelper,
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	logger logger.Logger,
 ) {
 	// tracing

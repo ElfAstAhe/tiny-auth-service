@@ -60,7 +60,8 @@ func (app *App) initHelpers() error {
 	// jwt gRPC helper
 	app.jwtGRPCHelper = helper.NewJWTGRPCHelper(app.jwtHelper)
 	// auth helper
-	app.authHelper = auth.NewAuthHelper(
+	app.authHelper = auth.NewHelper(
+		auth.DefaultHeaderName,
 		auth.DefaultCookieName,
 		auth.DefaultMetadataName,
 		app.jwtHelper,

@@ -21,7 +21,7 @@ type LoginUseCase interface {
 type LoginInteractor struct {
 	hashCipher utils.Cipher
 	keysHelper helper.RSAKeys
-	authHelper *auth.Helper
+	authHelper auth.Helper
 	userRepo   domain.UserRepository
 	// нотификация о логине пользователя (например аудит)
 	// ...
@@ -36,7 +36,7 @@ var _ LoginUseCase = (*LoginInteractor)(nil)
 //   - keysHelper: помощник для работы с RSA ключами
 //   - authHelper: логика генерации токенов
 //   - userRepo: репозиторий для доступа к данным пользователя
-func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
+func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
 	return &LoginInteractor{
 		hashCipher: hashCipher,
 		keysHelper: keysHelper,

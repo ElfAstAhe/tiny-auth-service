@@ -3,7 +3,7 @@ module github.com/ElfAstAhe/tiny-auth-service
 go 1.25.6
 
 require (
-	github.com/ElfAstAhe/go-service-template v0.0.31
+	github.com/ElfAstAhe/go-service-template v0.0.32
 	github.com/XSAM/otelsql v0.41.0
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-openapi/errors v0.22.7

@@ -24,7 +24,7 @@ type UserAdminFacade interface {
 }
 
 type UserAdminFacadeImpl struct {
-	authHelper   *auth.Helper
+	authHelper   auth.Helper
 	getUC        usecase.UserAdminGetUseCase
 	getByNameUC  usecase.UserAdminGetNameUseCase
 	listUC       usecase.UserAdminListUseCase
@@ -36,7 +36,7 @@ type UserAdminFacadeImpl struct {
 var _ UserAdminFacade = (*UserAdminFacadeImpl)(nil)
 
 func NewUserAdminFacade(
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	getUC usecase.UserAdminGetUseCase,
 	getByNameUC usecase.UserAdminGetNameUseCase,
 	listUC usecase.UserAdminListUseCase,

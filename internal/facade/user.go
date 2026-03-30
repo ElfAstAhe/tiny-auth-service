@@ -19,7 +19,7 @@ type UserFacade interface {
 }
 
 type UserFacadeImpl struct {
-	authHelper       *auth.Helper
+	authHelper       auth.Helper
 	registerUC       usecase.RegisterUseCase
 	profileUC        usecase.ProfileUseCase
 	changePasswordUC usecase.ChangePasswordUseCase
@@ -29,7 +29,7 @@ type UserFacadeImpl struct {
 var _ UserFacade = (*UserFacadeImpl)(nil)
 
 func NewUserFacade(
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	registerUC usecase.RegisterUseCase,
 	profileUC usecase.ProfileUseCase,
 	changePasswordUC usecase.ChangePasswordUseCase,

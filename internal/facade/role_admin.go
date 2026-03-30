@@ -24,7 +24,7 @@ type RoleAdminFacade interface {
 }
 
 type RoleAdminFacadeImpl struct {
-	authHelper   *auth.Helper
+	authHelper   auth.Helper
 	getUC        usecase.RoleAdminGetUseCase
 	getByNameUC  usecase.RoleAdminGetUseCase
 	listUC       usecase.RoleAdminListUseCase
@@ -36,7 +36,7 @@ type RoleAdminFacadeImpl struct {
 var _ RoleAdminFacade = (*RoleAdminFacadeImpl)(nil)
 
 func NewRoleAdminFacade(
-	authHelper *auth.Helper,
+	authHelper auth.Helper,
 	getUC usecase.RoleAdminGetUseCase,
 	getByNameUC usecase.RoleAdminGetUseCase,
 	listUC usecase.RoleAdminListUseCase,
