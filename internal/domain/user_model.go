@@ -3,8 +3,8 @@ package domain
 import (
 	"time"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
-	"github.com/google/uuid"
 )
 
 type User struct {
@@ -20,6 +20,9 @@ type User struct {
 
 	Roles []*Role
 }
+
+var _ domain.Entity[string] = (*User)(nil)
+var _ domain.SoftDeleteEntity[bool] = (*User)(nil)
 
 func NewEmptyUser() *User {
 	return &User{
@@ -67,12 +70,10 @@ func (u *User) IsDeleted() bool {
 }
 
 func (u *User) BeforeCreate() error {
-	newID, err := uuid.NewRandom()
-	if err != nil {
-		return errs.NewBllError("User.BeforeCreate", "generate new id", err)
+	if err := defaultBeforeCreate(u); err != nil {
+		return errs.NewBllError("User.BeforeCreate", "default before create failed", err)
 	}
 
-	u.ID = newID.String()
 	if u.CreatedAt.IsZero() {
 		u.CreatedAt = time.Now()
 	}
