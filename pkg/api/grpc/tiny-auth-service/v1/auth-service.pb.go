@@ -252,9 +252,10 @@ const file_tiny_auth_service_v1_auth_service_proto_rawDesc = "" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"N\n" +
 	"\x11AuthLoginResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2W\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\xa7\x01\n" +
 	"\vAuthService\x12H\n" +
-	"\x05Login\x12\x1e.auth.service.AuthLoginRequest\x1a\x1f.auth.service.AuthLoginResponseB*Z(tiny-auth-service/grpc/tiny-auth-serviceb\beditionsp\xe8\a"
+	"\x05Login\x12\x1e.auth.service.AuthLoginRequest\x1a\x1f.auth.service.AuthLoginResponse\x12N\n" +
+	"\vLoginSimple\x12\x1e.auth.service.AuthLoginRequest\x1a\x1f.auth.service.AuthLoginResponseB*Z(tiny-auth-service/grpc/tiny-auth-serviceb\beditionsp\xe8\a"
 
 var file_tiny_auth_service_v1_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_tiny_auth_service_v1_auth_service_proto_goTypes = []any{
@@ -263,9 +264,11 @@ var file_tiny_auth_service_v1_auth_service_proto_goTypes = []any{
 }
 var file_tiny_auth_service_v1_auth_service_proto_depIdxs = []int32{
 	0, // 0: auth.service.AuthService.Login:input_type -> auth.service.AuthLoginRequest
-	1, // 1: auth.service.AuthService.Login:output_type -> auth.service.AuthLoginResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 1: auth.service.AuthService.LoginSimple:input_type -> auth.service.AuthLoginRequest
+	1, // 2: auth.service.AuthService.Login:output_type -> auth.service.AuthLoginResponse
+	1, // 3: auth.service.AuthService.LoginSimple:output_type -> auth.service.AuthLoginResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

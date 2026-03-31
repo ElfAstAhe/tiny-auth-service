@@ -28,3 +28,12 @@ func (as *AuthGRPCService) Login(ctx context.Context, req *pb.AuthLoginRequest) 
 
 	return MapLoginRespDTOToGRPC(dtoRes), nil
 }
+
+func (as *AuthGRPCService) LoginSimple(ctx context.Context, req *pb.AuthLoginRequest) (*pb.AuthLoginResponse, error) {
+	dtoRes, err := as.authFacade.LoginSimple(ctx, MapLoginReqGRPCToDTO(req))
+	if err != nil {
+		return nil, MapToGrpcError(err)
+	}
+
+	return MapLoginRespDTOToGRPC(dtoRes), nil
+}

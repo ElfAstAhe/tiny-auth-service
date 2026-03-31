@@ -5,6 +5,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc/interceptor"
 	pb "github.com/ElfAstAhe/tiny-auth-service/pkg/api/grpc/tiny-auth-service/v1"
 	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -83,6 +84,7 @@ func (app *App) initGRPCServer() error {
 		return status.Errorf(codes.Internal, "%s", p)
 	}
 
+	authExtractor := interceptor.NewAuthExtractor(app.authHelper, app.logger)
 	// Собираем опции сервера
 	opts := []grpc.ServerOption{
 		// keepalive
@@ -97,6 +99,7 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			authExtractor.UnaryServerInterceptor,
 			recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),
 		grpc.ChainStreamInterceptor(
@@ -104,6 +107,7 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			authExtractor.StreamServerInterceptor,
 			recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),
 	}

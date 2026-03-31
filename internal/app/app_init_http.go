@@ -10,7 +10,6 @@ func (app *App) initHTTPRouter() error {
 	app.httpRouter = rest.NewAppChiRouter(
 		app.config,
 		app.logger,
-		app.jwtHTTPHelper,
 		app.authHelper,
 		app.health,
 		nil,

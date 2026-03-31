@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Login_FullMethodName = "/auth.service.AuthService/Login"
+	AuthService_Login_FullMethodName       = "/auth.service.AuthService/Login"
+	AuthService_LoginSimple_FullMethodName = "/auth.service.AuthService/LoginSimple"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -28,6 +29,8 @@ const (
 type AuthServiceClient interface {
 	// login
 	Login(ctx context.Context, in *AuthLoginRequest, opts ...grpc.CallOption) (*AuthLoginResponse, error)
+	// login simple
+	LoginSimple(ctx context.Context, in *AuthLoginRequest, opts ...grpc.CallOption) (*AuthLoginResponse, error)
 }
 
 type authServiceClient struct {
@@ -48,12 +51,24 @@ func (c *authServiceClient) Login(ctx context.Context, in *AuthLoginRequest, opt
 	return out, nil
 }
 
+func (c *authServiceClient) LoginSimple(ctx context.Context, in *AuthLoginRequest, opts ...grpc.CallOption) (*AuthLoginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AuthLoginResponse)
+	err := c.cc.Invoke(ctx, AuthService_LoginSimple_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
 type AuthServiceServer interface {
 	// login
 	Login(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error)
+	// login simple
+	LoginSimple(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -66,6 +81,9 @@ type UnimplementedAuthServiceServer struct{}
 
 func (UnimplementedAuthServiceServer) Login(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAuthServiceServer) LoginSimple(context.Context, *AuthLoginRequest) (*AuthLoginResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method LoginSimple not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -106,6 +124,24 @@ func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_LoginSimple_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).LoginSimple(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_LoginSimple_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).LoginSimple(ctx, req.(*AuthLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -116,6 +152,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _AuthService_Login_Handler,
+		},
+		{
+			MethodName: "LoginSimple",
+			Handler:    _AuthService_LoginSimple_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,13 +4,11 @@ import (
 	"net/http"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
-	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 )
 
 type AuthExtractor struct {
-	jwtHTTPHelper  *helper.JWTHTTPHelper
 	authHelper     auth.Helper
 	log            logger.Logger
 	ignorancePaths *transport.HTTPPathMatchers
@@ -18,13 +16,11 @@ type AuthExtractor struct {
 
 func NewAuthExtractor(
 	ignorancePaths *transport.HTTPPathMatchers,
-	jwtHTTPHelper *helper.JWTHTTPHelper,
 	authHelper auth.Helper,
 	logger logger.Logger,
 ) *AuthExtractor {
 	return &AuthExtractor{
 		ignorancePaths: ignorancePaths,
-		jwtHTTPHelper:  jwtHTTPHelper,
 		authHelper:     authHelper,
 		log:            logger.GetLogger("HTTP-JWT-Extractor"),
 	}
@@ -43,7 +39,6 @@ func (aem *AuthExtractor) Handle(next http.Handler) http.Handler {
 		}
 
 		// here and so on we extract subject and gen 401 or continue pipeline
-		// ToDo: check for header and check for cookies in future
 		// extract subject
 		subj, err := aem.authHelper.SubjectFromHTTPRequest(r)
 		if err != nil {

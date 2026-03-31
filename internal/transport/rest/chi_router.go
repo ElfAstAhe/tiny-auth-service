@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
-	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
@@ -37,7 +36,6 @@ var _ transport.HTTPRouter = (*AppChiRouter)(nil)
 func NewAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
-	jwtHTTPHelper *helper.JWTHTTPHelper,
 	authHelper auth.Helper,
 	health *health.Health,
 	healthz transport.HealthzFunc,
@@ -61,7 +59,7 @@ func NewAppChiRouter(
 	}
 
 	// setup middleware
-	res.setupMiddleware(jwtHTTPHelper, authHelper, logger)
+	res.setupMiddleware(authHelper, logger)
 
 	// mount debug
 	res.router.Mount("/debug", middleware.Profiler())
@@ -83,7 +81,6 @@ func (cr *AppChiRouter) GetRouter() http.Handler {
 }
 
 func (cr *AppChiRouter) setupMiddleware(
-	jwtHTTPHelper *helper.JWTHTTPHelper,
 	authHelper auth.Helper,
 	logger logger.Logger,
 ) {
@@ -112,7 +109,6 @@ func (cr *AppChiRouter) setupMiddleware(
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/users/register", "/api/v1/users/register"),
 		}),
-		jwtHTTPHelper,
 		authHelper,
 		logger,
 	).Handle)
