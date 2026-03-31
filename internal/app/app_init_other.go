@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/telemetry"
@@ -52,7 +53,21 @@ func (app *App) initHelpers() error {
 			}
 
 			return fmt.Sprintf(template, rnd.String())
-		})
+		},
+	)
+	// jwt http helper
+	app.jwtHTTPHelper = helper.NewJWTHTTPHelper(app.jwtHelper)
+	// jwt gRPC helper
+	app.jwtGRPCHelper = helper.NewJWTGRPCHelper(app.jwtHelper)
+	// auth helper
+	app.authHelper = auth.NewHelper(
+		auth.DefaultHeaderName,
+		auth.DefaultCookieName,
+		auth.DefaultMetadataName,
+		app.jwtHelper,
+		app.jwtHTTPHelper,
+		app.jwtGRPCHelper,
+	)
 
 	return nil
 }

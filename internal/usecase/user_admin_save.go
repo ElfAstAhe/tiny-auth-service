@@ -7,6 +7,8 @@ import (
 
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
@@ -16,20 +18,43 @@ type UserAdminSaveUseCase interface {
 }
 
 type UserAdminSaveInteractor struct {
-	tm       usecase.TransactionManager
-	userRepo domain.UserAdminRepository
+	tm         usecase.TransactionManager
+	keysHelper helper.RSAKeys
+	hashCipher utils.Cipher
+	userRepo   domain.UserAdminRepository
 }
 
-func NewUserAdminSaveUseCase(tm usecase.TransactionManager, userRepo domain.UserAdminRepository) *UserAdminSaveInteractor {
+var _ UserAdminSaveUseCase = (*UserAdminSaveInteractor)(nil)
+
+func NewUserAdminSaveUseCase(tm usecase.TransactionManager, hashCipher utils.Cipher, keysHelper helper.RSAKeys, userRepo domain.UserAdminRepository) *UserAdminSaveInteractor {
 	return &UserAdminSaveInteractor{
-		tm:       tm,
-		userRepo: userRepo,
+		tm:         tm,
+		keysHelper: keysHelper,
+		hashCipher: hashCipher,
+		userRepo:   userRepo,
 	}
 }
 
 func (uas *UserAdminSaveInteractor) Save(ctx context.Context, model *domain.User) (*domain.User, error) {
 	var res *domain.User
-	err := uas.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
+	var err error
+	// генерируем ключи
+	if model.PublicKey == "" || model.PrivateKey == "" {
+		model.PrivateKey, model.PublicKey, err = uas.keysHelper.Generate()
+		if err != nil {
+			return nil, domerrs.NewBllError("UserAdminSaveInteractor.Save", "generate new RSA keys failed", err)
+		}
+	}
+	//// пароль для нового пользователя
+	//if !model.IsExists() {
+	//    model.PasswordHash, err = uas.hashCipher.EncryptString(model.PasswordHash)
+	//    if err != nil {
+	//        return nil, domerrs.NewBllError("UserAdminSaveInteractor.Save", "build password hash failed", err)
+	//    }
+	//}
+
+	// сохраняем
+	err = uas.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
 		var txErr error
 		if !model.IsExists() {
 			res, txErr = uas.userRepo.Create(ctx, model)

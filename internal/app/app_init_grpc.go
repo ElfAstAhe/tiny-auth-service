@@ -5,6 +5,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc/interceptor"
 	pb "github.com/ElfAstAhe/tiny-auth-service/pkg/api/grpc/tiny-auth-service/v1"
 	grpcprom "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
@@ -20,9 +21,10 @@ import (
 )
 
 func (app *App) initGRPCService() error {
-	app.grpcAuthService = grpcsvc.NewAuthGRPCService()
-	app.grpcRoleAdminService = grpcsvc.NewRoleAdminGRPCService()
-	app.grpcUserAdminService = grpcsvc.NewUserAdminGRPCService()
+	app.grpcAuthService = grpcsvc.NewAuthGRPCService(app.authFacade)
+	app.grpcUserService = grpcsvc.NewUserGRPCService(app.userFacade)
+	app.grpcRoleAdminService = grpcsvc.NewRoleAdminGRPCService(app.roleAdminFacade)
+	app.grpcUserAdminService = grpcsvc.NewUserAdminGRPCService(app.userAdminFacade)
 
 	return nil
 }
@@ -54,6 +56,7 @@ func (app *App) initGRPCServer() error {
 		if span := trace.SpanContextFromContext(ctx); span.IsSampled() {
 			return prometheus.Labels{"traceID": span.TraceID().String()}
 		}
+
 		return nil
 	}
 	// Extract the tenant name value from gRPC metadata
@@ -81,6 +84,7 @@ func (app *App) initGRPCServer() error {
 		return status.Errorf(codes.Internal, "%s", p)
 	}
 
+	authExtractor := interceptor.NewAuthExtractor(app.authHelper, app.logger)
 	// Собираем опции сервера
 	opts := []grpc.ServerOption{
 		// keepalive
@@ -95,6 +99,7 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			authExtractor.UnaryServerInterceptor,
 			recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),
 		grpc.ChainStreamInterceptor(
@@ -102,6 +107,7 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			authExtractor.StreamServerInterceptor,
 			recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),
 	}
@@ -110,6 +116,7 @@ func (app *App) initGRPCServer() error {
 
 	// Регистрация
 	pb.RegisterAuthServiceServer(app.grpcServer, app.grpcAuthService)
+	pb.RegisterUserServiceServer(app.grpcServer, app.grpcUserService)
 	pb.RegisterAdminUsersServiceServer(app.grpcServer, app.grpcUserAdminService)
 	pb.RegisterAdminRolesServiceServer(app.grpcServer, app.grpcRoleAdminService)
 

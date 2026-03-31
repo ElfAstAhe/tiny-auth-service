@@ -1,0 +1,34 @@
+### GET resoruce (find)
+GET http://localhost:8080/api/v1/admin/roles/1
+
+### GET resource by name (find by name)
+GET http://localhost:8080/api/v1/admin/roles/search?name=guest
+
+### GET resource list (list)
+GET http://localhost:8080/api/v1/admin/roles
+
+### POST resource (create)
+POST http://localhost:8080/api/v1/admin/roles
+Content-Type: application/json
+
+{
+  "name": "test001",
+  "description": "test 001 role"
+}
+
+### PUT resource (change)
+PUT http://localhost:8080/api/v1/admin/roles/ee6a2882-8a32-479c-8988-963d6f8367c7
+Content-Type: application/json
+
+{
+  "id": "ee6a2882-8a32-479c-8988-963d6f8367c7",
+  "name": "test001 changed",
+  "description": "test 001 role changed",
+  "deleted": true,
+  "created_at": "2026-03-28T18:28:36.363786+03:00"
+}
+
+### DELETE resource (delete)
+DELETE http://localhost:8080/api/v1/admin/roles/b461e33f-4dd6-4011-abfa-731ac076df76
+
+

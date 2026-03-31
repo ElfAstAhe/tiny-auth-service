@@ -44,8 +44,8 @@ gen-mocks:
 	mockery
 
 # Сборка проекта с прокидыванием переменных
-#build: gen-proto gen-swagger gen-http-client
-build: gen-proto
+build: gen-proto gen-swagger gen-http-client
+#build: gen-proto
 	go build -ldflags "-X '$(MODULE_NAME)/internal/config.AppVersion=$(VERSION)' \
 	-X '$(MODULE_NAME)/internal/config.AppBuildTime=$(BUILD_TIME)'" \
 	-o ./bin/$(SERVER_BINARY_NAME) $(SERVER_BUILD_DIR)/main.go
@@ -57,7 +57,7 @@ build: gen-proto
 
 # Запуск проекта (сначала соберет, потом запустит)
 run: build
-	./bin/$(SERVER_BINARY_NAME) -http-address "localhost:8080" -database-dsn "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db" --jwt-secret-key "jwt-key" --cipher-key "12345" --issuer "tiny-aith-service"
+	./bin/$(SERVER_BINARY_NAME) --http-address "localhost:8080" --db-driver "postgres" --db-dsn "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db" --auth-jwt-secret "jwt-key" --app-cipher-key "12345" --app-token-issuer "tiny-aith-service" --app-max-list-limit 500
 
 # Запуск тестов
 test:

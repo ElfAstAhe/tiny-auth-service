@@ -7,9 +7,11 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
+	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 const (
@@ -75,7 +77,7 @@ insert into users (
     created_at,
     updated_at
 )
-values($1, $2, $3, $4, $5, true, false, $6, $7)
+values($1, $2, $3, $4, $5, $6, false, $7, $8)
 returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserChange string = `
@@ -103,19 +105,23 @@ where
 )
 
 type UserPgRepository struct {
-	*repository.BaseCRUDRepository[*domain.User, string]
-	userRolesRepo   domain.UserRolesRepository
-	keyCipherHelper utils.Cipher
+	*librepository.BaseCRUDRepository[*domain.User, string]
+	hashCipher    utils.Cipher
+	cipherHelper  helper.Cipher
+	userRolesRepo domain.UserRolesRepository
 }
 
+var _ domain.UserRepository = (*UserPgRepository)(nil)
+
 //goland:noinspection DuplicatedCode
-func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, keyCipherHelper utils.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
+func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, hashCipher utils.Cipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
 	res := &UserPgRepository{
-		userRolesRepo:   userRolesRepo,
-		keyCipherHelper: keyCipherHelper,
+		hashCipher:    hashCipher,
+		cipherHelper:  cipherHelper,
+		userRolesRepo: userRolesRepo,
 	}
 	// sql builders
-	queryBuilders := repository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
+	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlUserFind
 		}).
@@ -133,7 +139,7 @@ func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, keyCip
 		}).
 		Build()
 	// callbacks
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
@@ -146,10 +152,10 @@ func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, keyCip
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := repository.NewBaseCRUDRepository[*domain.User, string](
+	base, err := librepository.NewBaseCRUDRepository[*domain.User, string](
 		executor,
 		decipher,
-		repository.NewEntityInfo("users", "User"),
+		librepository.NewEntityInfo("users", "User"),
 		queryBuilders,
 		callbacks,
 	)
@@ -180,7 +186,7 @@ func (ur *UserPgRepository) FindByName(ctx context.Context, name string) (*domai
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := ur.GetHelper().Get(ctx, name)
+	res, err := ur.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlUserFindByName, name)
 	if err != nil {
 		return nil, err
 	}
@@ -228,14 +234,17 @@ func (ur *UserPgRepository) Create(ctx context.Context, user *domain.User) (*dom
 	return res, nil
 }
 
-func (ur *UserPgRepository) entityScanner(scanner repository.Scannable, dest *domain.User, params ...any) error {
-	return scanner.Scan(&dest.ID, dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+func (ur *UserPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
+	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
 func (ur *UserPgRepository) afterFind(entity *domain.User, params ...any) (*domain.User, error) {
 	if entity.IsDeleted() {
 		return nil, errs.NewDalSoftDeletedError(ur.GetHelper().GetInfo().Entity, entity.GetID())
 	}
+
+	entity.PublicKey = ur.cipherHelper.DecryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.DecryptString(entity.PrivateKey)
 
 	return entity, nil
 }
@@ -257,20 +266,31 @@ func (ur *UserPgRepository) validateCreate(entity *domain.User, params ...any) e
 }
 
 func (ur *UserPgRepository) beforeCreate(entity *domain.User, params ...any) error {
-	if err := entity.ValidateCreate(); err != nil {
+	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("UserPgRepository.beforeCreate", "before create entity", err)
 	}
 	var err error
-	entity.PublicKey, err = ur.keyCipherHelper.EncryptString(entity.PublicKey)
+	entity.PublicKey = ur.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.EncryptString(entity.PrivateKey)
+	entity.PasswordHash, err = ur.hashCipher.EncryptString(entity.PasswordHash)
 	if err != nil {
-		return errs.NewDalError("UserPgRepository.beforeCreate", "before create entity", err)
+		return errs.NewDalError("UserPgRepository.beforeCreate", "encrypt (hash) password", err)
 	}
 
 	return nil
 }
 
 func (ur *UserPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.PasswordHash, entity.CreatedAt, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetCreate()(),
+		entity.ID,
+		entity.Name,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.CreatedAt,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (ur *UserPgRepository) validateChange(entity *domain.User, params ...any) error {
@@ -282,13 +302,23 @@ func (ur *UserPgRepository) validateChange(entity *domain.User, params ...any) e
 }
 
 func (ur *UserPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
-	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetChange()(), entity.ID, entity.PasswordHash, entity.Active, entity.Deleted, entity.UpdatedAt), nil
+	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetChange()(),
+		entity.ID,
+		entity.PasswordHash,
+		entity.PublicKey,
+		entity.PrivateKey,
+		entity.Active,
+		entity.Deleted,
+		entity.UpdatedAt,
+	), nil
 }
 
 func (ur *UserPgRepository) beforeChange(entity *domain.User, params ...any) error {
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("UserPgRepository.beforeChange", "before change entity", err)
 	}
+	entity.PublicKey = ur.cipherHelper.EncryptString(entity.PublicKey)
+	entity.PrivateKey = ur.cipherHelper.EncryptString(entity.PrivateKey)
 
 	return nil
 }

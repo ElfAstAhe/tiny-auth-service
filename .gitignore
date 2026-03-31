@@ -30,9 +30,7 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
-/cmd/server/server
 /token.txt
 /vendor/
-/.run/example-service.run.xml
 /.run/
-/bin/tiny-auth-service
+/bin/

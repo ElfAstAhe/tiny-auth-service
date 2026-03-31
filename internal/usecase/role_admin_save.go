@@ -20,6 +20,8 @@ type RoleAdminSaveInteractor struct {
 	roleRepo domain.RoleAdminRepository
 }
 
+var _ RoleAdminSaveUseCase = (*RoleAdminSaveInteractor)(nil)
+
 func NewRoleAdminSaveUseCase(tm usecase.TransactionManager, roleRepo domain.RoleAdminRepository) *RoleAdminSaveInteractor {
 	return &RoleAdminSaveInteractor{
 		tm:       tm,

@@ -17,6 +17,8 @@ type LoginTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.LoginUseCase = (*LoginTraceInteractor)(nil)
+
 func NewLoginTraceUseCase(ucName string, next usecase.LoginUseCase) *LoginTraceInteractor {
 	return &LoginTraceInteractor{
 		next:          next,

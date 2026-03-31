@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/mapper"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
@@ -21,6 +24,7 @@ type RoleAdminFacade interface {
 }
 
 type RoleAdminFacadeImpl struct {
+	authHelper   auth.Helper
 	getUC        usecase.RoleAdminGetUseCase
 	getByNameUC  usecase.RoleAdminGetUseCase
 	listUC       usecase.RoleAdminListUseCase
@@ -29,7 +33,10 @@ type RoleAdminFacadeImpl struct {
 	maxListLimit int
 }
 
+var _ RoleAdminFacade = (*RoleAdminFacadeImpl)(nil)
+
 func NewRoleAdminFacade(
+	authHelper auth.Helper,
 	getUC usecase.RoleAdminGetUseCase,
 	getByNameUC usecase.RoleAdminGetUseCase,
 	listUC usecase.RoleAdminListUseCase,
@@ -38,6 +45,7 @@ func NewRoleAdminFacade(
 	maxListLimit int,
 ) *RoleAdminFacadeImpl {
 	return &RoleAdminFacadeImpl{
+		authHelper:   authHelper,
 		getUC:        getUC,
 		getByNameUC:  getByNameUC,
 		listUC:       listUC,
@@ -48,6 +56,16 @@ func NewRoleAdminFacade(
 }
 
 func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDTO, error) {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Get", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Get", "user is not an admin", err)
+	}
+
 	if strings.TrimSpace(ID) == "" {
 		return nil, errs.NewInvalidArgumentError("ID", "id is required")
 	}
@@ -61,6 +79,16 @@ func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDT
 }
 
 func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.RoleDTO, error) {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.GetByName", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.GetByName", "user is not an admin", err)
+	}
+
 	if strings.TrimSpace(name) == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is required")
 	}
@@ -74,6 +102,16 @@ func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 }
 
 func (raf *RoleAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.RoleDTO, error) {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.List", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.List", "user is not an admin", err)
+	}
+
 	if err := raf.validateList(limit, offset); err != nil {
 		return nil, err
 	}
@@ -101,6 +139,16 @@ func (raf *RoleAdminFacadeImpl) validateList(limit, offset int) error {
 }
 
 func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (*dto.RoleDTO, error) {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Create", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Create", "user is not an admin", err)
+	}
+
 	if role == nil {
 		return nil, errs.NewInvalidArgumentError("role", "is required")
 	}
@@ -108,7 +156,6 @@ func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (
 	model := mapper.MapRoleDTOToModel(role)
 	model.ID = ""
 
-	var err error
 	model, err = raf.saveUC.Save(ctx, model)
 	if err != nil {
 		return nil, err
@@ -118,6 +165,16 @@ func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (
 }
 
 func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto.RoleDTO) (*dto.RoleDTO, error) {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Change", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Change", "user is not an admin", err)
+	}
+
 	if role == nil {
 		return nil, errs.NewInvalidArgumentError("role", "is required")
 	}
@@ -125,7 +182,6 @@ func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto
 	model := mapper.MapRoleDTOToModel(role)
 	model.ID = ID
 
-	var err error
 	model, err = raf.saveUC.Save(ctx, model)
 	if err != nil {
 		return nil, err
@@ -135,6 +191,16 @@ func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto
 }
 
 func (raf *RoleAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
+	// subject
+	subj, err := raf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Delete", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return domerrs.NewBllForbiddenError("RoleAdminFacadeImpl.Delete", "user is not an admin", err)
+	}
+
 	if strings.TrimSpace(ID) == "" {
 		return errs.NewInvalidArgumentError("ID", "id is required")
 	}

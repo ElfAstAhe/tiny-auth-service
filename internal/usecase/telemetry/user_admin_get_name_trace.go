@@ -17,6 +17,8 @@ type UserAdminGetNameTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.UserAdminGetNameUseCase = (*UserAdminGetNameTraceInteractor)(nil)
+
 func NewUserAdminGetNameTraceUseCase(ucName string, next usecase.UserAdminGetNameUseCase) *UserAdminGetNameTraceInteractor {
 	return &UserAdminGetNameTraceInteractor{
 		next:          next,

@@ -10,13 +10,13 @@ import (
 )
 
 type Config struct {
-	App       *AppConfig
-	Auth      *config.AuthConfig
-	HTTP      *config.HTTPConfig
-	GRPC      *config.GRPCConfig
-	Log       *config.LogConfig
-	DB        *config.DBConfig
-	Telemetry *config.TelemetryConfig
+	App       *AppConfig              `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
+	Auth      *config.AuthConfig      `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
+	HTTP      *config.HTTPConfig      `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
+	GRPC      *config.GRPCConfig      `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
+	Log       *config.LogConfig       `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
+	DB        *config.DBConfig        `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
+	Telemetry *config.TelemetryConfig `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
 }
 
 // linker params

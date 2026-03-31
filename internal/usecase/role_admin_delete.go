@@ -21,6 +21,8 @@ type RoleAdminDeleteInteractor struct {
 	roleRepo domain.RoleAdminRepository
 }
 
+var _ RoleAdminDeleteUseCase = (*RoleAdminDeleteInteractor)(nil)
+
 func NewRoleAdminDeleteUseCase(tm usecase.TransactionManager, roleRepo domain.RoleAdminRepository) *RoleAdminDeleteInteractor {
 	return &RoleAdminDeleteInteractor{
 		tm:       tm,

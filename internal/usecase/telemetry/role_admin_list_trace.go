@@ -17,6 +17,8 @@ type RoleAdminListTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.RoleAdminListUseCase = (*RoleAdminListTraceInteractor)(nil)
+
 func NewRoleAdminListTraceUseCase(ucName string, next usecase.RoleAdminListUseCase) *RoleAdminListTraceInteractor {
 	return &RoleAdminListTraceInteractor{
 		next:          next,

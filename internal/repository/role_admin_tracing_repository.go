@@ -15,6 +15,8 @@ type RoleAdminTraceRepository struct {
 	repo domain.RoleAdminRepository
 }
 
+var _ domain.RoleAdminRepository = (*RoleAdminTraceRepository)(nil)
+
 func NewRoleAdminTraceRepository(repo domain.RoleAdminRepository) *RoleAdminTraceRepository {
 	return &RoleAdminTraceRepository{
 		repo:                    repo,

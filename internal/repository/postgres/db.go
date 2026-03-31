@@ -20,6 +20,10 @@ type PgDB struct {
 	conf *config.DBConfig
 }
 
+var _ db.DB = (*PgDB)(nil)
+var _ db.Executor = (*PgDB)(nil)
+var _ db.ErrorDecipher = (*PgDB)(nil)
+
 func NewPgDB(conf *config.DBConfig) (*PgDB, error) {
 	pg, err := sql.Open("pgx", conf.DSN)
 	if err != nil {

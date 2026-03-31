@@ -19,6 +19,8 @@ type UserAdminGetNameInteractor struct {
 	userRepo domain.UserAdminRepository
 }
 
+var _ UserAdminGetNameUseCase = (*UserAdminGetNameInteractor)(nil)
+
 func NewUserAdminGetNameUseCase(userRepo domain.UserAdminRepository) *UserAdminGetNameInteractor {
 	return &UserAdminGetNameInteractor{
 		userRepo: userRepo,
@@ -30,7 +32,7 @@ func (uag *UserAdminGetNameInteractor) Get(ctx context.Context, name string) (*d
 		return nil, domerrs.NewBllValidateError("UserAdminGetNameInteractor.Get", "validate income data failed", err)
 	}
 
-	res, err := uag.userRepo.Find(ctx, name)
+	res, err := uag.userRepo.FindByName(ctx, name)
 	if err != nil {
 		if errors.As(err, new(*errs.DalNotFoundError)) {
 			return nil, domerrs.NewBllNotFoundError("UserAdminGetNameInteractor.Get", "User", name, err)

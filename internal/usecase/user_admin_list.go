@@ -18,6 +18,8 @@ type UserAdminListInteractor struct {
 	maxListLimit int
 }
 
+var _ UserAdminListUseCase = (*UserAdminListInteractor)(nil)
+
 func NewUserAdminListUseCase(userRepo domain.UserAdminRepository, maxListLimit int) *UserAdminListInteractor {
 	res := &UserAdminListInteractor{
 		userRepo:     userRepo,

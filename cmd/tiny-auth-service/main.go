@@ -10,6 +10,19 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 )
 
+// @title           Auth Service API
+// @version         1.0
+// @description     Сервис аутентификации
+// @termsOfService  Free use
+
+// @contact.name   API Support
+// @contact.url    https://github.com/ElfAstAhe/tiny-auth-service
+// @contact.email  elf.ast.ahe@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org
+
+// @BasePath  /
 func main() {
 	var err error
 	// 0. startup logger

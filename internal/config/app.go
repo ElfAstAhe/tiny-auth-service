@@ -6,10 +6,10 @@ import (
 
 // AppConfig — метаданные сервиса
 type AppConfig struct {
-	Env          AppEnv `mapstructure:"env"` // dev, prod, test
-	MaxListLimit int    `mapstructure:"max_list_limit"`
-	TokenIssuer  string `mapstructure:"token_issuer"`
-	CipherKey    string `mapstructure:"cipher_key"`
+	Env          AppEnv `mapstructure:"env" json:"env,omitempty" yaml:"env,omitempty"` // dev, prod, test
+	MaxListLimit int    `mapstructure:"max_list_limit" json:"max_list_limit,omitempty" yaml:"max_list_limit,omitempty"`
+	TokenIssuer  string `mapstructure:"token_issuer" json:"token_issuer,omitempty" yaml:"token_issuer,omitempty"`
+	CipherKey    string `mapstructure:"cipher_key" json:"cipher_key,omitempty" yaml:"cipher_key,omitempty"`
 }
 
 func NewAppConfig(env AppEnv, maxListLimit int, tokenIssuer string, cipherKey string) *AppConfig {

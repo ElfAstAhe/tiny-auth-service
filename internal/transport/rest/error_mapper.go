@@ -36,5 +36,10 @@ func mapToHTTPStatus(err error) int {
 		return http.StatusConflict
 	}
 
+	// 410 Gone
+	if transport.IsGone(err) {
+		return http.StatusGone
+	}
+
 	return http.StatusInternalServerError
 }

@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/mapper"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
@@ -21,6 +24,7 @@ type UserAdminFacade interface {
 }
 
 type UserAdminFacadeImpl struct {
+	authHelper   auth.Helper
 	getUC        usecase.UserAdminGetUseCase
 	getByNameUC  usecase.UserAdminGetNameUseCase
 	listUC       usecase.UserAdminListUseCase
@@ -29,7 +33,10 @@ type UserAdminFacadeImpl struct {
 	maxListLimit int
 }
 
+var _ UserAdminFacade = (*UserAdminFacadeImpl)(nil)
+
 func NewUserAdminFacade(
+	authHelper auth.Helper,
 	getUC usecase.UserAdminGetUseCase,
 	getByNameUC usecase.UserAdminGetNameUseCase,
 	listUC usecase.UserAdminListUseCase,
@@ -38,6 +45,7 @@ func NewUserAdminFacade(
 	maxListLimit int,
 ) *UserAdminFacadeImpl {
 	return &UserAdminFacadeImpl{
+		authHelper:   authHelper,
 		getUC:        getUC,
 		getByNameUC:  getByNameUC,
 		listUC:       listUC,
@@ -48,6 +56,16 @@ func NewUserAdminFacade(
 }
 
 func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDTO, error) {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "user is not an admin", err)
+	}
+
 	if strings.TrimSpace(ID) == "" {
 		return nil, errs.NewInvalidArgumentError("ID", "id is required")
 	}
@@ -61,6 +79,16 @@ func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDT
 }
 
 func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.UserDTO, error) {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "user is not an admin", err)
+	}
+
 	if strings.TrimSpace(name) == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is required")
 	}
@@ -74,6 +102,16 @@ func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 }
 
 func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.UserDTO, error) {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "user is not an admin", err)
+	}
+
 	if err := uaf.validateList(limit, offset); err != nil {
 		return nil, err
 	}
@@ -101,6 +139,16 @@ func (uaf *UserAdminFacadeImpl) validateList(limit, offset int) error {
 }
 
 func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (*dto.UserDTO, error) {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "user is not an admin", err)
+	}
+
 	if user == nil {
 		return nil, errs.NewInvalidArgumentError("user", "is required")
 	}
@@ -108,7 +156,6 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (
 	model := mapper.MapUserDTOToModel(user)
 	model.ID = ""
 
-	var err error
 	model, err = uaf.saveUC.Save(ctx, model)
 	if err != nil {
 		return nil, err
@@ -118,6 +165,16 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (
 }
 
 func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto.UserDTO) (*dto.UserDTO, error) {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "user is not an admin", err)
+	}
+
 	if user == nil {
 		return nil, errs.NewInvalidArgumentError("user", "is required")
 	}
@@ -125,7 +182,6 @@ func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto
 	model := mapper.MapUserDTOToModel(user)
 	model.ID = ID
 
-	var err error
 	model, err = uaf.saveUC.Save(ctx, model)
 	if err != nil {
 		return nil, err
@@ -135,9 +191,19 @@ func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto
 }
 
 func (uaf *UserAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
+	// subject
+	subj, err := uaf.authHelper.SubjectFromContext(ctx)
+	if err != nil {
+		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "retrieve subject", err)
+	}
+	// RBAC
+	if !subj.HasRole(domain.RoleAdmin) {
+		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "user is not an admin", err)
+	}
+	// validate income
 	if strings.TrimSpace(ID) == "" {
 		return errs.NewInvalidArgumentError("ID", "id is required")
 	}
-
+	// logic
 	return uaf.deleteUC.Delete(ctx, ID)
 }

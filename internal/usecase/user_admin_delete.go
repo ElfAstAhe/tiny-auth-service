@@ -21,6 +21,8 @@ type UserAdminDeleteInteractor struct {
 	userRepo domain.UserAdminRepository
 }
 
+var _ UserAdminDeleteUseCase = (*UserAdminDeleteInteractor)(nil)
+
 func NewUserAdminDeleteUseCase(tm usecase.TransactionManager, userRepo domain.UserAdminRepository) *UserAdminDeleteInteractor {
 	return &UserAdminDeleteInteractor{
 		tm:       tm,

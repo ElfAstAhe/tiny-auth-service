@@ -16,6 +16,8 @@ type UserAdminDeleteTraceInteractor struct {
 	spanName string
 }
 
+var _ usecase.UserAdminDeleteUseCase = (*UserAdminDeleteTraceInteractor)(nil)
+
 func NewUserAdminDeleteTraceUseCase(ucName string, next usecase.UserAdminDeleteUseCase) *UserAdminDeleteTraceInteractor {
 	return &UserAdminDeleteTraceInteractor{
 		next:          next,

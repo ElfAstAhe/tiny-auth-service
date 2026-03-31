@@ -1,4 +1,694 @@
+basePath: /
+definitions:
+  ChangePasswordDTO:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  ChangedKeysDTO:
+    properties:
+      private_key:
+        type: string
+      public_key:
+        type: string
+    type: object
+  ErrorDTO:
+    description: Error dto
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  LoggedInDTO:
+    properties:
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+  LoginDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  ProfileDTO:
+    properties:
+      active:
+        type: boolean
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      public_key:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      updated_at:
+        type: string
+    type: object
+  RegisterDTO:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  RoleDTO:
+    description: Role DTO
+    properties:
+      created_at:
+        type: string
+      deleted:
+        type: boolean
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  UserDTO:
+    description: User DTO
+    properties:
+      active:
+        type: boolean
+      created_at:
+        type: string
+      deleted:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      password_hash:
+        type: string
+      private_key:
+        type: string
+      public_key:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/RoleDTO'
+        type: array
+      updated_at:
+        type: string
+    type: object
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: elf.ast.ahe@gmail.com
+    name: API Support
+    url: https://github.com/ElfAstAhe/tiny-auth-service
+  description: Сервис аутентификации
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org
+  termsOfService: Free use
+  title: Auth Service API
+  version: "1.0"
+paths:
+  /api/v1/admin/roles:
+    get:
+      description: Получить список
+      parameters:
+      - description: limit row count, max 1000
+        format: int
+        in: query
+        name: limit
+        type: integer
+      - description: offset, min 0, max n
+        format: int
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Набор ролей
+          schema:
+            items:
+              $ref: '#/definitions/RoleDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - role
+    post:
+      consumes:
+      - application/json
+      description: Сохраняет новые тестовые данные
+      parameters:
+      - description: Роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/RoleDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/RoleDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Уже существует
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Создание роли
+      tags:
+      - role
+  /api/v1/admin/roles/{id}:
+    delete:
+      description: Удаляет запись по её ID
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Запись успешно удалена, тело ответа отсутствует
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Удаление роли
+      tags:
+      - role
+    get:
+      description: Получает запись по её ID
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Роль
+          schema:
+            $ref: '#/definitions/RoleDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - role
+    put:
+      consumes:
+      - application/json
+      description: Изменение атрибутов роли
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/RoleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RoleDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Изменяет роль
+      tags:
+      - role
+  /api/v1/admin/roles/search:
+    get:
+      description: Поиск записи
+      parameters:
+      - description: name записи
+        format: string
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Роль
+          schema:
+            $ref: '#/definitions/RoleDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - role
+  /api/v1/admin/users:
+    get:
+      description: Получить список
+      parameters:
+      - description: limit row count, max 1000
+        format: int
+        in: query
+        name: limit
+        type: integer
+      - description: offset, min 0, max n
+        format: int
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Набор пользователей
+          schema:
+            items:
+              $ref: '#/definitions/UserDTO'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя
+      parameters:
+      - description: Пользователь
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/UserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/UserDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Уже существует
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Создание пользователя
+      tags:
+      - user
+  /api/v1/admin/users/{id}:
+    delete:
+      description: Удаляет запись по её ID
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Запись успешно удалена, тело ответа отсутствует
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Удаление пользователя
+      tags:
+      - user
+    get:
+      description: Получает запись по её ID
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь
+          schema:
+            $ref: '#/definitions/UserDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Изменение атрибутов пользователя
+      parameters:
+      - description: ID записи
+        format: string
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Роль
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/UserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Изменяет пользователя
+      tags:
+      - user
+  /api/v1/admin/users/search:
+    get:
+      description: Поиск записи
+      parameters:
+      - description: name записи
+        format: string
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь
+          schema:
+            $ref: '#/definitions/UserDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - user
+  /api/v1/auth:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация и авторизация пользователя
+      parameters:
+      - description: login информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoggedInDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "401":
+          description: Не авторизован
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Аутентификация
+      tags:
+      - auth
+  /api/v1/auth/simple:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация и авторизация пользователя
+      parameters:
+      - description: login информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/LoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoggedInDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "401":
+          description: Не авторизован
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Аутентификация
+      tags:
+      - auth
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация пользователя
+      parameters:
+      - description: register информация
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/RegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ProfileDTO'
+        "400":
+          description: Кривые данные
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Уже существует
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Регистрация
+      tags:
+      - profile
+  /api/v1/users/keys:
+    put:
+      description: Изменение атрибутов роли
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ChangedKeysDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Изменяет роль
+      tags:
+      - profile
+  /api/v1/users/password:
+    put:
+      consumes:
+      - application/json
+      description: Изменяет пароль пользователя
+      parameters:
+      - description: Смена пароля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/ChangePasswordDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успех (пустое тело)
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Смена пароля пользователя
+      tags:
+      - profile
+  /api/v1/users/profile:
+    get:
+      description: Получает запись по её ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Профиль
+          schema:
+            $ref: '#/definitions/ProfileDTO'
+        "403":
+          description: В доступе отказано
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "404":
+          description: Запись не найдена
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        "500":
+          description: Внутренняя ошибка сервера (пустое тело)
+      summary: Получить
+      tags:
+      - profile
 swagger: "2.0"

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
@@ -13,7 +14,6 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/hellofresh/health-go/v5"
 	"google.golang.org/grpc"
 )
@@ -30,11 +30,14 @@ type App struct {
 	telemetryShutdown func(ctx context.Context) error
 
 	// helpers
-	hashCipher   utils.Cipher
-	dataCipher   utils.Cipher
-	cipherHelper helper.Cipher
-	keysHelper   helper.RSAKeys
-	jwtHelper    *helper.JWTHelper
+	hashCipher    utils.Cipher
+	dataCipher    utils.Cipher
+	cipherHelper  helper.Cipher
+	keysHelper    helper.RSAKeys
+	jwtHelper     *helper.JWTHelper
+	jwtHTTPHelper *helper.JWTHTTPHelper
+	jwtGRPCHelper *helper.JWTGRPCHelper
+	authHelper    auth.Helper
 
 	// DB
 	db db.DB
@@ -54,26 +57,16 @@ type App struct {
 
 	// gRPC
 	grpcAuthService      *grpcsvc.AuthGRPCService
+	grpcUserService      *grpcsvc.UserGRPCService
 	grpcRoleAdminService *grpcsvc.RoleAdminGRPCService
 	grpcUserAdminService *grpcsvc.UserAdminGRPCService
 	grpcServer           *grpc.Server
 
-	// use cases
-	userAdminGetUC       usecase.UserAdminGetUseCase
-	userAdminGetByNameUC usecase.UserAdminGetNameUseCase
-	userAdminListUC      usecase.UserAdminListUseCase
-	userAdminSaveUC      usecase.UserAdminSaveUseCase
-	userAdminDeleteUC    usecase.UserAdminDeleteUseCase
-
-	roleAdminGetUC       usecase.RoleAdminGetUseCase
-	roleAdminGetByNameUC usecase.RoleAdminGetNameUseCase
-	roleAdminListUC      usecase.RoleAdminListUseCase
-	roleAdminSaveUC      usecase.RoleAdminSaveUseCase
-	roleAdminDeleteUC    usecase.RoleAdminDeleteUseCase
-
 	// facade
+	authFacade      facade.AuthFacade
 	roleAdminFacade facade.RoleAdminFacade
 	userAdminFacade facade.UserAdminFacade
+	userFacade      facade.UserFacade
 }
 
 func NewApp(config *config.Config, logger logger.Logger) *App {

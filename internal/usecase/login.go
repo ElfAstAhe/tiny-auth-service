@@ -21,11 +21,13 @@ type LoginUseCase interface {
 type LoginInteractor struct {
 	hashCipher utils.Cipher
 	keysHelper helper.RSAKeys
-	authHelper *auth.Helper
+	authHelper auth.Helper
 	userRepo   domain.UserRepository
 	// нотификация о логине пользователя (например аудит)
 	// ...
 }
+
+var _ LoginUseCase = (*LoginInteractor)(nil)
 
 // NewLoginUseCase создаёт новый экземпляр use case для аутентификации пользователя
 //
@@ -34,7 +36,7 @@ type LoginInteractor struct {
 //   - keysHelper: помощник для работы с RSA ключами
 //   - authHelper: логика генерации токенов
 //   - userRepo: репозиторий для доступа к данным пользователя
-func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper *auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
+func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
 	return &LoginInteractor{
 		hashCipher: hashCipher,
 		keysHelper: keysHelper,
@@ -144,11 +146,11 @@ func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Tok
 	subject := ToSubject(user, nil)
 	token, err := luc.buildToken(subject)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get token from subject", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build token from subject", err)
 	}
 	refreshToken, err := luc.buildRefreshToken(user)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "get refresh token from user", err)
+		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build refresh token from user", err)
 	}
 
 	return token, refreshToken, nil

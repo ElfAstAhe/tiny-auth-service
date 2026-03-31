@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"fmt"
+
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
@@ -47,11 +49,27 @@ where
 order by
     1 asc, 2 asc
 `
+	sqlUserRolesDeleteAll string = `
+delete from
+    user_roles
+where
+    user_id = $1
+`
+	sqlUserRolesCreate string = `
+insert into user_roles(
+    user_id,
+    role_id
+)
+values ($1, $2)
+returning role_id
+`
 )
 
 type UserRolesPgRepository struct {
 	*repository.BaseOwnedRepository[*domain.Role, string, string]
 }
+
+var _ domain.UserRolesRepository = (*UserRolesPgRepository)(nil)
 
 func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher) (*UserRolesPgRepository, error) {
 	res := &UserRolesPgRepository{}
@@ -63,6 +81,12 @@ func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		}).
 		WithListAllByOwners(func() string {
 			return sqlUserRolesListAllByOwners
+		}).
+		WithDeleteAll(func() string {
+			return sqlUserRolesDeleteAll
+		}).
+		WithCreate(func() string {
+			return sqlUserRolesCreate
 		}).
 		Build()
 
@@ -93,12 +117,15 @@ func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 	return res, nil
 }
 
-func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, dest *domain.Role, params ...any) error {
-	if len(params) == 0 {
-		return scanner.Scan(&dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
+	switch sourceLabel {
+	case repository.SourceLabelListAll:
+		return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	case repository.SourceLabelListAllByOwners:
+		return scanner.Scan(params[0], &dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 	}
 
-	return scanner.Scan(&params[0], &dest.ID, dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return errs.NewDalError("UserRolesPgRepository.entityScanner", fmt.Sprintf("unknown source label [%v]", sourceLabel), nil)
 }
 
 func (urr *UserRolesPgRepository) afterListYield(entity *domain.Role, params ...any) (*domain.Role, bool, error) {
