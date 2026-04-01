@@ -971,6 +971,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "type": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -1044,6 +1047,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/RoleDTO"
                     }
+                },
+                "type": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

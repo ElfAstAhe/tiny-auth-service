@@ -3,13 +3,14 @@ package domain
 import (
 	"time"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
-	"github.com/google/uuid"
 )
 
 type User struct {
 	ID           string
 	Name         string
+	Type         string
 	PasswordHash string
 	PublicKey    string
 	PrivateKey   string
@@ -21,16 +22,20 @@ type User struct {
 	Roles []*Role
 }
 
+var _ domain.Entity[string] = (*User)(nil)
+var _ domain.SoftDeleteEntity[bool] = (*User)(nil)
+
 func NewEmptyUser() *User {
 	return &User{
 		Roles: make([]*Role, 0),
 	}
 }
 
-func NewUser(id, name, passwordHash, publicKey, privateKey string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
+func NewUser(id, name, userType, passwordHash, publicKey, privateKey string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
 	return &User{
 		ID:           id,
 		Name:         name,
+		Type:         userType,
 		PasswordHash: passwordHash,
 		PublicKey:    publicKey,
 		PrivateKey:   privateKey,
@@ -67,12 +72,10 @@ func (u *User) IsDeleted() bool {
 }
 
 func (u *User) BeforeCreate() error {
-	newID, err := uuid.NewRandom()
-	if err != nil {
-		return errs.NewBllError("User.BeforeCreate", "generate new id", err)
+	if err := defaultBeforeCreate(u); err != nil {
+		return errs.NewBllError("User.BeforeCreate", "default before create failed", err)
 	}
 
-	u.ID = newID.String()
 	if u.CreatedAt.IsZero() {
 		u.CreatedAt = time.Now()
 	}
@@ -91,11 +94,8 @@ func (u *User) ValidateCreate() error {
 	if u.ID != "" {
 		return errs.NewBllValidateError("User.ValidateCreate", "id must be empty", nil)
 	}
-	if u.Name == "" {
-		return errs.NewBllValidateError("User.ValidateCreate", "name cannot be empty", nil)
-	}
-	if u.PasswordHash == "" {
-		return errs.NewBllValidateError("User.ValidateCreate", "password hash cannot be empty", nil)
+	if err := u.validateCommon(); err != nil {
+		return errs.NewBllValidateError("User.ValidateCreate", "common validation failed", err)
 	}
 
 	return nil
@@ -105,8 +105,19 @@ func (u *User) ValidateChange() error {
 	if u.ID == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "id cannot be empty", nil)
 	}
+	if err := u.validateCommon(); err != nil {
+		return errs.NewBllValidateError("User.ValidateChange", "common validation failed", err)
+	}
+
+	return nil
+}
+
+func (u *User) validateCommon() error {
 	if u.Name == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "name cannot be empty", nil)
+	}
+	if err := validateUserType(u.Type); err != nil {
+		return errs.NewBllValidateError("User.ValidateChange", "type validation failed", err)
 	}
 	if u.PasswordHash == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "password hash cannot be empty", nil)

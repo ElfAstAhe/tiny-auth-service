@@ -137,11 +137,12 @@ type ProfileResponse struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_PublicKey   *string                `protobuf:"bytes,3,opt,name=public_key,json=publicKey"`
-	xxx_hidden_Active      bool                   `protobuf:"varint,4,opt,name=active"`
-	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt"`
-	xxx_hidden_UpdatedAt   *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt"`
-	xxx_hidden_Roles       []string               `protobuf:"bytes,7,rep,name=roles"`
+	xxx_hidden_UserType    *string                `protobuf:"bytes,3,opt,name=user_type,json=userType"`
+	xxx_hidden_PublicKey   *string                `protobuf:"bytes,4,opt,name=public_key,json=publicKey"`
+	xxx_hidden_Active      bool                   `protobuf:"varint,5,opt,name=active"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt"`
+	xxx_hidden_UpdatedAt   *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt"`
+	xxx_hidden_Roles       []string               `protobuf:"bytes,8,rep,name=roles"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -193,6 +194,16 @@ func (x *ProfileResponse) GetName() string {
 	return ""
 }
 
+func (x *ProfileResponse) GetUserType() string {
+	if x != nil {
+		if x.xxx_hidden_UserType != nil {
+			return *x.xxx_hidden_UserType
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ProfileResponse) GetPublicKey() string {
 	if x != nil {
 		if x.xxx_hidden_PublicKey != nil {
@@ -233,22 +244,27 @@ func (x *ProfileResponse) GetRoles() []string {
 
 func (x *ProfileResponse) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
 func (x *ProfileResponse) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+}
+
+func (x *ProfileResponse) SetUserType(v string) {
+	x.xxx_hidden_UserType = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
 }
 
 func (x *ProfileResponse) SetPublicKey(v string) {
 	x.xxx_hidden_PublicKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
 }
 
 func (x *ProfileResponse) SetActive(v bool) {
 	x.xxx_hidden_Active = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
 }
 
 func (x *ProfileResponse) SetCreatedAt(v *timestamppb.Timestamp) {
@@ -277,18 +293,25 @@ func (x *ProfileResponse) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ProfileResponse) HasPublicKey() bool {
+func (x *ProfileResponse) HasUserType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ProfileResponse) HasActive() bool {
+func (x *ProfileResponse) HasPublicKey() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *ProfileResponse) HasActive() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *ProfileResponse) HasCreatedAt() bool {
@@ -315,13 +338,18 @@ func (x *ProfileResponse) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *ProfileResponse) ClearPublicKey() {
+func (x *ProfileResponse) ClearUserType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_UserType = nil
+}
+
+func (x *ProfileResponse) ClearPublicKey() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_PublicKey = nil
 }
 
 func (x *ProfileResponse) ClearActive() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Active = false
 }
 
@@ -338,6 +366,7 @@ type ProfileResponse_builder struct {
 
 	Id        *string
 	Name      *string
+	UserType  *string
 	PublicKey *string
 	Active    *bool
 	CreatedAt *timestamppb.Timestamp
@@ -350,19 +379,23 @@ func (b0 ProfileResponse_builder) Build() *ProfileResponse {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
 		x.xxx_hidden_Name = b.Name
 	}
+	if b.UserType != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		x.xxx_hidden_UserType = b.UserType
+	}
 	if b.PublicKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
 		x.xxx_hidden_PublicKey = b.PublicKey
 	}
 	if b.Active != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
 		x.xxx_hidden_Active = *b.Active
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
@@ -489,18 +522,19 @@ const file_tiny_auth_service_v1_user_service_proto_rawDesc = "" +
 	"'tiny-auth-service/v1/user-service.proto\x12\fauth.service\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"]\n" +
 	"\x15ChangePasswordRequest\x12!\n" +
 	"\fold_password\x18\x01 \x01(\tR\voldPassword\x12!\n" +
-	"\fnew_password\x18\x02 \x01(\tR\vnewPassword\"\xf8\x01\n" +
+	"\fnew_password\x18\x02 \x01(\tR\vnewPassword\"\x95\x02\n" +
 	"\x0fProfileResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
+	"\tuser_type\x18\x03 \x01(\tR\buserType\x12\x1d\n" +
 	"\n" +
-	"public_key\x18\x03 \x01(\tR\tpublicKey\x12\x16\n" +
-	"\x06active\x18\x04 \x01(\bR\x06active\x129\n" +
+	"public_key\x18\x04 \x01(\tR\tpublicKey\x12\x16\n" +
+	"\x06active\x18\x05 \x01(\bR\x06active\x129\n" +
 	"\n" +
-	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x14\n" +
-	"\x05roles\x18\a \x03(\tR\x05roles\"T\n" +
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x14\n" +
+	"\x05roles\x18\b \x03(\tR\x05roles\"T\n" +
 	"\x12ChangeKeysResponse\x12\x1d\n" +
 	"\n" +
 	"public_key\x18\x01 \x01(\tR\tpublicKey\x12\x1f\n" +

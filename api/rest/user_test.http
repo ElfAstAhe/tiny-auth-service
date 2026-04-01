@@ -1,4 +1,4 @@
-### POST user register
+### POST user register (not in prod env)
 POST http://localhost:8080/api/v1/users/register
 Content-Type: application/json
 

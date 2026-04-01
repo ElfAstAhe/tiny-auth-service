@@ -52,6 +52,8 @@ definitions:
         items:
           type: string
         type: array
+      type:
+        type: string
       updated_at:
         type: string
     type: object
@@ -101,6 +103,8 @@ definitions:
         items:
           $ref: '#/definitions/RoleDTO'
         type: array
+      type:
+        type: string
       updated_at:
         type: string
     type: object

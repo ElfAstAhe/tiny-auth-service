@@ -14,6 +14,7 @@ func MapProfileDTOToGRPC(profile *dto.ProfileDTO) *pb.ProfileResponse {
 	return pb.ProfileResponse_builder{
 		Id:        &profile.ID,
 		Name:      &profile.Name,
+		UserType:  &profile.Type,
 		PublicKey: &profile.PublicKey,
 		Active:    &profile.Active,
 		CreatedAt: timestamppb.New(profile.CreatedAt),

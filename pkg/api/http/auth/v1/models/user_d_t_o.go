@@ -44,6 +44,9 @@ type UserDTO struct {
 	// roles
 	Roles []*RoleDTO `json:"roles"`
 
+	// type
+	Type string `json:"type,omitempty"`
+
 	// updated at
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
