@@ -89,6 +89,8 @@ func (ri *RegisterInteractor) prepareUser(username, password string) (*domain.Us
 
 	res.ID = ""
 	res.Name = username
+	// register can create only user type users (it is a business logic)
+	res.Type = domain.UserTypeUser
 	res.PasswordHash = password
 	res.PublicKey = publicKey
 	res.PrivateKey = privateKey

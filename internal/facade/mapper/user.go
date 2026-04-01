@@ -13,6 +13,7 @@ func MapUserModelToProfileDTO(model *domain.User) *dto.ProfileDTO {
 	res := &dto.ProfileDTO{
 		ID:        model.ID,
 		Name:      model.Name,
+		Type:      model.Type,
 		PublicKey: model.PublicKey,
 		Active:    model.Active,
 		CreatedAt: model.CreatedAt,

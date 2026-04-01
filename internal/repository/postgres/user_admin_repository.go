@@ -19,6 +19,7 @@ const (
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -35,6 +36,7 @@ where
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -51,6 +53,7 @@ where
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -69,6 +72,7 @@ limit $1
 insert into users (
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -77,23 +81,24 @@ insert into users (
     created_at,
     updated_at
 )
-values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
+values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+returning id, name, user_type, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserAdminChange string = `
 update
     users
 set
     name = $2,
-    password_hash = $3,
-    public_key = $4,
-    private_key = $5,
-    active = $6,
-    deleted = $7,
-    updated_at = $8
+    user_type = $3,
+    password_hash = $4,
+    public_key = $5,
+    private_key = $6,
+    active = $7,
+    deleted = $8,
+    updated_at = $9
 where
     id = $1
-returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
+returning id, name, user_type, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserAdminDelete string = `
 delete
@@ -275,7 +280,18 @@ func (uar *UserAdminPgRepository) afterListYield(entity *domain.User, params ...
 }
 
 func (uar *UserAdminPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
-	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(
+		&dest.ID,
+		&dest.Name,
+		&dest.Type,
+		&dest.PasswordHash,
+		&dest.PublicKey,
+		&dest.PrivateKey,
+		&dest.Active,
+		&dest.Deleted,
+		&dest.CreatedAt,
+		&dest.UpdatedAt,
+	)
 }
 
 func (uar *UserAdminPgRepository) validateCreate(entity *domain.User, params ...any) error {
@@ -305,6 +321,7 @@ func (uar *UserAdminPgRepository) creator(ctx context.Context, querier db.Querie
 	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetCreate()(),
 		entity.ID,
 		entity.Name,
+		entity.Type,
 		entity.PasswordHash,
 		entity.PublicKey,
 		entity.PrivateKey,
@@ -327,6 +344,7 @@ func (uar *UserAdminPgRepository) changer(ctx context.Context, querier db.Querie
 	return querier.QueryRowContext(ctx, uar.GetQueryBuilders().GetChange()(),
 		entity.ID,
 		entity.Name,
+		entity.Type,
 		entity.PasswordHash,
 		entity.PublicKey,
 		entity.PrivateKey,

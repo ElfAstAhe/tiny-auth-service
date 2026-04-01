@@ -13,6 +13,7 @@ func MapUserModelToDTO(model *domain.User) *dto.UserDTO {
 	return &dto.UserDTO{
 		ID:           model.ID,
 		Name:         model.Name,
+		Type:         model.Type,
 		PasswordHash: model.PasswordHash,
 		PublicKey:    model.PublicKey,
 		PrivateKey:   model.PrivateKey,
@@ -45,6 +46,7 @@ func MapUserDTOToModel(user *dto.UserDTO) *domain.User {
 	return &domain.User{
 		ID:           user.ID,
 		Name:         user.Name,
+		Type:         user.Type,
 		PasswordHash: user.PasswordHash,
 		PublicKey:    user.PublicKey,
 		PrivateKey:   user.PrivateKey,

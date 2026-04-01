@@ -964,6 +964,9 @@
                         "type": "string"
                     }
                 },
+                "type": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -1037,6 +1040,9 @@
                     "items": {
                         "$ref": "#/definitions/RoleDTO"
                     }
+                },
+                "type": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

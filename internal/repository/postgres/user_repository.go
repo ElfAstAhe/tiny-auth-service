@@ -19,6 +19,7 @@ const (
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -35,6 +36,7 @@ where
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -51,6 +53,7 @@ where
 select
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -69,6 +72,7 @@ limit $1
 insert into users (
     id,
     name,
+    user_type,
     password_hash,
     public_key,
     private_key,
@@ -77,22 +81,23 @@ insert into users (
     created_at,
     updated_at
 )
-values($1, $2, $3, $4, $5, $6, false, $7, $8)
-returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
+values($1, $2, $3, $4, $5, $6, $7, false, $8, $9)
+returning id, name, user_type, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserChange string = `
 update
     users
 set
-    password_hash = $2,
-    public_key = $3,
-    private_key = $4,
-    active = $5,
-    deleted = $6,
-    updated_at = $7
+    user_type = $2,
+    password_hash = $3,
+    public_key = $4,
+    private_key = $5,
+    active = $6,
+    deleted = $7,
+    updated_at = $8
 where
     id = $1
-returning id, name, password_hash, public_key, private_key, active, deleted, created_at, updated_at
+returning id, name, user_type, password_hash, public_key, private_key, active, deleted, created_at, updated_at
 `
 	sqlUserDelete string = `
 update
@@ -235,7 +240,18 @@ func (ur *UserPgRepository) Create(ctx context.Context, user *domain.User) (*dom
 }
 
 func (ur *UserPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.User, params ...any) error {
-	return scanner.Scan(&dest.ID, &dest.Name, &dest.PasswordHash, &dest.PublicKey, &dest.PrivateKey, &dest.Active, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
+	return scanner.Scan(
+		&dest.ID,
+		&dest.Name,
+		&dest.Type,
+		&dest.PasswordHash,
+		&dest.PublicKey,
+		&dest.PrivateKey,
+		&dest.Active,
+		&dest.Deleted,
+		&dest.CreatedAt,
+		&dest.UpdatedAt,
+	)
 }
 
 func (ur *UserPgRepository) afterFind(entity *domain.User, params ...any) (*domain.User, error) {
@@ -284,6 +300,7 @@ func (ur *UserPgRepository) creator(ctx context.Context, querier db.Querier, ent
 	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetCreate()(),
 		entity.ID,
 		entity.Name,
+		entity.Type,
 		entity.PasswordHash,
 		entity.PublicKey,
 		entity.PrivateKey,
@@ -304,6 +321,7 @@ func (ur *UserPgRepository) validateChange(entity *domain.User, params ...any) e
 func (ur *UserPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.User, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, ur.GetQueryBuilders().GetChange()(),
 		entity.ID,
+		entity.Type,
 		entity.PasswordHash,
 		entity.PublicKey,
 		entity.PrivateKey,

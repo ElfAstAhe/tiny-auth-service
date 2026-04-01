@@ -249,14 +249,15 @@ type User struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id           *string                `protobuf:"bytes,1,opt,name=id"`
 	xxx_hidden_Name         *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_PasswordHash *string                `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash"`
-	xxx_hidden_PublicKey    *string                `protobuf:"bytes,4,opt,name=public_key,json=publicKey"`
-	xxx_hidden_PrivateKey   *string                `protobuf:"bytes,5,opt,name=private_key,json=privateKey"`
-	xxx_hidden_Active       bool                   `protobuf:"varint,6,opt,name=active"`
-	xxx_hidden_Deleted      bool                   `protobuf:"varint,7,opt,name=deleted"`
-	xxx_hidden_CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt"`
-	xxx_hidden_UpdatedAt    *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt"`
-	xxx_hidden_Roles        *[]*Role               `protobuf:"bytes,10,rep,name=roles"`
+	xxx_hidden_UserType     *string                `protobuf:"bytes,3,opt,name=user_type,json=userType"`
+	xxx_hidden_PasswordHash *string                `protobuf:"bytes,4,opt,name=password_hash,json=passwordHash"`
+	xxx_hidden_PublicKey    *string                `protobuf:"bytes,5,opt,name=public_key,json=publicKey"`
+	xxx_hidden_PrivateKey   *string                `protobuf:"bytes,6,opt,name=private_key,json=privateKey"`
+	xxx_hidden_Active       bool                   `protobuf:"varint,7,opt,name=active"`
+	xxx_hidden_Deleted      bool                   `protobuf:"varint,8,opt,name=deleted"`
+	xxx_hidden_CreatedAt    *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt"`
+	xxx_hidden_UpdatedAt    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt"`
+	xxx_hidden_Roles        *[]*Role               `protobuf:"bytes,11,rep,name=roles"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -302,6 +303,16 @@ func (x *User) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *User) GetUserType() string {
+	if x != nil {
+		if x.xxx_hidden_UserType != nil {
+			return *x.xxx_hidden_UserType
 		}
 		return ""
 	}
@@ -377,37 +388,42 @@ func (x *User) GetRoles() []*Role {
 
 func (x *User) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
 }
 
 func (x *User) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+}
+
+func (x *User) SetUserType(v string) {
+	x.xxx_hidden_UserType = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
 }
 
 func (x *User) SetPasswordHash(v string) {
 	x.xxx_hidden_PasswordHash = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
 func (x *User) SetPublicKey(v string) {
 	x.xxx_hidden_PublicKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
 func (x *User) SetPrivateKey(v string) {
 	x.xxx_hidden_PrivateKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
 }
 
 func (x *User) SetActive(v bool) {
 	x.xxx_hidden_Active = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
 }
 
 func (x *User) SetDeleted(v bool) {
 	x.xxx_hidden_Deleted = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
 }
 
 func (x *User) SetCreatedAt(v *timestamppb.Timestamp) {
@@ -436,39 +452,46 @@ func (x *User) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *User) HasPasswordHash() bool {
+func (x *User) HasUserType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *User) HasPublicKey() bool {
+func (x *User) HasPasswordHash() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *User) HasPrivateKey() bool {
+func (x *User) HasPublicKey() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *User) HasActive() bool {
+func (x *User) HasPrivateKey() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *User) HasDeleted() bool {
+func (x *User) HasActive() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *User) HasDeleted() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
 func (x *User) HasCreatedAt() bool {
@@ -495,28 +518,33 @@ func (x *User) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *User) ClearPasswordHash() {
+func (x *User) ClearUserType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_UserType = nil
+}
+
+func (x *User) ClearPasswordHash() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_PasswordHash = nil
 }
 
 func (x *User) ClearPublicKey() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_PublicKey = nil
 }
 
 func (x *User) ClearPrivateKey() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_PrivateKey = nil
 }
 
 func (x *User) ClearActive() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_Active = false
 }
 
 func (x *User) ClearDeleted() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_Deleted = false
 }
 
@@ -533,6 +561,7 @@ type User_builder struct {
 
 	Id           *string
 	Name         *string
+	UserType     *string
 	PasswordHash *string
 	PublicKey    *string
 	PrivateKey   *string
@@ -548,31 +577,35 @@ func (b0 User_builder) Build() *User {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
 		x.xxx_hidden_Name = b.Name
 	}
+	if b.UserType != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_UserType = b.UserType
+	}
 	if b.PasswordHash != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_PasswordHash = b.PasswordHash
 	}
 	if b.PublicKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
 		x.xxx_hidden_PublicKey = b.PublicKey
 	}
 	if b.PrivateKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
 		x.xxx_hidden_PrivateKey = b.PrivateKey
 	}
 	if b.Active != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
 		x.xxx_hidden_Active = *b.Active
 	}
 	if b.Deleted != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
 		x.xxx_hidden_Deleted = *b.Deleted
 	}
 	x.xxx_hidden_CreatedAt = b.CreatedAt
@@ -594,23 +627,24 @@ const file_tiny_auth_service_v1_messages_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xe1\x02\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xfe\x02\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
-	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\x12\x1d\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
+	"\tuser_type\x18\x03 \x01(\tR\buserType\x12#\n" +
+	"\rpassword_hash\x18\x04 \x01(\tR\fpasswordHash\x12\x1d\n" +
 	"\n" +
-	"public_key\x18\x04 \x01(\tR\tpublicKey\x12\x1f\n" +
-	"\vprivate_key\x18\x05 \x01(\tR\n" +
+	"public_key\x18\x05 \x01(\tR\tpublicKey\x12\x1f\n" +
+	"\vprivate_key\x18\x06 \x01(\tR\n" +
 	"privateKey\x12\x16\n" +
-	"\x06active\x18\x06 \x01(\bR\x06active\x12\x18\n" +
-	"\adeleted\x18\a \x01(\bR\adeleted\x129\n" +
+	"\x06active\x18\a \x01(\bR\x06active\x12\x18\n" +
+	"\adeleted\x18\b \x01(\bR\adeleted\x129\n" +
 	"\n" +
-	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12(\n" +
-	"\x05roles\x18\n" +
-	" \x03(\v2\x12.auth.service.RoleR\x05rolesB*Z(tiny-auth-service/grpc/tiny-auth-serviceb\beditionsp\xe8\a"
+	"updated_at\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12(\n" +
+	"\x05roles\x18\v \x03(\v2\x12.auth.service.RoleR\x05rolesB*Z(tiny-auth-service/grpc/tiny-auth-serviceb\beditionsp\xe8\a"
 
 var file_tiny_auth_service_v1_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_tiny_auth_service_v1_messages_proto_goTypes = []any{

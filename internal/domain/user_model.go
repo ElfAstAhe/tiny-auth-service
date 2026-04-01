@@ -10,6 +10,7 @@ import (
 type User struct {
 	ID           string
 	Name         string
+	Type         string
 	PasswordHash string
 	PublicKey    string
 	PrivateKey   string
@@ -30,10 +31,11 @@ func NewEmptyUser() *User {
 	}
 }
 
-func NewUser(id, name, passwordHash, publicKey, privateKey string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
+func NewUser(id, name, userType, passwordHash, publicKey, privateKey string, active, deleted bool, createdAt time.Time, roles ...*Role) *User {
 	return &User{
 		ID:           id,
 		Name:         name,
+		Type:         userType,
 		PasswordHash: passwordHash,
 		PublicKey:    publicKey,
 		PrivateKey:   privateKey,
@@ -92,11 +94,8 @@ func (u *User) ValidateCreate() error {
 	if u.ID != "" {
 		return errs.NewBllValidateError("User.ValidateCreate", "id must be empty", nil)
 	}
-	if u.Name == "" {
-		return errs.NewBllValidateError("User.ValidateCreate", "name cannot be empty", nil)
-	}
-	if u.PasswordHash == "" {
-		return errs.NewBllValidateError("User.ValidateCreate", "password hash cannot be empty", nil)
+	if err := u.validateCommon(); err != nil {
+		return errs.NewBllValidateError("User.ValidateCreate", "common validation failed", err)
 	}
 
 	return nil
@@ -106,8 +105,19 @@ func (u *User) ValidateChange() error {
 	if u.ID == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "id cannot be empty", nil)
 	}
+	if err := u.validateCommon(); err != nil {
+		return errs.NewBllValidateError("User.ValidateChange", "common validation failed", err)
+	}
+
+	return nil
+}
+
+func (u *User) validateCommon() error {
 	if u.Name == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "name cannot be empty", nil)
+	}
+	if err := validateUserType(u.Type); err != nil {
+		return errs.NewBllValidateError("User.ValidateChange", "type validation failed", err)
 	}
 	if u.PasswordHash == "" {
 		return errs.NewBllValidateError("User.ValidateChange", "password hash cannot be empty", nil)

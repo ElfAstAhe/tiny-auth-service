@@ -24,11 +24,12 @@ message ChangePasswordRequest {
 message ProfileResponse {
   string id = 1;
   string name = 2;
-  string public_key = 3;
-  bool active = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
-  repeated string roles = 7;
+  string user_type = 3;
+  string public_key = 4;
+  bool active = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  repeated string roles = 8;
 }
 
 message ChangeKeysResponse {

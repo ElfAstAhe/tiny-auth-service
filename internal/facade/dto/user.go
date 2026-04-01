@@ -9,6 +9,7 @@ import (
 type UserDTO struct {
 	ID           string    `json:"id,omitempty"`
 	Name         string    `json:"name"`
+	Type         string    `json:"type"`
 	PasswordHash string    `json:"password_hash,omitempty"`
 	PublicKey    string    `json:"public_key,omitempty"`
 	PrivateKey   string    `json:"private_key,omitempty"`
