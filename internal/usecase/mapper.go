@@ -15,5 +15,16 @@ func ToSubjectRoles(roles []*domain.Role) []string {
 }
 
 func ToSubject(user *domain.User, metadata map[string]string) *auth.Subject {
-	return auth.NewSubject(user.ID, user.Name, auth.SubjectUser, ToSubjectRoles(user.Roles), metadata)
+	return auth.NewSubject(user.ID, user.Name, ToSubjectType(user.Type), ToSubjectRoles(user.Roles), metadata)
+}
+
+func ToSubjectType(userType string) auth.SubjectType {
+	switch userType {
+	case domain.UserTypeUser:
+		return auth.SubjectUser
+	case domain.UserTypeService:
+		return auth.SubjectService
+	default:
+		return auth.SubjectGuest
+	}
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/mapper"
@@ -62,7 +61,7 @@ func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDT
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "user is not an admin", err)
 	}
 
@@ -85,7 +84,7 @@ func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "user is not an admin", err)
 	}
 
@@ -108,7 +107,7 @@ func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "user is not an admin", err)
 	}
 
@@ -145,7 +144,7 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "user is not an admin", err)
 	}
 
@@ -171,7 +170,7 @@ func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "user is not an admin", err)
 	}
 
@@ -197,7 +196,7 @@ func (uaf *UserAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
 		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "retrieve subject", err)
 	}
 	// RBAC
-	if !subj.HasRole(domain.RoleAdmin) {
+	if !IsSubjectAdmin(subj) {
 		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "user is not an admin", err)
 	}
 	// validate income
