@@ -4,9 +4,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/metrics"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/trace"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
 )
@@ -53,7 +52,7 @@ func (app *App) initDependencies() error {
 		if err != nil {
 			return err
 		}
-		roleRepo = trace.NewRoleTraceRepository(metrics.NewRoleMetricsRepository(roleRepo))
+		roleRepo = repository.NewRoleTraceRepository(repository.NewRoleMetricsRepository(roleRepo))
 
 		// user roles repo
 		userRolesRepo, err = postgres.NewUserRolesPgRepository(app.db, app.db)
@@ -61,31 +60,31 @@ func (app *App) initDependencies() error {
 			return err
 		}
 		// user roles metrics repo
-		userRolesRepo = trace.NewUserRolesTraceRepository(metrics.NewUserRolesMetricsRepository(userRolesRepo))
+		userRolesRepo = repository.NewUserRolesTraceRepository(repository.NewUserRolesMetricsRepository(userRolesRepo))
 		// user repo
 		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.hashCipher, app.cipherHelper, userRolesRepo)
 		if err != nil {
 			return err
 		}
-		userRepo = trace.NewUserTraceRepository(metrics.NewUserMetricsRepository(userRepo))
+		userRepo = repository.NewUserTraceRepository(repository.NewUserMetricsRepository(userRepo))
 		// role admin repo
 		roleAdminRepo, err = postgres.NewRoleAdminPgRepository(app.db, app.db)
 		if err != nil {
 			return err
 		}
-		roleAdminRepo = trace.NewRoleAdminTraceRepository(metrics.NewRoleAdminMetricsRepository(roleAdminRepo))
+		roleAdminRepo = repository.NewRoleAdminTraceRepository(repository.NewRoleAdminMetricsRepository(roleAdminRepo))
 		// user roles admin repo
 		userRolesAdminRepo, err = postgres.NewUserRolesAdminPgRepository(app.db, app.db)
 		if err != nil {
 			return err
 		}
-		userRolesAdminRepo = trace.NewUserRolesAdminTraceRepository(metrics.NewUserRolesAdminMetricsRepository(userRolesAdminRepo))
+		userRolesAdminRepo = repository.NewUserRolesAdminTraceRepository(repository.NewUserRolesAdminMetricsRepository(userRolesAdminRepo))
 		// user admin repo
 		userAdminRepo, err = postgres.NewUserAdminPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesAdminRepo)
 		if err != nil {
 			return err
 		}
-		userAdminRepo = trace.NewUserAdminTraceRepository(metrics.NewUserAdminMetricsRepository(userAdminRepo))
+		userAdminRepo = repository.NewUserAdminTraceRepository(repository.NewUserAdminMetricsRepository(userAdminRepo))
 	}
 	// use cases
 	{
