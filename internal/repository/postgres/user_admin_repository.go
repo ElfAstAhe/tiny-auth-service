@@ -116,6 +116,7 @@ type UserAdminPgRepository struct {
 	hashCipher    utils.Cipher
 }
 
+var _ libdomain.CRUDRepository[*domain.User, string] = (*UserAdminPgRepository)(nil)
 var _ domain.UserAdminRepository = (*UserAdminPgRepository)(nil)
 
 func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher, cipherHelper helper.Cipher, hashCipher utils.Cipher, userRolesRepo domain.UserRolesAdminRepository) (*UserAdminPgRepository, error) {

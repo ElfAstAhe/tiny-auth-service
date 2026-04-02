@@ -116,6 +116,7 @@ type UserPgRepository struct {
 	userRolesRepo domain.UserRolesRepository
 }
 
+var _ libdomain.CRUDRepository[*domain.User, string] = (*UserPgRepository)(nil)
 var _ domain.UserRepository = (*UserPgRepository)(nil)
 
 //goland:noinspection DuplicatedCode

@@ -1,9 +1,10 @@
-package repository
+package trace
 
 import (
 	"context"
 	"fmt"
 
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"go.opentelemetry.io/otel/attribute"
@@ -15,6 +16,7 @@ type RoleTraceRepository struct {
 	repo domain.RoleRepository
 }
 
+var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleTraceRepository)(nil)
 var _ domain.RoleRepository = (*RoleTraceRepository)(nil)
 
 func NewRoleTraceRepository(repo domain.RoleRepository) *RoleTraceRepository {

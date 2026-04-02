@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
@@ -91,6 +92,7 @@ type RoleAdminPgRepository struct {
 	userRolesRepo domain.UserRolesAdminRepository
 }
 
+var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleAdminPgRepository)(nil)
 var _ domain.RoleAdminRepository = (*RoleAdminPgRepository)(nil)
 
 func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RoleAdminPgRepository, error) {

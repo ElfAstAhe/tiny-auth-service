@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
@@ -90,6 +91,7 @@ type RolePgRepository struct {
 	*repository.BaseCRUDRepository[*domain.Role, string]
 }
 
+var _ libdomain.CRUDRepository[*domain.Role, string] = (*RolePgRepository)(nil)
 var _ domain.RoleRepository = (*RolePgRepository)(nil)
 
 //goland:noinspection DuplicatedCode

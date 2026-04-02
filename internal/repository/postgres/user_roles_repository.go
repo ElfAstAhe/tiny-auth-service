@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
@@ -69,6 +70,7 @@ type UserRolesPgRepository struct {
 	*repository.BaseOwnedRepository[*domain.Role, string, string]
 }
 
+var _ libdomain.OwnedRepository[*domain.Role, string, string] = (*UserRolesPgRepository)(nil)
 var _ domain.UserRolesRepository = (*UserRolesPgRepository)(nil)
 
 func NewUserRolesPgRepository(executor db.Executor, errDecipher db.ErrorDecipher) (*UserRolesPgRepository, error) {
