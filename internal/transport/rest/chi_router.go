@@ -7,6 +7,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
+	_ "github.com/ElfAstAhe/tiny-auth-service/docs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	trmware "github.com/ElfAstAhe/tiny-auth-service/internal/transport/rest/middleware"
@@ -105,6 +106,12 @@ func (cr *AppChiRouter) setupMiddleware(
 	// jwt auth extractor - extract user info from token
 	cr.router.Use(trmware.NewAuthExtractor(
 		transport.NewHTTPPathMatchers([]*transport.HTTPPathMatcher{
+			transport.NewHTTPPathMatcher(http.MethodGet, "/metrics", "^/metrics.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/swagger", "^/swagger.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/status", "^/status.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/healthz", "^/healthz.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/readyz", "^/readyz.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/debug", "^/debug.*$"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth", "/api/v1/auth"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/users/register", "/api/v1/users/register"),
