@@ -13,6 +13,7 @@ import (
 // @Summary      Получить
 // @Description  Получить список
 // @Tags         user
+// @Accept       json
 // @Produce      json
 // @Param        limit   query   int  false  "limit row count, max 1000" format(int)
 // @Param        offset  query   int  false  "offset, min 0, max n" format(int)
