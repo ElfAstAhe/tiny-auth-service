@@ -218,3 +218,71 @@ func (_c *MockUserFacade_Profile_Call) RunAndReturn(run func(ctx context.Context
 	_c.Call.Return(run)
 	return _c
 }
+
+// Register provides a mock function for the type MockUserFacade
+func (_mock *MockUserFacade) Register(ctx context.Context, register *dto.RegisterDTO) (*dto.ProfileDTO, error) {
+	ret := _mock.Called(ctx, register)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Register")
+	}
+
+	var r0 *dto.ProfileDTO
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.RegisterDTO) (*dto.ProfileDTO, error)); ok {
+		return returnFunc(ctx, register)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.RegisterDTO) *dto.ProfileDTO); ok {
+		r0 = returnFunc(ctx, register)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.ProfileDTO)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *dto.RegisterDTO) error); ok {
+		r1 = returnFunc(ctx, register)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockUserFacade_Register_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Register'
+type MockUserFacade_Register_Call struct {
+	*mock.Call
+}
+
+// Register is a helper method to define mock.On call
+//   - ctx context.Context
+//   - register *dto.RegisterDTO
+func (_e *MockUserFacade_Expecter) Register(ctx interface{}, register interface{}) *MockUserFacade_Register_Call {
+	return &MockUserFacade_Register_Call{Call: _e.mock.On("Register", ctx, register)}
+}
+
+func (_c *MockUserFacade_Register_Call) Run(run func(ctx context.Context, register *dto.RegisterDTO)) *MockUserFacade_Register_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.RegisterDTO
+		if args[1] != nil {
+			arg1 = args[1].(*dto.RegisterDTO)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockUserFacade_Register_Call) Return(profileDTO *dto.ProfileDTO, err error) *MockUserFacade_Register_Call {
+	_c.Call.Return(profileDTO, err)
+	return _c
+}
+
+func (_c *MockUserFacade_Register_Call) RunAndReturn(run func(ctx context.Context, register *dto.RegisterDTO) (*dto.ProfileDTO, error)) *MockUserFacade_Register_Call {
+	_c.Call.Return(run)
+	return _c
+}

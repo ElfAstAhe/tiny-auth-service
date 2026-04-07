@@ -105,3 +105,71 @@ func (_c *MockAuthFacade_Login_Call) RunAndReturn(run func(ctx context.Context, 
 	_c.Call.Return(run)
 	return _c
 }
+
+// LoginSimple provides a mock function for the type MockAuthFacade
+func (_mock *MockAuthFacade) LoginSimple(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error) {
+	ret := _mock.Called(ctx, login)
+
+	if len(ret) == 0 {
+		panic("no return value specified for LoginSimple")
+	}
+
+	var r0 *dto.LoggedInDTO
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.LoginDTO) (*dto.LoggedInDTO, error)); ok {
+		return returnFunc(ctx, login)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.LoginDTO) *dto.LoggedInDTO); ok {
+		r0 = returnFunc(ctx, login)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.LoggedInDTO)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *dto.LoginDTO) error); ok {
+		r1 = returnFunc(ctx, login)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockAuthFacade_LoginSimple_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LoginSimple'
+type MockAuthFacade_LoginSimple_Call struct {
+	*mock.Call
+}
+
+// LoginSimple is a helper method to define mock.On call
+//   - ctx context.Context
+//   - login *dto.LoginDTO
+func (_e *MockAuthFacade_Expecter) LoginSimple(ctx interface{}, login interface{}) *MockAuthFacade_LoginSimple_Call {
+	return &MockAuthFacade_LoginSimple_Call{Call: _e.mock.On("LoginSimple", ctx, login)}
+}
+
+func (_c *MockAuthFacade_LoginSimple_Call) Run(run func(ctx context.Context, login *dto.LoginDTO)) *MockAuthFacade_LoginSimple_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.LoginDTO
+		if args[1] != nil {
+			arg1 = args[1].(*dto.LoginDTO)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockAuthFacade_LoginSimple_Call) Return(loggedInDTO *dto.LoggedInDTO, err error) *MockAuthFacade_LoginSimple_Call {
+	_c.Call.Return(loggedInDTO, err)
+	return _c
+}
+
+func (_c *MockAuthFacade_LoginSimple_Call) RunAndReturn(run func(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error)) *MockAuthFacade_LoginSimple_Call {
+	_c.Call.Return(run)
+	return _c
+}
