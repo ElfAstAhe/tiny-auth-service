@@ -322,6 +322,9 @@ const docTemplate = `{
         "/api/v1/admin/users": {
             "get": {
                 "description": "Получить список",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],

@@ -320,6 +320,8 @@ paths:
       - role
   /api/v1/admin/users:
     get:
+      consumes:
+      - application/json
       description: Получить список
       parameters:
       - description: limit row count, max 1000

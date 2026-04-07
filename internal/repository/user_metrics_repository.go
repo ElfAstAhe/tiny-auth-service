@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/metrics"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
@@ -15,6 +16,7 @@ type UserMetricsRepository struct {
 	repo domain.UserRepository
 }
 
+var _ libdomain.CRUDRepository[*domain.User, string] = (*UserMetricsRepository)(nil)
 var _ domain.UserRepository = (*UserMetricsRepository)(nil)
 
 func NewUserMetricsRepository(repo domain.UserRepository) *UserMetricsRepository {

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
@@ -10,6 +11,7 @@ type UserRolesAdminMetricsRepository struct {
 	repo domain.UserRolesAdminRepository
 }
 
+var _ libdomain.OwnedRepository[*domain.Role, string, string] = (*UserRolesAdminMetricsRepository)(nil)
 var _ domain.UserRolesAdminRepository = (*UserRolesAdminMetricsRepository)(nil)
 
 func NewUserRolesAdminMetricsRepository(repo domain.UserRolesAdminRepository) *UserRolesAdminMetricsRepository {
