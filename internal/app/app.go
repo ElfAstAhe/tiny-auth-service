@@ -11,6 +11,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/api/http/audit/v1/models"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
@@ -67,6 +69,10 @@ type App struct {
 	roleAdminFacade facade.RoleAdminFacade
 	userAdminFacade facade.UserAdminFacade
 	userFacade      facade.UserFacade
+
+	// services
+	authAuditClient rest.AuditClient[*models.AuthAuditDTO]
+	dataAuditClient rest.AuditClient[*models.DataAuditDTO]
 }
 
 func NewApp(config *config.Config, logger logger.Logger) *App {
@@ -80,11 +86,11 @@ func NewApp(config *config.Config, logger logger.Logger) *App {
 	}
 }
 
+func (app *App) WaitForStop() {
+	app.wg.Wait()
+}
+
 // Stop - метод остановки приложения
 func (app *App) Stop() {
 	app.cancel()
-}
-
-func (app *App) WaitForStop() {
-	app.wg.Wait()
 }

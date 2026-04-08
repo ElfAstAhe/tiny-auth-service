@@ -1,7 +1,12 @@
 package app
 
 import (
+	"time"
+
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
@@ -138,6 +143,38 @@ func (app *App) initDependencies() error {
 			userAdminDeleteUC,
 			app.config.App.MaxListLimit,
 		)
+	}
+	// clients
+	{
+		// auth audit
+		authAuditConf, err := rest.NewAuditClientConfig(
+			"",
+			3*time.Second,
+			worker.NewBasePoolConfig(
+				4,
+				10000,
+				true,
+			),
+		)
+		if err != nil {
+			return errs.NewCommonError("create auth audit config failed", err)
+		}
+		app.authAuditClient = rest.NewAuthAuditClient(authAuditConf, nil, app.logger)
+
+		// data audit
+		dataAuditConf, err := rest.NewAuditClientConfig(
+			"",
+			3*time.Second,
+			worker.NewBasePoolConfig(
+				4,
+				10000,
+				true,
+			),
+		)
+		if err != nil {
+			return errs.NewCommonError("create data audit config failed", err)
+		}
+		app.dataAuditClient = rest.NewDataAuditClient(dataAuditConf, nil, app.logger)
 	}
 
 	return nil

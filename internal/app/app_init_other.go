@@ -132,8 +132,14 @@ func (app *App) initMetrics() error {
 }
 
 func (app *App) initStartupServices() error {
-	// here initialize any startup services (workers, observers, etc.)
-	// ..
+	// auth audit
+	if err := app.authAuditClient.Start(app.ctx); err != nil {
+		return errs.NewCommonError("start auth audit client failed", err)
+	}
+	// data audit
+	if err := app.dataAuditClient.Start(app.ctx); err != nil {
+		return errs.NewCommonError("start data audit client failed", err)
+	}
 
 	return nil
 }
