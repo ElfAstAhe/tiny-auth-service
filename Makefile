@@ -57,7 +57,29 @@ build: gen-proto gen-swagger gen-http-client gen-mocks
 
 # Запуск проекта (сначала соберет, потом запустит)
 run: build
-	./bin/$(SERVER_BINARY_NAME) --http-address "localhost:8080" --db-driver "postgres" --db-dsn "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db" --auth-jwt-secret "jwt-key" --app-cipher-key "12345" --app-token-issuer "tiny-auth-service" --app-max-list-limit 500
+	./bin/$(SERVER_BINARY_NAME) \
+		--http-address "localhost:8080" \
+		--grpc-address "localhost:50051" \
+		--db-driver "postgres" \
+		--db-dsn "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db" \
+		--auth-jwt-secret "jwt-key" \
+		--app-cipher-key "12345" \
+		--app-token-issuer "tiny-auth-service" \
+		--app-max-list-limit 500 \
+		--svc-creds-username "svc_auth" \
+		--svc-creds-password "password" \
+		--auth-audit-client-base-url "http://localhost:8081/" \
+		--auth-audit-client-timeout "5s" \
+		--auth-audit-client-worker-count "4" \
+		--auth-audit-client-data-capacity "10000" \
+		--auth-audit-client-complete-processing \
+		--auth-audit-client-shutdown-timeout "15s" \
+		--data-audit-client-base-url "http://localhost:8081/" \
+		--data-audit-client-timeout "5s" \
+		--data-audit-client-worker-count "2" \
+		--data-audit-client-data-capacity "10000" \
+		--data-audit-client-complete-processing \
+		--data-audit-client-shutdown-timeout "15s"
 
 # Запуск тестов
 test:

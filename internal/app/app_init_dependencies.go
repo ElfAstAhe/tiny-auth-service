@@ -1,8 +1,6 @@
 package app
 
 import (
-	"time"
-
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
@@ -148,12 +146,12 @@ func (app *App) initDependencies() error {
 	{
 		// auth audit
 		authAuditConf, err := rest.NewAuditClientConfig(
-			"",
-			3*time.Second,
+			app.config.AuthAuditClient.BaseURL,
+			app.config.AuthAuditClient.Timeout,
 			worker.NewBasePoolConfig(
-				4,
-				10000,
-				true,
+				app.config.AuthAuditClient.WorkerCount,
+				app.config.AuthAuditClient.DataCapacity,
+				app.config.AuthAuditClient.CompleteProcessing,
 			),
 		)
 		if err != nil {
@@ -163,12 +161,12 @@ func (app *App) initDependencies() error {
 
 		// data audit
 		dataAuditConf, err := rest.NewAuditClientConfig(
-			"",
-			3*time.Second,
+			app.config.DataAuditClient.BaseURL,
+			app.config.DataAuditClient.Timeout,
 			worker.NewBasePoolConfig(
-				4,
-				10000,
-				true,
+				app.config.DataAuditClient.WorkerCount,
+				app.config.DataAuditClient.DataCapacity,
+				app.config.DataAuditClient.CompleteProcessing,
 			),
 		)
 		if err != nil {

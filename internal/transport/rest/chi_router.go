@@ -112,6 +112,7 @@ func (cr *AppChiRouter) setupMiddleware(
 			transport.NewHTTPPathMatcher(http.MethodGet, "/healthz", "^/healthz.*$"),
 			transport.NewHTTPPathMatcher(http.MethodGet, "/readyz", "^/readyz.*$"),
 			transport.NewHTTPPathMatcher(http.MethodGet, "/debug", "^/debug.*$"),
+			transport.NewHTTPPathMatcher(http.MethodGet, "/config", "^/config.*$"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth", "/api/v1/auth"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),
 			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/users/register", "/api/v1/users/register"),

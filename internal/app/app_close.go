@@ -67,7 +67,7 @@ func (app *App) stopStartup() {
 			log.Info("stoping auth audit client...")
 			defer log.Info("done stop auth audit client")
 
-			if err := app.authAuditClient.Stop(app.config.App.DefShutdownTimeout); err != nil {
+			if err := app.authAuditClient.Stop(app.config.AuthAuditClient.ShutdownTimeout); err != nil {
 				log.Errorf("failed to stop auth audit client [%v]", err)
 			}
 			app.authAuditClient = nil
@@ -81,7 +81,7 @@ func (app *App) stopStartup() {
 			log.Info("stoping data audit client...")
 			defer log.Info("done stop data audit client")
 
-			if err := app.dataAuditClient.Stop(app.config.App.DefShutdownTimeout); err != nil {
+			if err := app.dataAuditClient.Stop(app.config.DataAuditClient.ShutdownTimeout); err != nil {
 				log.Errorf("failed to stop data audit client [%v]", err)
 			}
 			app.dataAuditClient = nil

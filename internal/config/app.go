@@ -15,7 +15,13 @@ type AppConfig struct {
 	DefShutdownTimeout time.Duration `mapstructure:"def_shutdown_timeout" json:"def_shutdown_timeout,omitempty" yaml:"def_shutdown_timeout,omitempty"`
 }
 
-func NewAppConfig(env AppEnv, maxListLimit int, tokenIssuer string, cipherKey string, defShutdownTimeout time.Duration) *AppConfig {
+func NewAppConfig(
+	env AppEnv,
+	maxListLimit int,
+	tokenIssuer string,
+	cipherKey string,
+	defShutdownTimeout time.Duration,
+) *AppConfig {
 	return &AppConfig{
 		Env:                env,
 		MaxListLimit:       maxListLimit,
@@ -26,7 +32,13 @@ func NewAppConfig(env AppEnv, maxListLimit int, tokenIssuer string, cipherKey st
 }
 
 func NewDefaultAppConfig() *AppConfig {
-	return NewAppConfig(defaultAppEnv, defaultMaxListLimit, defaultTokenIssuer, "", defaultDefShutdownTimeout)
+	return NewAppConfig(
+		defaultAppEnv,
+		defaultMaxListLimit,
+		defaultTokenIssuer,
+		"",
+		defaultDefShutdownTimeout,
+	)
 }
 
 func (ac *AppConfig) Validate() error {
