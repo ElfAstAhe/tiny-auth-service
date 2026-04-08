@@ -18,6 +18,21 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyAppEnv, defaultAppEnv)
 	v.SetDefault(keyAppMaxListLimit, defaultMaxListLimit)
 	v.SetDefault(keyAppTokenIssuer, defaultTokenIssuer)
+	v.SetDefault(keyAppDefShutdownTimeout, defaultDefShutdownTimeout)
+
+	// auth-audit-client
+	v.SetDefault(keyAuthAuditClientTimeout, defaultAuditClientTimeout)
+	v.SetDefault(keyAuthAuditClientWorkerCount, defaultAuditClientWorkerCount)
+	v.SetDefault(keyAuthAuditClientDataCapacity, defaultAuditClientDataCapacity)
+	v.SetDefault(keyAuthAuditClientCompleteProcessing, defaultAuditClientCompleteProcessing)
+	v.SetDefault(keyAuthAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout)
+
+	// data-audit-client
+	v.SetDefault(keyDataAuditClientTimeout, defaultAuditClientTimeout)
+	v.SetDefault(keyDataAuditClientWorkerCount, defaultAuditClientWorkerCount)
+	v.SetDefault(keyDataAuditClientDataCapacity, defaultAuditClientDataCapacity)
+	v.SetDefault(keyDataAuditClientCompleteProcessing, defaultAuditClientCompleteProcessing)
+	v.SetDefault(keyDataAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout)
 
 	// Auth
 	v.SetDefault(config.KeyAuthJWTSigningMethod, config.DefaultAuthSigningMethod)
@@ -86,6 +101,27 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Int(FlagAppMaxListLimit, usecase.DefaultMaxLimit, "max list limit")
 		res.String(FlagAppTokenIssuer, defaultTokenIssuer, "token issuer")
 		res.String(FlagAppCipherKey, "", "cipher key")
+		res.Duration(FlagAppDefShutdownTimeout, defaultDefShutdownTimeout, "default shutdown timeout")
+
+		// svc-creds
+		res.String(FlagCredsUsername, "", "auth service client username")
+		res.String(FlagCredsPassword, "", "auth service client password")
+
+		// auth-audit-client
+		res.String(FlagAuthAuditClientBaseURL, "", "auth audit service base url")
+		res.Duration(FlagAuthAuditClientTimeout, defaultAuditClientTimeout, "auth audit client timeout")
+		res.Int(FlagAuthAuditClientWorkerCount, defaultAuditClientWorkerCount, "auth audit client worker count")
+		res.Int(FlagAuthAuditClientDataCapacity, defaultAuditClientDataCapacity, "auth audit client data capacity")
+		res.Bool(FlagAuthAuditClientCompleteProcessing, true, "auth audit client complete processing")
+		res.Duration(FlagAuthAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout, "auth audit client shutdown timeout")
+
+		// data-audit-client
+		res.String(FlagDataAuditClientBaseURL, "", "data audit service base url")
+		res.Duration(FlagDataAuditClientTimeout, defaultAuditClientTimeout, "data audit client timeout")
+		res.Int(FlagDataAuditClientWorkerCount, defaultAuditClientWorkerCount, "data audit client worker count")
+		res.Int(FlagDataAuditClientDataCapacity, defaultAuditClientDataCapacity, "data audit client data capacity")
+		res.Bool(FlagDataAuditClientCompleteProcessing, true, "data audit client complete processing")
+		res.Duration(FlagDataAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout, "data audit client shutdown timeout")
 
 		// Auth
 		res.String(FlagAuthJWTSecret, "", "JWT secret")
@@ -152,6 +188,24 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyAppMaxListLimit, flags.Lookup(FlagAppMaxListLimit)),
 		v.BindPFlag(keyAppTokenIssuer, flags.Lookup(FlagAppTokenIssuer)),
 		v.BindPFlag(keyAppCipherKey, flags.Lookup(FlagAppCipherKey)),
+		v.BindPFlag(keyAppDefShutdownTimeout, flags.Lookup(FlagAppDefShutdownTimeout)),
+		// svc-creds
+		v.BindPFlag(keySvcCredsUsername, flags.Lookup(FlagCredsUsername)),
+		v.BindPFlag(keySvcCredsPassword, flags.Lookup(FlagCredsPassword)),
+		// auth-audit-client
+		v.BindPFlag(keyAuthAuditClientBaseURL, flags.Lookup(FlagAuthAuditClientBaseURL)),
+		v.BindPFlag(keyAuthAuditClientTimeout, flags.Lookup(FlagAuthAuditClientTimeout)),
+		v.BindPFlag(keyAuthAuditClientWorkerCount, flags.Lookup(FlagAuthAuditClientWorkerCount)),
+		v.BindPFlag(keyAuthAuditClientDataCapacity, flags.Lookup(FlagAuthAuditClientDataCapacity)),
+		v.BindPFlag(keyAuthAuditClientCompleteProcessing, flags.Lookup(FlagAuthAuditClientCompleteProcessing)),
+		v.BindPFlag(keyAuthAuditClientShutdownTimeout, flags.Lookup(FlagAuthAuditClientShutdownTimeout)),
+		// data-audit-client
+		v.BindPFlag(keyDataAuditClientBaseURL, flags.Lookup(FlagDataAuditClientBaseURL)),
+		v.BindPFlag(keyDataAuditClientTimeout, flags.Lookup(FlagDataAuditClientTimeout)),
+		v.BindPFlag(keyDataAuditClientWorkerCount, flags.Lookup(FlagDataAuditClientWorkerCount)),
+		v.BindPFlag(keyDataAuditClientDataCapacity, flags.Lookup(FlagDataAuditClientDataCapacity)),
+		v.BindPFlag(keyDataAuditClientCompleteProcessing, flags.Lookup(FlagDataAuditClientCompleteProcessing)),
+		v.BindPFlag(keyDataAuditClientShutdownTimeout, flags.Lookup(FlagDataAuditClientShutdownTimeout)),
 		// Auth
 		v.BindPFlag(config.KeyAuthJWTSecret, flags.Lookup(FlagAuthJWTSecret)),
 		v.BindPFlag(config.KeyAuthJWTSigningMethod, flags.Lookup(FlagAuthJWTSigningMethod)),

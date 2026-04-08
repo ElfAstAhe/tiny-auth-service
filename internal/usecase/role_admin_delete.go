@@ -39,7 +39,7 @@ func (rad *RoleAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 		return rad.roleRepo.Delete(ctx, ID)
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return domerrs.NewBllNotFoundError("RoleAdminDeleteInteractor.Delete", "Role", ID, err)
 		}
 

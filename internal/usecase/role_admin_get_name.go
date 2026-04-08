@@ -33,7 +33,7 @@ func (agn *RoleAdminGetNameInteractor) Get(ctx context.Context, name string) (*d
 
 	res, err := agn.roleRepo.FindByName(ctx, name)
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("RoleAdminGetNameInteractor.Get", "Role", name, err)
 		}
 

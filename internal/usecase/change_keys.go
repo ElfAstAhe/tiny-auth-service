@@ -64,7 +64,7 @@ func (ck *ChangeKeysInteractor) ChangeKeys(ctx context.Context, userID string) (
 		return nil
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return "", "", domerrs.NewBllNotFoundError("ChangeKeysInteractor.ChangeKeys", "User", userID, err)
 		}
 

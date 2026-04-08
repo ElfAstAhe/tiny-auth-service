@@ -1,10 +1,14 @@
 package domain
 
 import (
+	"hash/fnv"
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
+	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
+	"golang.org/x/exp/slices"
 )
 
 type User struct {
@@ -24,6 +28,7 @@ type User struct {
 
 var _ domain.Entity[string] = (*User)(nil)
 var _ domain.SoftDeleteEntity[bool] = (*User)(nil)
+var _ auditdomain.Auditable = (*User)(nil)
 
 func NewEmptyUser() *User {
 	return &User{
@@ -124,4 +129,56 @@ func (u *User) validateCommon() error {
 	}
 
 	return nil
+}
+
+func (u *User) GetTypeName() string {
+	return utils.GetTypeName(u)
+}
+
+func (u *User) GetTypeDescription() string {
+	return "User model"
+}
+
+func (u *User) GetInstanceID() string {
+	return u.ID
+}
+
+func (u *User) GetInstanceName() string {
+	return u.Name
+}
+
+func (u *User) HashCode() uint32 {
+	h := fnv.New32a()
+
+	h.Write([]byte(u.ID))
+	h.Write([]byte(u.Name))
+	h.Write([]byte(u.Type))
+	h.Write([]byte(u.PasswordHash))
+	h.Write([]byte(u.PublicKey))
+	h.Write([]byte(u.PrivateKey))
+	if u.Active {
+		h.Write([]byte{1})
+	} else {
+		h.Write([]byte{0})
+	}
+	if u.Deleted {
+		h.Write([]byte{1})
+	} else {
+		h.Write([]byte{0})
+	}
+	h.Write([]byte(u.CreatedAt.Format(time.RFC3339)))
+	h.Write([]byte(u.UpdatedAt.Format(time.RFC3339)))
+
+	roleIDs := domain.EntitiesToIDList(u.Roles)
+	slices.Sort(roleIDs)
+	for _, roleID := range roleIDs {
+		h.Write([]byte(roleID))
+	}
+
+	return h.Sum32()
+}
+
+func (u *User) ToAuditMap() map[string]string {
+	//TODO implement me
+	panic("implement me")
 }

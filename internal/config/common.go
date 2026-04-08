@@ -5,10 +5,37 @@ const FlagConfig = "config-path"
 
 // App config flags
 const (
-	FlagAppEnv          string = "env"
-	FlagAppMaxListLimit string = "app-max-list-limit"
-	FlagAppTokenIssuer  string = "app-token-issuer"
-	FlagAppCipherKey    string = "app-cipher-key"
+	FlagAppEnv                string = "env"
+	FlagAppMaxListLimit       string = "app-max-list-limit"
+	FlagAppTokenIssuer        string = "app-token-issuer"
+	FlagAppCipherKey          string = "app-cipher-key"
+	FlagAppDefShutdownTimeout string = "app-def-shutdown-timeout"
+)
+
+// Creds
+const (
+	FlagCredsUsername string = "svc-creds-username"
+	FlagCredsPassword string = "svc-creds-password"
+)
+
+// Auth-audit-client
+const (
+	FlagAuthAuditClientBaseURL            string = "auth-audit-client-base-url"
+	FlagAuthAuditClientTimeout            string = "auth-audit-client-timeout"
+	FlagAuthAuditClientWorkerCount        string = "auth-audit-client-worker-count"
+	FlagAuthAuditClientDataCapacity       string = "auth-audit-client-data-capacity"
+	FlagAuthAuditClientCompleteProcessing string = "auth-audit-client-complete-processing"
+	FlagAuthAuditClientShutdownTimeout    string = "auth-audit-client-shutdown-timeout"
+)
+
+// Data-audit-client
+const (
+	FlagDataAuditClientBaseURL            string = "data-audit-client-base-url"
+	FlagDataAuditClientTimeout            string = "data-audit-client-timeout"
+	FlagDataAuditClientWorkerCount        string = "data-audit-client-worker-count"
+	FlagDataAuditClientDataCapacity       string = "data-audit-client-data-capacity"
+	FlagDataAuditClientCompleteProcessing string = "data-audit-client-complete-processing"
+	FlagDataAuditClientShutdownTimeout    string = "data-audit-client-shutdown-timeout"
 )
 
 // Auth config flags

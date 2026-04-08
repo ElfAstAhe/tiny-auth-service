@@ -10,13 +10,16 @@ import (
 )
 
 type Config struct {
-	App       *AppConfig              `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
-	Auth      *config.AuthConfig      `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
-	HTTP      *config.HTTPConfig      `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
-	GRPC      *config.GRPCConfig      `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
-	Log       *config.LogConfig       `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
-	DB        *config.DBConfig        `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
-	Telemetry *config.TelemetryConfig `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
+	App             *AppConfig                `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
+	Credentials     *ServiceCredentialsConfig `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
+	AuthAuditClient *AuditClientConfig        `mapstructure:"auth_audit_client" json:"auth_audit_client,omitempty" yaml:"auth_audit_client,omitempty"`
+	DataAuditClient *AuditClientConfig        `mapstructure:"data_audit_client" json:"data_audit_client,omitempty" yaml:"data_audit_client,omitempty"`
+	Auth            *config.AuthConfig        `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
+	HTTP            *config.HTTPConfig        `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
+	GRPC            *config.GRPCConfig        `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
+	Log             *config.LogConfig         `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
+	DB              *config.DBConfig          `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
+	Telemetry       *config.TelemetryConfig   `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
 }
 
 // linker params
@@ -26,21 +29,38 @@ var (
 	AppBuildTime string
 )
 
-func NewConfig(app *AppConfig, auth *config.AuthConfig, HTTP *config.HTTPConfig, GRPC *config.GRPCConfig, log *config.LogConfig, db *config.DBConfig, telemetry *config.TelemetryConfig) *Config {
+func NewConfig(
+	app *AppConfig,
+	svcCreds *ServiceCredentialsConfig,
+	authAuditClient *AuditClientConfig,
+	dataAuditClient *AuditClientConfig,
+	auth *config.AuthConfig,
+	HTTP *config.HTTPConfig,
+	GRPC *config.GRPCConfig,
+	log *config.LogConfig,
+	db *config.DBConfig,
+	telemetry *config.TelemetryConfig,
+) *Config {
 	return &Config{
-		App:       app,
-		Auth:      auth,
-		HTTP:      HTTP,
-		GRPC:      GRPC,
-		Log:       log,
-		DB:        db,
-		Telemetry: telemetry,
+		App:             app,
+		Credentials:     svcCreds,
+		AuthAuditClient: authAuditClient,
+		DataAuditClient: dataAuditClient,
+		Auth:            auth,
+		HTTP:            HTTP,
+		GRPC:            GRPC,
+		Log:             log,
+		DB:              db,
+		Telemetry:       telemetry,
 	}
 }
 
 func NewDefaultConfig() *Config {
 	return NewConfig(
 		NewDefaultAppConfig(),
+		NewDefaultServiceCredentialsConfig(),
+		NewDefaultAuditClientConfig(),
+		NewDefaultAuditClientConfig(),
 		config.NewDefaultAuthConfig(),
 		config.NewDefaultHTTPConfig(),
 		config.NewDefaultGRPCConfig(),
@@ -52,13 +72,16 @@ func NewDefaultConfig() *Config {
 
 func NewEmptyConfig() *Config {
 	return &Config{
-		App:       &AppConfig{},
-		Auth:      &config.AuthConfig{},
-		HTTP:      &config.HTTPConfig{},
-		GRPC:      &config.GRPCConfig{},
-		Log:       &config.LogConfig{},
-		DB:        &config.DBConfig{},
-		Telemetry: &config.TelemetryConfig{},
+		App:             &AppConfig{},
+		Credentials:     &ServiceCredentialsConfig{},
+		AuthAuditClient: &AuditClientConfig{},
+		DataAuditClient: &AuditClientConfig{},
+		Auth:            &config.AuthConfig{},
+		HTTP:            &config.HTTPConfig{},
+		GRPC:            &config.GRPCConfig{},
+		Log:             &config.LogConfig{},
+		DB:              &config.DBConfig{},
+		Telemetry:       &config.TelemetryConfig{},
 	}
 }
 
@@ -67,6 +90,9 @@ func (c *Config) Validate() error {
 		Validate() error
 	}{
 		c.App,
+		c.Credentials,
+		c.AuthAuditClient,
+		c.DataAuditClient,
 		c.Auth,
 		c.HTTP,
 		c.GRPC,

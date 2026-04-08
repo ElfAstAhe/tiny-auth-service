@@ -39,7 +39,7 @@ func (uad *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 		return uad.userRepo.Delete(ctx, ID)
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return domerrs.NewBllNotFoundError("UserAdminDeleteInteractor.Delete", "User", ID, err)
 		}
 

@@ -73,7 +73,7 @@ func (cp *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, 
 		return nil
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return domerrs.NewBllNotFoundError("ChangePasswordInteractor.ChangePassword", "User", userID, err)
 		}
 

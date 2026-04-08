@@ -22,6 +22,8 @@ func (app *App) Run() error {
 	// http
 	eg.Go(func() error {
 		if err := app.launchHTTPServer(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Errorf("Error start http server with error [%v]", err)
+
 			return err
 		}
 
@@ -30,7 +32,7 @@ func (app *App) Run() error {
 	// gRPC
 	eg.Go(func() error {
 		if err := app.launchGRPCServer(); err != nil && !errors.Is(err, grpc.ErrServerStopped) {
-			log.Errorf("Error starting gRPC server with error [%v]", err)
+			log.Errorf("Error start gRPC server with error [%v]", err)
 
 			return err
 		}

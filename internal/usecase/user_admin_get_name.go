@@ -34,7 +34,7 @@ func (uag *UserAdminGetNameInteractor) Get(ctx context.Context, name string) (*d
 
 	res, err := uag.userRepo.FindByName(ctx, name)
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("UserAdminGetNameInteractor.Get", "User", name, err)
 		}
 
