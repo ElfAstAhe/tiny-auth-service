@@ -5,10 +5,11 @@ const FlagConfig = "config-path"
 
 // App config flags
 const (
-	FlagAppEnv          string = "env"
-	FlagAppMaxListLimit string = "app-max-list-limit"
-	FlagAppTokenIssuer  string = "app-token-issuer"
-	FlagAppCipherKey    string = "app-cipher-key"
+	FlagAppEnv                string = "env"
+	FlagAppMaxListLimit       string = "app-max-list-limit"
+	FlagAppTokenIssuer        string = "app-token-issuer"
+	FlagAppCipherKey          string = "app-cipher-key"
+	FlagAppDefShutdownTimeout string = "app-def-shutdown-timeout"
 )
 
 // Auth config flags

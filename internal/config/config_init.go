@@ -18,6 +18,7 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyAppEnv, defaultAppEnv)
 	v.SetDefault(keyAppMaxListLimit, defaultMaxListLimit)
 	v.SetDefault(keyAppTokenIssuer, defaultTokenIssuer)
+	v.SetDefault(keyAppDefShutdownTimeout, defaultDefShutdownTimeout)
 
 	// Auth
 	v.SetDefault(config.KeyAuthJWTSigningMethod, config.DefaultAuthSigningMethod)
@@ -86,6 +87,7 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Int(FlagAppMaxListLimit, usecase.DefaultMaxLimit, "max list limit")
 		res.String(FlagAppTokenIssuer, defaultTokenIssuer, "token issuer")
 		res.String(FlagAppCipherKey, "", "cipher key")
+		res.Duration(FlagAppDefShutdownTimeout, defaultDefShutdownTimeout, "default shutdown timeout")
 
 		// Auth
 		res.String(FlagAuthJWTSecret, "", "JWT secret")
@@ -152,6 +154,7 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyAppMaxListLimit, flags.Lookup(FlagAppMaxListLimit)),
 		v.BindPFlag(keyAppTokenIssuer, flags.Lookup(FlagAppTokenIssuer)),
 		v.BindPFlag(keyAppCipherKey, flags.Lookup(FlagAppCipherKey)),
+		v.BindPFlag(keyAppDefShutdownTimeout, flags.Lookup(FlagAppDefShutdownTimeout)),
 		// Auth
 		v.BindPFlag(config.KeyAuthJWTSecret, flags.Lookup(FlagAuthJWTSecret)),
 		v.BindPFlag(config.KeyAuthJWTSigningMethod, flags.Lookup(FlagAuthJWTSigningMethod)),
