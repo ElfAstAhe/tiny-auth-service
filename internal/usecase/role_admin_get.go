@@ -34,7 +34,7 @@ func (rag *RoleAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.
 
 	res, err := rag.roleRepo.Find(ctx, ID)
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("RoleAdminGetInteractor.Get", "Role", ID, err)
 		}
 

@@ -3,7 +3,8 @@ module github.com/ElfAstAhe/tiny-auth-service
 go 1.26.0
 
 require (
-	github.com/ElfAstAhe/go-service-template v0.0.39
+	github.com/ElfAstAhe/go-service-template v0.0.40
+	github.com/ElfAstAhe/tiny-audit-service v0.0.3
 	github.com/XSAM/otelsql v0.42.0
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-openapi/errors v0.22.7
@@ -28,6 +29,7 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.68.0
 	go.opentelemetry.io/otel v1.43.0
 	go.opentelemetry.io/otel/trace v1.43.0
+	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa
 	golang.org/x/sync v0.20.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11

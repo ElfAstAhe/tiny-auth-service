@@ -34,7 +34,7 @@ func (p *ProfileInteractor) Get(ctx context.Context, username string) (*domain.U
 
 	res, err := p.userRepo.FindByName(ctx, username)
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("ProfileInteractor.Get", "User", username, err)
 		}
 

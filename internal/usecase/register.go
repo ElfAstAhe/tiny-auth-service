@@ -55,7 +55,7 @@ func (ri *RegisterInteractor) Register(ctx context.Context, username string, pas
 		return txErr
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalAlreadyExistsError)) {
+		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
 			return nil, domerrs.NewBllUniqueError("RegisterInteractor.Register", "User", username, err)
 		}
 

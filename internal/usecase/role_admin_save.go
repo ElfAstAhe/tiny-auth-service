@@ -42,10 +42,10 @@ func (ras *RoleAdminSaveInteractor) Save(ctx context.Context, model *domain.Role
 		return txErr
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
 		}
-		if errors.As(err, new(*errs.DalAlreadyExistsError)) {
+		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
 			return nil, domerrs.NewBllUniqueError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
 		}
 

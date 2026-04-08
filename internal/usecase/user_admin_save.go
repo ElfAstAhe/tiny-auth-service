@@ -65,10 +65,10 @@ func (uas *UserAdminSaveInteractor) Save(ctx context.Context, model *domain.User
 		return txErr
 	})
 	if err != nil {
-		if errors.As(err, new(*errs.DalNotFoundError)) {
+		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
 			return nil, domerrs.NewBllNotFoundError("UserAdminSaveInteractor.Save", "User", model.ID, err)
 		}
-		if errors.As(err, new(*errs.DalAlreadyExistsError)) {
+		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
 			return nil, domerrs.NewBllUniqueError("UserAdminSaveInteractor.Save", "User", model.ID, err)
 		}
 
