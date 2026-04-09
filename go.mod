@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/ElfAstAhe/go-service-template v0.0.42
-	github.com/ElfAstAhe/tiny-audit-service v0.0.4
+	github.com/ElfAstAhe/tiny-audit-service v0.0.6
 	github.com/XSAM/otelsql v0.42.0
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-openapi/errors v0.22.7

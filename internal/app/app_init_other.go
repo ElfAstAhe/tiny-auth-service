@@ -132,6 +132,10 @@ func (app *App) initMetrics() error {
 }
 
 func (app *App) initStartupServices() error {
+	// token refresher
+	if err := app.tokenRefresher.Start(app.ctx); err != nil {
+		return errs.NewCommonError("start token refresher failed", err)
+	}
 	// auth audit
 	if err := app.authAuditClient.Start(app.ctx); err != nil {
 		return errs.NewCommonError("start auth audit client failed", err)

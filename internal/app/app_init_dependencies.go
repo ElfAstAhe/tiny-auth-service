@@ -49,6 +49,8 @@ func (app *App) initDependencies() error {
 		roleAdminListUC      usecase.RoleAdminListUseCase
 		roleAdminSaveUC      usecase.RoleAdminSaveUseCase
 		roleAdminDeleteUC    usecase.RoleAdminDeleteUseCase
+
+		tokenRefresher *worker.TokenRefresher
 	)
 	// repositories
 	{
@@ -176,7 +178,7 @@ func (app *App) initDependencies() error {
 		if err != nil {
 			return errs.NewCommonError("create auth audit config failed", err)
 		}
-		app.authAuditClient = rest.NewAuthAuditClient(authAuditConf, nil, app.logger)
+		app.authAuditClient = rest.NewAuthAuditClient(authAuditConf, tokenRefresher, app.logger)
 
 		// data audit
 		dataAuditConf, err := rest.NewAuditClientConfig(
@@ -191,7 +193,7 @@ func (app *App) initDependencies() error {
 		if err != nil {
 			return errs.NewCommonError("create data audit config failed", err)
 		}
-		app.dataAuditClient = rest.NewDataAuditClient(dataAuditConf, nil, app.logger)
+		app.dataAuditClient = rest.NewDataAuditClient(dataAuditConf, tokenRefresher, app.logger)
 	}
 
 	return nil

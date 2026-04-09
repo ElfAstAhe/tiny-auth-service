@@ -58,6 +58,7 @@ build: gen-proto gen-swagger gen-http-client gen-mocks
 # Запуск проекта (сначала соберет, потом запустит)
 run: build
 	./bin/$(SERVER_BINARY_NAME) \
+        --log-level "debug" \
 		--http-address "localhost:8080" \
 		--grpc-address "localhost:50051" \
 		--db-driver "postgres" \
@@ -68,6 +69,7 @@ run: build
 		--app-max-list-limit 500 \
 		--svc-creds-username "svc_auth" \
 		--svc-creds-password "password" \
+		--svc-creds-schedule-interval "25s" \
 		--auth-audit-client-base-url "http://localhost:8081/" \
 		--auth-audit-client-timeout "5s" \
 		--auth-audit-client-worker-count "4" \
