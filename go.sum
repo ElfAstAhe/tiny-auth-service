@@ -1,7 +1,7 @@
 github.com/ElfAstAhe/go-service-template v0.0.43 h1:Hx0T3/TMfBQ8WtjfsSf0LL6O9RcHM5komE1Rr79A6hM=
 github.com/ElfAstAhe/go-service-template v0.0.43/go.mod h1:rusox2+AQX6jbqQNSMFiuW3bTKyVGi8wqtgbGxObqRo=
-github.com/ElfAstAhe/tiny-audit-service v0.0.10 h1:a7M2tmO0DNIoHVGC6SNN/mvx7KFsihfpPSLYNvGaOQ8=
-github.com/ElfAstAhe/tiny-audit-service v0.0.10/go.mod h1:JPZ/Qtl1525EvpxgM0BBrWFd6zT5ZcqhaZNentAj8vs=
+github.com/ElfAstAhe/tiny-audit-service v0.0.11 h1:lBmRFl4p83rczbGUohXOttcJGsJZgn3KTmgylZe1Wrg=
+github.com/ElfAstAhe/tiny-audit-service v0.0.11/go.mod h1:BWE7OH4dKmgt2qXKzhlsRh2HMPRCSLvzQ6WqsrSAXkQ=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/XSAM/otelsql v0.42.0 h1:Li0xF4eJUxG2e0x3D4rvRlys1f27yJKvjTh7ljkUP5o=
