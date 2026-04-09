@@ -7,6 +7,7 @@ import (
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/audit"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
@@ -116,39 +117,9 @@ func (app *App) initDependencies() error {
 		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, app.hashCipher, app.keysHelper, userAdminRepo))
 		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("UserAdminDeleteUseCase", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
 	}
-	// facades
-	{
-		// auth
-		app.authFacade = facade.NewAuthFacade(app.jwtHelper, loginUC, loginSimpleUC)
-		app.userFacade = facade.NewUserFacade(
-			app.authHelper,
-			registerUC,
-			profileUC,
-			changePasswordUC,
-			changeKeysUC,
-		)
-		app.roleAdminFacade = facade.NewRoleAdminFacade(
-			app.authHelper,
-			roleAdminGetUC,
-			roleAdminGetByNameUC,
-			roleAdminListUC,
-			roleAdminSaveUC,
-			roleAdminDeleteUC,
-			app.config.App.MaxListLimit,
-		)
-		app.userAdminFacade = facade.NewUserAdminFacade(
-			app.authHelper,
-			userAdminGetUC,
-			userAdminGetByNameUC,
-			userAdminListUC,
-			userAdminSaveUC,
-			userAdminDeleteUC,
-			app.config.App.MaxListLimit,
-		)
-	}
 	// workers
 	{
-		tokenRefresher := worker.NewTokenRefresher(
+		tokenRefresher = worker.NewTokenRefresher(
 			app.jwtHelper,
 			loginSimpleUC,
 			app.config.Credentials,
@@ -194,6 +165,43 @@ func (app *App) initDependencies() error {
 			return errs.NewCommonError("create data audit config failed", err)
 		}
 		app.dataAuditClient = rest.NewDataAuditClient(dataAuditConf, tokenRefresher, app.logger)
+	}
+	// facades
+	{
+		// auth
+		app.authFacade = audit.NewAuthFacade(
+			app.authAuditClient,
+			facade.NewAuthFacade(
+				app.jwtHelper,
+				loginUC,
+				loginSimpleUC,
+			),
+		)
+		app.userFacade = facade.NewUserFacade(
+			app.authHelper,
+			registerUC,
+			profileUC,
+			changePasswordUC,
+			changeKeysUC,
+		)
+		app.roleAdminFacade = facade.NewRoleAdminFacade(
+			app.authHelper,
+			roleAdminGetUC,
+			roleAdminGetByNameUC,
+			roleAdminListUC,
+			roleAdminSaveUC,
+			roleAdminDeleteUC,
+			app.config.App.MaxListLimit,
+		)
+		app.userAdminFacade = facade.NewUserAdminFacade(
+			app.authHelper,
+			userAdminGetUC,
+			userAdminGetByNameUC,
+			userAdminListUC,
+			userAdminSaveUC,
+			userAdminDeleteUC,
+			app.config.App.MaxListLimit,
+		)
 	}
 
 	return nil
