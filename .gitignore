@@ -34,3 +34,5 @@ go.work.sum
 /vendor/
 /.run/
 /bin/
+/cmd/grpc-client-test/grpc-client-test
+/scripts/working_area.sql
