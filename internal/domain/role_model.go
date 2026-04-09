@@ -1,9 +1,13 @@
 package domain
 
 import (
+	"hash/fnv"
+	"strconv"
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
+	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
@@ -18,6 +22,7 @@ type Role struct {
 
 var _ domain.Entity[string] = (*Role)(nil)
 var _ domain.SoftDeleteEntity[bool] = (*Role)(nil)
+var _ auditdomain.Auditable = (*Role)(nil)
 
 func NewEmptyRole() *Role {
 	return &Role{}
@@ -97,4 +102,53 @@ func (r *Role) ValidateChange() error {
 	}
 
 	return nil
+}
+
+func (r *Role) GetInternalTypeName() string {
+	return utils.GetFullTypeName(r)
+}
+
+func (r *Role) GetTypeName() string {
+	return "Role"
+}
+
+func (r *Role) GetTypeDescription() string {
+	return "Role model"
+}
+
+func (r *Role) GetInstanceID() string {
+	return r.ID
+}
+
+func (r *Role) GetInstanceName() string {
+	return r.Name
+}
+
+func (r *Role) HashCode() uint32 {
+	h := fnv.New32a()
+
+	h.Write([]byte(r.ID))
+	h.Write([]byte(r.Name))
+	if r.Deleted {
+		h.Write([]byte{1})
+	} else {
+		h.Write([]byte{0})
+	}
+	h.Write([]byte(r.CreatedAt.Format(time.RFC3339)))
+	h.Write([]byte(r.UpdatedAt.Format(time.RFC3339)))
+
+	return h.Sum32()
+}
+
+func (r *Role) ToAuditMap() map[string]string {
+	res := make(map[string]string)
+
+	res["id"] = r.ID
+	res["name"] = r.Name
+	res["description"] = r.Description
+	res["deleted"] = strconv.FormatBool(r.Deleted)
+	res["created_at"] = r.CreatedAt.Format(time.RFC3339)
+	res["updated_at"] = r.UpdatedAt.Format(time.RFC3339)
+
+	return res
 }
