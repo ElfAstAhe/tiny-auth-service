@@ -10,6 +10,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/api/http/audit/v1/models"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
@@ -70,7 +71,10 @@ type App struct {
 	userAdminFacade facade.UserAdminFacade
 	userFacade      facade.UserFacade
 
-	// services
+	// workers
+	tokenRefresher worker.Scheduler
+
+	// clients
 	authAuditClient rest.AuditClient[*models.AuthAuditDTO]
 	dataAuditClient rest.AuditClient[*models.DataAuditDTO]
 }

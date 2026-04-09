@@ -12,6 +12,12 @@ const (
 	defaultDefShutdownTimeout time.Duration = 15 * time.Second
 )
 
+// creds
+const (
+	defaultCredsScheduleInterval      time.Duration = 5 * time.Minute
+	defaultCredsErrorScheduleInterval time.Duration = 3 * time.Second
+)
+
 // audit client
 const (
 	defaultAuditClientTimeout            time.Duration = 5 * time.Second
@@ -32,8 +38,10 @@ const (
 
 // service credentials
 const (
-	keySvcCredsUsername string = "svc_creds.username"
-	keySvcCredsPassword string = "svc_creds.password"
+	keySvcCredsUsername              string = "svc_creds.username"
+	keySvcCredsPassword              string = "svc_creds.password"
+	keySvcCredsScheduleInterval      string = "svc_creds.schedule_interval"
+	keySvcCredsErrorScheduleInterval string = "svc_creds.error_schedule_interval"
 )
 
 // auth audit client
