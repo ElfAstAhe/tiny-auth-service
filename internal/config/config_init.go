@@ -20,6 +20,10 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyAppTokenIssuer, defaultTokenIssuer)
 	v.SetDefault(keyAppDefShutdownTimeout, defaultDefShutdownTimeout)
 
+	// creds
+	v.SetDefault(keySvcCredsScheduleInterval, defaultCredsScheduleInterval)
+	v.SetDefault(keySvcCredsErrorScheduleInterval, defaultCredsErrorScheduleInterval)
+
 	// auth-audit-client
 	v.SetDefault(keyAuthAuditClientTimeout, defaultAuditClientTimeout)
 	v.SetDefault(keyAuthAuditClientWorkerCount, defaultAuditClientWorkerCount)
@@ -104,8 +108,10 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagAppDefShutdownTimeout, defaultDefShutdownTimeout, "default shutdown timeout")
 
 		// svc-creds
-		res.String(FlagCredsUsername, "", "auth service client username")
-		res.String(FlagCredsPassword, "", "auth service client password")
+		res.String(FlagCredsUsername, "", "client token refresher username")
+		res.String(FlagCredsPassword, "", "client token refresher password")
+		res.Duration(FlagCredsScheduleInterval, defaultCredsScheduleInterval, "client token refresher schedule interval")
+		res.Duration(FlagCredsErrorScheduleInterval, defaultCredsErrorScheduleInterval, "client token refresher error schedule interval")
 
 		// auth-audit-client
 		res.String(FlagAuthAuditClientBaseURL, "", "auth audit service base url")
@@ -192,6 +198,8 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		// svc-creds
 		v.BindPFlag(keySvcCredsUsername, flags.Lookup(FlagCredsUsername)),
 		v.BindPFlag(keySvcCredsPassword, flags.Lookup(FlagCredsPassword)),
+		v.BindPFlag(keySvcCredsScheduleInterval, flags.Lookup(FlagCredsScheduleInterval)),
+		v.BindPFlag(keySvcCredsErrorScheduleInterval, flags.Lookup(FlagCredsErrorScheduleInterval)),
 		// auth-audit-client
 		v.BindPFlag(keyAuthAuditClientBaseURL, flags.Lookup(FlagAuthAuditClientBaseURL)),
 		v.BindPFlag(keyAuthAuditClientTimeout, flags.Lookup(FlagAuthAuditClientTimeout)),

@@ -3,14 +3,16 @@ package app
 import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
+	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
+	pkgworker "github.com/ElfAstAhe/tiny-auth-service/pkg/transport/worker"
 )
 
 //goland:noinspection DuplicatedCode
@@ -142,13 +144,30 @@ func (app *App) initDependencies() error {
 			app.config.App.MaxListLimit,
 		)
 	}
+	// workers
+	{
+		tokenRefresher := worker.NewTokenRefresher(
+			app.jwtHelper,
+			loginSimpleUC,
+			app.config.Credentials,
+			pkgworker.NewBaseTokenRefresherConfig(
+				libworker.NewBaseSchedulerConfig(
+					0,
+					app.config.Credentials.ScheduleInterval,
+				),
+				app.config.Credentials.ErrorScheduleInterval,
+			),
+			app.logger,
+		)
+		app.tokenRefresher = tokenRefresher
+	}
 	// clients
 	{
 		// auth audit
 		authAuditConf, err := rest.NewAuditClientConfig(
 			app.config.AuthAuditClient.BaseURL,
 			app.config.AuthAuditClient.Timeout,
-			worker.NewBasePoolConfig(
+			libworker.NewBasePoolConfig(
 				app.config.AuthAuditClient.WorkerCount,
 				app.config.AuthAuditClient.DataCapacity,
 				app.config.AuthAuditClient.CompleteProcessing,
@@ -163,7 +182,7 @@ func (app *App) initDependencies() error {
 		dataAuditConf, err := rest.NewAuditClientConfig(
 			app.config.DataAuditClient.BaseURL,
 			app.config.DataAuditClient.Timeout,
-			worker.NewBasePoolConfig(
+			libworker.NewBasePoolConfig(
 				app.config.DataAuditClient.WorkerCount,
 				app.config.DataAuditClient.DataCapacity,
 				app.config.DataAuditClient.CompleteProcessing,

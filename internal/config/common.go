@@ -14,8 +14,10 @@ const (
 
 // Creds
 const (
-	FlagCredsUsername string = "svc-creds-username"
-	FlagCredsPassword string = "svc-creds-password"
+	FlagCredsUsername              string = "svc-creds-username"
+	FlagCredsPassword              string = "svc-creds-password"
+	FlagCredsScheduleInterval      string = "svc-creds-schedule-interval"
+	FlagCredsErrorScheduleInterval string = "svc-creds-error-schedule-interval"
 )
 
 // Auth-audit-client
