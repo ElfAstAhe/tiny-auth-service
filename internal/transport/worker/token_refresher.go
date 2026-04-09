@@ -59,5 +59,7 @@ func (tr *TokenRefresher) tokenRefreshAction(ctx context.Context, eventTime time
 		return "", err
 	}
 
+	tr.GetLogger().Debugf("token refresher timer event %s got new access token [%s]", eventTime.Format(time.DateTime), tokenStr)
+
 	return tokenStr, nil
 }

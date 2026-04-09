@@ -1,7 +1,10 @@
 package domain
 
 import (
+	"fmt"
 	"hash/fnv"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
@@ -131,8 +134,12 @@ func (u *User) validateCommon() error {
 	return nil
 }
 
+func (u *User) GetInternalTypeName() string {
+	return utils.GetFullTypeName(u)
+}
+
 func (u *User) GetTypeName() string {
-	return utils.GetTypeName(u)
+	return "User"
 }
 
 func (u *User) GetTypeDescription() string {
@@ -156,16 +163,8 @@ func (u *User) HashCode() uint32 {
 	h.Write([]byte(u.PasswordHash))
 	h.Write([]byte(u.PublicKey))
 	h.Write([]byte(u.PrivateKey))
-	if u.Active {
-		h.Write([]byte{1})
-	} else {
-		h.Write([]byte{0})
-	}
-	if u.Deleted {
-		h.Write([]byte{1})
-	} else {
-		h.Write([]byte{0})
-	}
+	h.Write([]byte(strconv.FormatBool(u.Active)))
+	h.Write([]byte(strconv.FormatBool(u.Deleted)))
 	h.Write([]byte(u.CreatedAt.Format(time.RFC3339)))
 	h.Write([]byte(u.UpdatedAt.Format(time.RFC3339)))
 
@@ -179,6 +178,25 @@ func (u *User) HashCode() uint32 {
 }
 
 func (u *User) ToAuditMap() map[string]string {
-	//TODO implement me
-	panic("implement me")
+	res := make(map[string]string)
+
+	res["id"] = u.ID
+	res["name"] = u.Name
+	res["type"] = u.Type
+	res["password_hash"] = u.PasswordHash
+	res["public_key"] = u.PublicKey
+	res["private_key"] = u.PrivateKey
+	res["active"] = strconv.FormatBool(u.Active)
+	res["deleted"] = strconv.FormatBool(u.Deleted)
+	res["created_at"] = u.CreatedAt.Format(time.RFC3339)
+	res["updated_at"] = u.UpdatedAt.Format(time.RFC3339)
+
+	roles := make([]string, 0, len(u.Roles))
+	for _, role := range u.Roles {
+		roles = append(roles, fmt.Sprintf("%s.%s", role.ID, role.Name))
+	}
+	slices.Sort(roles)
+	res["roles"] = strings.Join(roles, ",")
+
+	return res
 }

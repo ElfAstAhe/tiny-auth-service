@@ -5,6 +5,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 )
 
 // Close - метод освобождения ресурсов приложения
@@ -59,7 +61,7 @@ func (app *App) stopStartup() {
 	log := app.logger.GetLogger("App.stopStartup")
 	var stopWG sync.WaitGroup
 
-	if app.authAuditClient != nil {
+	if !utils.IsNil(app.authAuditClient) {
 		stopWG.Add(1)
 		go func() {
 			defer stopWG.Done()
@@ -74,7 +76,7 @@ func (app *App) stopStartup() {
 		}()
 	}
 
-	if app.dataAuditClient != nil {
+	if !utils.IsNil(app.dataAuditClient) {
 		stopWG.Add(1)
 		go func() {
 			defer stopWG.Done()
@@ -88,7 +90,6 @@ func (app *App) stopStartup() {
 		}()
 	}
 
-	log.Info("close telemetry service")
 	if app.telemetryShutdown != nil {
 		stopWG.Add(1)
 		go func() {
@@ -107,6 +108,20 @@ func (app *App) stopStartup() {
 			}
 
 			app.telemetryShutdown = nil
+		}()
+	}
+
+	if !utils.IsNil(app.tokenRefresher) {
+		stopWG.Add(1)
+		go func() {
+			defer stopWG.Done()
+			log.Info("stoping token refresher...")
+			defer log.Info("done stop token refresher")
+
+			if err := app.tokenRefresher.Stop(app.config.App.DefShutdownTimeout); err != nil {
+				log.Errorf("failed to stop token refresher [%v]", err)
+			}
+			app.tokenRefresher = nil
 		}()
 	}
 
