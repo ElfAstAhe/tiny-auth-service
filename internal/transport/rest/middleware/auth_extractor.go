@@ -5,17 +5,17 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport"
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 )
 
 type AuthExtractor struct {
 	authHelper     auth.Helper
 	log            logger.Logger
-	ignorancePaths *transport.HTTPPathMatchers
+	ignorancePaths *libhttp.PathMatchers
 }
 
 func NewAuthExtractor(
-	ignorancePaths *transport.HTTPPathMatchers,
+	ignorancePaths *libhttp.PathMatchers,
 	authHelper auth.Helper,
 	logger logger.Logger,
 ) *AuthExtractor {

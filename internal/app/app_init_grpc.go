@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libgrpcintercept "github.com/ElfAstAhe/go-service-template/pkg/transport/grpc/interceptors"
+	auditlibgrpcintercept "github.com/ElfAstAhe/tiny-audit-service/pkg/transport/interceptor"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc/interceptor"
 	pb "github.com/ElfAstAhe/tiny-auth-service/pkg/api/grpc/tiny-auth-service/v1"
@@ -29,6 +31,7 @@ func (app *App) initGRPCService() error {
 	return nil
 }
 
+//goland:noinspection DuplicatedCode
 func (app *App) initGRPCServer() error {
 	// Настраиваем KeepAlive на основе твоего GRPCConfig
 	kasp := keepalive.ServerParameters{
@@ -99,6 +102,28 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			libgrpcintercept.RequestIDExtractorUSInterceptor([]string{
+				libgrpcintercept.MDXRequestID,
+				libgrpcintercept.MDXCorrelationID,
+				libgrpcintercept.MDRequestID,
+			}),
+			libgrpcintercept.TraceIDExtractorUSInterceptor([]string{
+				libgrpcintercept.MDXCloudTraceContext,
+				libgrpcintercept.MDTraceParent,
+				libgrpcintercept.MDXTraceID,
+				libgrpcintercept.MDTraceID,
+			}),
+			auditlibgrpcintercept.AuditRequestIDExtractorUnaryServerInterceptor([]string{
+				auditlibgrpcintercept.MDXRequestID,
+				auditlibgrpcintercept.MDXCorrelationID,
+				auditlibgrpcintercept.MDRequestID,
+			}),
+			auditlibgrpcintercept.AuditTraceIDExtractorUnaryServerInterceptor([]string{
+				auditlibgrpcintercept.MDXCloudTraceContext,
+				auditlibgrpcintercept.MDTraceParent,
+				auditlibgrpcintercept.MDXTraceID,
+				auditlibgrpcintercept.MDTraceID,
+			}),
 			authExtractor.UnaryServerInterceptor,
 			recovery.UnaryServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),
@@ -107,6 +132,28 @@ func (app *App) initGRPCServer() error {
 				grpcprom.WithExemplarFromContext(exemplarFromContext),
 				grpcprom.WithLabelsFromContext(labelsFromContext),
 			),
+			libgrpcintercept.RequestIDExtractorSSInterceptor([]string{
+				libgrpcintercept.MDXRequestID,
+				libgrpcintercept.MDXCorrelationID,
+				libgrpcintercept.MDRequestID,
+			}),
+			libgrpcintercept.TraceIDExtractorSSInterceptor([]string{
+				libgrpcintercept.MDXCloudTraceContext,
+				libgrpcintercept.MDTraceParent,
+				libgrpcintercept.MDXTraceID,
+				libgrpcintercept.MDTraceID,
+			}),
+			auditlibgrpcintercept.AuditRequestIDExtractorStreamServerInterceptor([]string{
+				auditlibgrpcintercept.MDXRequestID,
+				auditlibgrpcintercept.MDXCorrelationID,
+				auditlibgrpcintercept.MDRequestID,
+			}),
+			auditlibgrpcintercept.AuditTraceIDExtractorStreamServerInterceptor([]string{
+				auditlibgrpcintercept.MDXCloudTraceContext,
+				auditlibgrpcintercept.MDTraceParent,
+				auditlibgrpcintercept.MDXTraceID,
+				auditlibgrpcintercept.MDTraceID,
+			}),
 			authExtractor.StreamServerInterceptor,
 			recovery.StreamServerInterceptor(recovery.WithRecoveryHandler(grpcPanicRecoveryHandler)),
 		),

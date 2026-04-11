@@ -9,11 +9,10 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport"
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/api/http/audit/v1/models"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	grpcsvc "github.com/ElfAstAhe/tiny-auth-service/internal/transport/grpc"
@@ -55,7 +54,7 @@ type App struct {
 	tm db.TransactionManager
 
 	// http
-	httpRouter transport.HTTPRouter
+	httpRouter libhttp.Router
 	httpServer *http.Server
 
 	// gRPC
@@ -75,8 +74,8 @@ type App struct {
 	tokenRefresher worker.Scheduler
 
 	// clients
-	authAuditClient rest.AuditClient[*models.AuthAuditDTO]
-	dataAuditClient rest.AuditClient[*models.DataAuditDTO]
+	authAuditClient client.AuthAuditClient
+	dataAuditClient client.DataAuditClient
 }
 
 func NewApp(config *config.Config, logger logger.Logger) *App {
