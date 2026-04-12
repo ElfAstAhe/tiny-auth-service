@@ -41,7 +41,7 @@ func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*Role
 		}).
 		Build()
 	// callbacks
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, _ := repository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithAfterFind(res.afterFind).
@@ -53,6 +53,7 @@ func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*Role
 		WithBeforeChange(res.beforeChange).
 		WithChanger(res.changer).
 		Build()
+
 	// base CRUD
 	base, err := repository.NewBaseCRUDRepository[*domain.Role, string](
 		executor,

@@ -6,9 +6,9 @@ import (
 )
 
 func ToSubjectRoles(roles []*domain.Role) []string {
-	res := make([]string, len(roles), len(roles))
-	for index, role := range roles {
-		res[index] = role.Name
+	res := make([]string, 0, len(roles))
+	for _, role := range roles {
+		res = append(res, role.Name)
 	}
 
 	return res

@@ -49,7 +49,7 @@ func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher
 		}).
 		Build()
 	// callbacks
-	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, _ := librepository.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).

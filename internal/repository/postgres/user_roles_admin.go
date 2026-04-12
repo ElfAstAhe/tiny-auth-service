@@ -63,6 +63,9 @@ func NewUserRolesAdminPgRepository(exec db.Executor, errDecipher db.ErrorDeciphe
 		repository.LinkStrategyManyToMany,
 		nil,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	res.BaseOwnedRepository = base
 

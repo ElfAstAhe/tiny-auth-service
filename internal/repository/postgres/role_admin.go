@@ -14,7 +14,6 @@ import (
 
 type RoleAdminPgRepository struct {
 	*librepository.BaseCRUDRepository[*domain.Role, string]
-	userRolesRepo domain.UserRolesAdminRepository
 }
 
 var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleAdminPgRepository)(nil)
@@ -42,7 +41,7 @@ func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (
 		}).
 		Build()
 	// callbacks
-	callbacks, err := librepository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, _ := librepository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithValidateCreate(res.validateCreate).
