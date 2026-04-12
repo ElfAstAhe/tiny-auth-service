@@ -1,4 +1,4 @@
-package repository
+package trace
 
 import (
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"

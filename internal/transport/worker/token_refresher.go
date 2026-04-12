@@ -4,9 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/ElfAstAhe/tiny-auth-service/pkg/transport/auth"
@@ -49,6 +51,10 @@ func (tr *TokenRefresher) tokenRefreshAction(ctx context.Context, eventTime time
 	tr.GetLogger().Debugf("token refresher timer event %s start", eventTime.Format(time.DateTime))
 	defer tr.GetLogger().Debugf("token refresher timer event %s finish", eventTime.Format(time.DateTime))
 
+	if utils.IsNil(tr.loginSimpleUC) {
+		return "", errs.NewCommonError("login use case not provided", nil)
+	}
+
 	token, _, err := tr.loginSimpleUC.Login(ctx, tr.creds.Username, tr.creds.Password)
 	if err != nil {
 		return "", err
@@ -62,4 +68,8 @@ func (tr *TokenRefresher) tokenRefreshAction(ctx context.Context, eventTime time
 	tr.GetLogger().Debugf("token refresher timer event %s got new access token [%s]", eventTime.Format(time.DateTime), tokenStr)
 
 	return tokenStr, nil
+}
+
+func (tr *TokenRefresher) SetSimpleLoginUC(useCase usecase.LoginSimpleUseCase) {
+	tr.loginSimpleUC = useCase
 }

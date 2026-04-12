@@ -1,15 +1,19 @@
 package app
 
 import (
+	"time"
+
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/audit"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
+	authaudit "github.com/ElfAstAhe/tiny-auth-service/internal/facade/audit"
+	dataaudit "github.com/ElfAstAhe/tiny-auth-service/internal/repository/audit"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/metrics"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/trace"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
@@ -53,79 +57,15 @@ func (app *App) initDependencies() error {
 
 		tokenRefresher *worker.TokenRefresher
 	)
-	// repositories
-	{
-		// role repo
-		roleRepo, err = postgres.NewRolePgRepository(app.db, app.db)
-		if err != nil {
-			return err
-		}
-		roleRepo = repository.NewRoleTraceRepository(repository.NewRoleMetricsRepository(roleRepo))
-
-		// user roles repo
-		userRolesRepo, err = postgres.NewUserRolesPgRepository(app.db, app.db)
-		if err != nil {
-			return err
-		}
-		// user roles metrics repo
-		userRolesRepo = repository.NewUserRolesTraceRepository(repository.NewUserRolesMetricsRepository(userRolesRepo))
-		// user repo
-		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.hashCipher, app.cipherHelper, userRolesRepo)
-		if err != nil {
-			return err
-		}
-		userRepo = repository.NewUserTraceRepository(repository.NewUserMetricsRepository(userRepo))
-		// role admin repo
-		roleAdminRepo, err = postgres.NewRoleAdminPgRepository(app.db, app.db)
-		if err != nil {
-			return err
-		}
-		roleAdminRepo = repository.NewRoleAdminTraceRepository(repository.NewRoleAdminMetricsRepository(roleAdminRepo))
-		// user roles admin repo
-		userRolesAdminRepo, err = postgres.NewUserRolesAdminPgRepository(app.db, app.db)
-		if err != nil {
-			return err
-		}
-		userRolesAdminRepo = repository.NewUserRolesAdminTraceRepository(repository.NewUserRolesAdminMetricsRepository(userRolesAdminRepo))
-		// user admin repo
-		userAdminRepo, err = postgres.NewUserAdminPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesAdminRepo)
-		if err != nil {
-			return err
-		}
-		userAdminRepo = repository.NewUserAdminTraceRepository(repository.NewUserAdminMetricsRepository(userAdminRepo))
-	}
-	// use cases
-	{
-		// auth
-		loginUC = telemetry.NewLoginTraceUseCase("LoginUseCase", usecase.NewLoginUseCase(app.hashCipher, app.keysHelper, app.authHelper, userRepo))
-		loginSimpleUC = telemetry.NewLoginSimpleTraceUseCase("LoginSimpleUseCase", usecase.NewLoginSimpleUseCase(app.hashCipher, app.authHelper, userRepo))
-		// users
-		registerUC = telemetry.NewRegisterTraceUseCase("RegisterUseCase", usecase.NewRegisterUseCase(app.tm, app.hashCipher, app.keysHelper, userRepo))
-		profileUC = telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepo))
-		changeKeysUC = telemetry.NewChangeKeysTraceUseCase("ChangeKeysUseCase", usecase.NewChangeKeysUseCase(app.keysHelper, app.tm, userRepo))
-		changePasswordUC = telemetry.NewChangePasswordTraceUseCase("ChangePasswordUseCase", usecase.NewChangePasswordUseCase(app.hashCipher, app.tm, userRepo))
-		// role admin
-		roleAdminGetUC = telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepo))
-		roleAdminGetByNameUC = telemetry.NewROleAdminGetNameTraceUseCase("RoleAdminGetNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepo))
-		roleAdminListUC = telemetry.NewRoleAdminListTraceUseCase("RoleAdminListUseCase", usecase.NewRoleAdminListUseCase(roleAdminRepo, app.config.App.MaxListLimit))
-		roleAdminSaveUC = telemetry.NewRoleAdminSaveTraceUseCase("RoleAdminSaveUseCase", usecase.NewRoleAdminSaveUseCase(app.tm, roleAdminRepo))
-		roleAdminDeleteUC = telemetry.NewRoleAdminDeleteTraceUseCase("RoleAdminDeleteUseCase", usecase.NewRoleAdminDeleteUseCase(app.tm, roleAdminRepo))
-		// user admin
-		userAdminGetUC = telemetry.NewUserAdminGetTraceUseCase("UserAdminGetUseCase", usecase.NewUserAdminGetUseCase(userAdminRepo))
-		userAdminGetByNameUC = telemetry.NewUserAdminGetNameTraceUseCase("UserAdminGetNameUseCase", usecase.NewUserAdminGetNameUseCase(userAdminRepo))
-		userAdminListUC = telemetry.NewUserAdminListTraceUseCase("UserAdminListUseCase", usecase.NewUserAdminListUseCase(userAdminRepo, app.config.App.MaxListLimit))
-		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, app.hashCipher, app.keysHelper, userAdminRepo))
-		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("UserAdminDeleteUseCase", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
-	}
 	// workers
 	{
 		tokenRefresher = worker.NewTokenRefresher(
 			app.jwtHelper,
-			loginSimpleUC,
+			nil, // <--- setup at the end
 			app.config.Credentials,
 			pkgworker.NewBaseTokenRefresherConfig(
 				libworker.NewBaseSchedulerConfig(
-					0,
+					100*time.Millisecond,
 					app.config.Credentials.ScheduleInterval,
 				),
 				app.config.Credentials.ErrorScheduleInterval,
@@ -166,10 +106,97 @@ func (app *App) initDependencies() error {
 		}
 		app.dataAuditClient = rest.NewDataAuditClient(dataAuditConf, tokenRefresher, app.logger)
 	}
+	// repositories
+	{
+		// role repo
+		roleRepo, err = postgres.NewRolePgRepository(app.db, app.db)
+		if err != nil {
+			return err
+		}
+		roleRepo = dataaudit.NewRoleRepository(
+			"tiny-auth-service",
+			trace.NewRoleTraceRepository(metrics.NewRoleMetricsRepository(roleRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
+		// user roles repo
+		userRolesRepo, err = postgres.NewUserRolesPgRepository(app.db, app.db)
+		if err != nil {
+			return err
+		}
+		// user roles metrics repo
+		userRolesRepo = trace.NewUserRolesTraceRepository(metrics.NewUserRolesMetricsRepository(userRolesRepo))
+		// user repo
+		userRepo, err = postgres.NewUserPgRepository(app.db, app.db, app.hashCipher, app.cipherHelper, userRolesRepo)
+		if err != nil {
+			return err
+		}
+		userRepo = dataaudit.NewUserRepository(
+			"tiny-auth-service",
+			trace.NewUserTraceRepository(metrics.NewUserMetricsRepository(userRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
+		// role admin repo
+		roleAdminRepo, err = postgres.NewRoleAdminPgRepository(app.db, app.db)
+		if err != nil {
+			return err
+		}
+		roleAdminRepo = dataaudit.NewRoleAdminRepository(
+			"tiny-auth-service",
+			trace.NewRoleAdminTraceRepository(metrics.NewRoleAdminMetricsRepository(roleAdminRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
+		// user roles admin repo
+		userRolesAdminRepo, err = postgres.NewUserRolesAdminPgRepository(app.db, app.db)
+		if err != nil {
+			return err
+		}
+		userRolesAdminRepo = trace.NewUserRolesAdminTraceRepository(metrics.NewUserRolesAdminMetricsRepository(userRolesAdminRepo))
+		// user admin repo
+		userAdminRepo, err = postgres.NewUserAdminPgRepository(app.db, app.db, app.cipherHelper, app.hashCipher, userRolesAdminRepo)
+		if err != nil {
+			return err
+		}
+		userAdminRepo = dataaudit.NewUserAdminRepository(
+			"tiny-auth-service",
+			trace.NewUserAdminTraceRepository(metrics.NewUserAdminMetricsRepository(userAdminRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
+	}
+	// use cases
+	{
+		// auth
+		loginUC = telemetry.NewLoginTraceUseCase("LoginUseCase", usecase.NewLoginUseCase(app.hashCipher, app.keysHelper, app.authHelper, userRepo))
+		loginSimpleUC = telemetry.NewLoginSimpleTraceUseCase("LoginSimpleUseCase", usecase.NewLoginSimpleUseCase(app.hashCipher, app.authHelper, userRepo))
+		// users
+		registerUC = telemetry.NewRegisterTraceUseCase("RegisterUseCase", usecase.NewRegisterUseCase(app.tm, app.hashCipher, app.keysHelper, userRepo))
+		profileUC = telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepo))
+		changeKeysUC = telemetry.NewChangeKeysTraceUseCase("ChangeKeysUseCase", usecase.NewChangeKeysUseCase(app.keysHelper, app.tm, userRepo))
+		changePasswordUC = telemetry.NewChangePasswordTraceUseCase("ChangePasswordUseCase", usecase.NewChangePasswordUseCase(app.hashCipher, app.tm, userRepo))
+		// role admin
+		roleAdminGetUC = telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepo))
+		roleAdminGetByNameUC = telemetry.NewROleAdminGetNameTraceUseCase("RoleAdminGetNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepo))
+		roleAdminListUC = telemetry.NewRoleAdminListTraceUseCase("RoleAdminListUseCase", usecase.NewRoleAdminListUseCase(roleAdminRepo, app.config.App.MaxListLimit))
+		roleAdminSaveUC = telemetry.NewRoleAdminSaveTraceUseCase("RoleAdminSaveUseCase", usecase.NewRoleAdminSaveUseCase(app.tm, roleAdminRepo))
+		roleAdminDeleteUC = telemetry.NewRoleAdminDeleteTraceUseCase("RoleAdminDeleteUseCase", usecase.NewRoleAdminDeleteUseCase(app.tm, roleAdminRepo))
+		// user admin
+		userAdminGetUC = telemetry.NewUserAdminGetTraceUseCase("UserAdminGetUseCase", usecase.NewUserAdminGetUseCase(userAdminRepo))
+		userAdminGetByNameUC = telemetry.NewUserAdminGetNameTraceUseCase("UserAdminGetNameUseCase", usecase.NewUserAdminGetNameUseCase(userAdminRepo))
+		userAdminListUC = telemetry.NewUserAdminListTraceUseCase("UserAdminListUseCase", usecase.NewUserAdminListUseCase(userAdminRepo, app.config.App.MaxListLimit))
+		userAdminSaveUC = telemetry.NewUserAdminSaveTraceUseCase("UserAdminSaveUseCase", usecase.NewUserAdminSaveUseCase(app.tm, app.hashCipher, app.keysHelper, userAdminRepo))
+		userAdminDeleteUC = telemetry.NewUserAdminDeleteTraceUseCase("UserAdminDeleteUseCase", usecase.NewUserAdminDeleteUseCase(app.tm, userAdminRepo))
+	}
+	// workers post setup
+	{
+		tokenRefresher.SetSimpleLoginUC(loginSimpleUC)
+	}
 	// facades
 	{
 		// auth
-		app.authFacade = audit.NewAuthFacade(
+		app.authFacade = authaudit.NewAuthFacade(
 			app.authAuditClient,
 			"tiny-auth-service",
 			facade.NewAuthFacade(
@@ -178,6 +205,7 @@ func (app *App) initDependencies() error {
 				loginSimpleUC,
 			),
 		)
+		// user
 		app.userFacade = facade.NewUserFacade(
 			app.authHelper,
 			registerUC,
@@ -185,6 +213,7 @@ func (app *App) initDependencies() error {
 			changePasswordUC,
 			changeKeysUC,
 		)
+		// role admin
 		app.roleAdminFacade = facade.NewRoleAdminFacade(
 			app.authHelper,
 			roleAdminGetUC,
@@ -194,6 +223,7 @@ func (app *App) initDependencies() error {
 			roleAdminDeleteUC,
 			app.config.App.MaxListLimit,
 		)
+		// user admin
 		app.userAdminFacade = facade.NewUserAdminFacade(
 			app.authHelper,
 			userAdminGetUC,
