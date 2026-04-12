@@ -8,6 +8,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
@@ -23,6 +24,7 @@ type Role struct {
 var _ domain.Entity[string] = (*Role)(nil)
 var _ domain.SoftDeleteEntity[bool] = (*Role)(nil)
 var _ auditdomain.Auditable = (*Role)(nil)
+var _ repository.AuditableEntity[string] = (*Role)(nil)
 
 func NewEmptyRole() *Role {
 	return &Role{}
@@ -140,15 +142,15 @@ func (r *Role) HashCode() uint32 {
 	return h.Sum32()
 }
 
-func (r *Role) ToAuditMap() map[string]string {
-	res := make(map[string]string)
+func (r *Role) ToAuditMap() map[string]*auditdomain.AuditField {
+	res := make(map[string]*auditdomain.AuditField)
 
-	res["id"] = r.ID
-	res["name"] = r.Name
-	res["description"] = r.Description
-	res["deleted"] = strconv.FormatBool(r.Deleted)
-	res["created_at"] = r.CreatedAt.Format(time.RFC3339)
-	res["updated_at"] = r.UpdatedAt.Format(time.RFC3339)
+	res["id"] = auditdomain.NewAuditField(r.ID, "УИЭ")
+	res["name"] = auditdomain.NewAuditField(r.Name, "Наименование")
+	res["description"] = auditdomain.NewAuditField(r.Description, "Описание")
+	res["deleted"] = auditdomain.NewAuditField(strconv.FormatBool(r.Deleted), "Признак soft delete")
+	res["created_at"] = auditdomain.NewAuditField(r.CreatedAt.Format(time.RFC3339), "Создано")
+	res["updated_at"] = auditdomain.NewAuditField(r.UpdatedAt.Format(time.RFC3339), "Изменено")
 
 	return res
 }

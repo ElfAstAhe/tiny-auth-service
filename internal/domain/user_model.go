@@ -10,6 +10,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"golang.org/x/exp/slices"
 )
@@ -32,6 +33,7 @@ type User struct {
 var _ domain.Entity[string] = (*User)(nil)
 var _ domain.SoftDeleteEntity[bool] = (*User)(nil)
 var _ auditdomain.Auditable = (*User)(nil)
+var _ repository.AuditableEntity[string] = (*User)(nil)
 
 func NewEmptyUser() *User {
 	return &User{
@@ -177,26 +179,26 @@ func (u *User) HashCode() uint32 {
 	return h.Sum32()
 }
 
-func (u *User) ToAuditMap() map[string]string {
-	res := make(map[string]string)
+func (u *User) ToAuditMap() map[string]*auditdomain.AuditField {
+	res := make(map[string]*auditdomain.AuditField)
 
-	res["id"] = u.ID
-	res["name"] = u.Name
-	res["type"] = u.Type
-	res["password_hash"] = u.PasswordHash
-	res["public_key"] = u.PublicKey
-	res["private_key"] = u.PrivateKey
-	res["active"] = strconv.FormatBool(u.Active)
-	res["deleted"] = strconv.FormatBool(u.Deleted)
-	res["created_at"] = u.CreatedAt.Format(time.RFC3339)
-	res["updated_at"] = u.UpdatedAt.Format(time.RFC3339)
+	res["id"] = auditdomain.NewAuditField(u.ID, "УИЭ")
+	res["name"] = auditdomain.NewAuditField(u.Name, "Наименование")
+	res["type"] = auditdomain.NewAuditField(u.Type, "Тип")
+	res["password_hash"] = auditdomain.NewAuditField(u.PasswordHash, "hash пароля")
+	res["public_key"] = auditdomain.NewAuditField(u.PublicKey, "RSA публичный ключ")
+	res["private_key"] = auditdomain.NewAuditField(u.PrivateKey, "RSA скрытый ключ")
+	res["active"] = auditdomain.NewAuditField(strconv.FormatBool(u.Active), "Признак пользователь активирован")
+	res["deleted"] = auditdomain.NewAuditField(strconv.FormatBool(u.Deleted), "Признак soft delete")
+	res["created_at"] = auditdomain.NewAuditField(u.CreatedAt.Format(time.RFC3339), "Создано")
+	res["updated_at"] = auditdomain.NewAuditField(u.UpdatedAt.Format(time.RFC3339), "Изменено")
 
 	roles := make([]string, 0, len(u.Roles))
 	for _, role := range u.Roles {
 		roles = append(roles, fmt.Sprintf("%s.%s", role.ID, role.Name))
 	}
 	slices.Sort(roles)
-	res["roles"] = strings.Join(roles, ",")
+	res["roles"] = auditdomain.NewAuditField(strings.Join(roles, ","), "Роли")
 
 	return res
 }

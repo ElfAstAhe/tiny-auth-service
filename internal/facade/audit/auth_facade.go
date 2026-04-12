@@ -4,26 +4,28 @@ import (
 	"context"
 	"time"
 
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/api/http/audit/v1/models"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
+	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
+	auditdto "github.com/ElfAstAhe/tiny-audit-service/pkg/client/dto"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 type AuthFacadeImpl struct {
 	next        *facade.AuthFacadeImpl
-	auditClient rest.AuditClient[*models.AuthAuditDTO]
+	source      string
+	auditClient client.AuthAuditClient
 }
 
 var _ facade.AuthFacade = (*AuthFacadeImpl)(nil)
 
 func NewAuthFacade(
-	auditClient rest.AuditClient[*models.AuthAuditDTO],
+	auditClient client.AuthAuditClient,
+	source string,
 	next *facade.AuthFacadeImpl,
 ) *AuthFacadeImpl {
 	return &AuthFacadeImpl{
+		source:      source,
 		next:        next,
 		auditClient: auditClient,
 	}
@@ -55,20 +57,16 @@ func (aaf *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO)
 	return res, err
 }
 
-func (aaf *AuthFacadeImpl) buildAudit(ctx context.Context, req *dto.LoginDTO, res *dto.LoggedInDTO, err error) *models.AuthAuditDTO {
-	// builder
+func (aaf *AuthFacadeImpl) buildAudit(ctx context.Context, req *dto.LoginDTO, res *dto.LoggedInDTO, err error) *auditdto.AuthAuditDTO {
+	// common
 	builder := utils.NewAuthAuditBuilder().
-		NewInstance().
-		WithSource("tiny-auth-service").
+		WithSource(aaf.source).
 		WithEventDate(time.Now()).
-		WithEvent(rest.AuthEventLogin).
-		WithUsername(req.Username)
-
-	// requestID
-	if requestID, ok := ctx.Value(middleware.RequestIDKey).(string); ok {
-		builder.WithRequestID(requestID)
-	}
-	// traceID
+		WithEvent(auditdto.AuthEventLogin).
+		WithUsername(req.Username).
+		// request
+		WithRequestID(utils.RequestIDFromContext(ctx)).
+		WithTraceID(utils.TraceIDFromContext(ctx))
 
 	// tokens
 	if res != nil {
@@ -77,15 +75,15 @@ func (aaf *AuthFacadeImpl) buildAudit(ctx context.Context, req *dto.LoginDTO, re
 	}
 
 	// result
-	return builder.WithStatus(aaf.toDtoStatus(err)).
+	return builder.WithStatus(aaf.toAuditStatus(err)).
 		Build()
 }
 
-func (aaf *AuthFacadeImpl) toDtoStatus(err error) string {
+func (aaf *AuthFacadeImpl) toAuditStatus(err error) string {
 	switch err == nil {
 	case true:
-		return rest.AuditStatusSuccess
+		return auditdto.AuditStatusSuccess
 	default:
-		return rest.AuditStatusFail
+		return auditdto.AuditStatusFail
 	}
 }
