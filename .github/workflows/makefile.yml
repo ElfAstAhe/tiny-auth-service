@@ -1,0 +1,42 @@
+name: Makefile CI
+
+# Запускаем при пуше в main или при создании Pull Request
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Скачиваем код репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Go нужной версии
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26' # Укажи свою версию
+          cache: true        # Автоматически кэширует зависимости (go.sum)
+
+      # 3. Проверяем зависимости
+      - name: Install dependencies
+        run: go mod download
+
+      # 4. Запускаем линтер (опционально, но очень советую)
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+
+      # 5. Запускаем тесты
+      - name: Run tests
+        run: go test -v -race ./...
+
+      # 6. Пробная сборка (бинарник)
+      - name: Build
+        run: go build -v -o my-app ./cmd/timy-auth-service/main.go
