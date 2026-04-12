@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 )
 
@@ -29,7 +30,7 @@ func (cr *AppChiRouter) renderJSON(rw http.ResponseWriter, status int, data any)
 		return
 	}
 
-	rw.Header().Set("Content-Type", "application/json; charset=utf-8")
+	rw.Header().Set("Content-Type", libhttp.MediaTypeApplicationJSON+";charset=utf-8")
 	rw.WriteHeader(status)
 	_, _ = rw.Write(js)
 }

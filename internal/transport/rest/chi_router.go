@@ -5,12 +5,12 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport"
-	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/middleware"
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
+	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/http/middleware"
 	_ "github.com/ElfAstAhe/tiny-auth-service/docs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
-	trmware "github.com/ElfAstAhe/tiny-auth-service/internal/transport/rest/middleware"
+	appmware "github.com/ElfAstAhe/tiny-auth-service/internal/transport/rest/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/hellofresh/health-go/v5"
@@ -24,23 +24,23 @@ type AppChiRouter struct {
 	log             logger.Logger
 	config          *config.Config
 	health          *health.Health
-	healthz         transport.HealthzFunc
-	readyz          transport.ReadyzFunc
+	healthz         libhttp.HealthzFunc
+	readyz          libhttp.ReadyzFunc
 	authFacade      facade.AuthFacade
 	userFacade      facade.UserFacade
 	userAdminFacade facade.UserAdminFacade
 	roleAdminFacade facade.RoleAdminFacade
 }
 
-var _ transport.HTTPRouter = (*AppChiRouter)(nil)
+var _ libhttp.Router = (*AppChiRouter)(nil)
 
 func NewAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
 	authHelper auth.Helper,
 	health *health.Health,
-	healthz transport.HealthzFunc,
-	readyz transport.ReadyzFunc,
+	healthz libhttp.HealthzFunc,
+	readyz libhttp.ReadyzFunc,
 	authFacade facade.AuthFacade,
 	userFacade facade.UserFacade,
 	userAdminFacade facade.UserAdminFacade,
@@ -88,7 +88,7 @@ func (cr *AppChiRouter) setupMiddleware(
 	// tracing
 	cr.router.Use(otelchi.Middleware(cr.config.Telemetry.ServiceName, otelchi.WithChiRoutes(cr.router)))
 	// metrics
-	cr.router.Use(libmware.HTTPMetricsMiddleware)
+	cr.router.Use(libmware.MetricsMiddleware)
 	// requestID
 	cr.router.Use(middleware.RequestID)
 	// realIP
@@ -98,24 +98,25 @@ func (cr *AppChiRouter) setupMiddleware(
 	// timeout
 	cr.router.Use(middleware.Timeout(cr.config.HTTP.ReadTimeout))
 	// compress (add any content-types)
-	cr.router.Use(libmware.NewHTTPCompress(logger,
-		"application/json", "plain/text",
+	cr.router.Use(libmware.NewCompress(logger,
+		libhttp.MediaTypeApplicationJSON,
+		libhttp.MediaTypeTextPlain,
 	).Handle)
 	// decompress
-	cr.router.Use(libmware.NewHTTPDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
+	cr.router.Use(libmware.NewDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
 	// jwt auth extractor - extract user info from token
-	cr.router.Use(trmware.NewAuthExtractor(
-		transport.NewHTTPPathMatchers([]*transport.HTTPPathMatcher{
-			transport.NewHTTPPathMatcher(http.MethodGet, "/metrics", "^/metrics.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/swagger", "^/swagger.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/status", "^/status.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/healthz", "^/healthz.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/readyz", "^/readyz.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/debug", "^/debug.*$"),
-			transport.NewHTTPPathMatcher(http.MethodGet, "/config", "^/config.*$"),
-			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth", "/api/v1/auth"),
-			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),
-			transport.NewHTTPPathMatcher(http.MethodPost, "/api/v1/users/register", "/api/v1/users/register"),
+	cr.router.Use(appmware.NewAuthExtractor(
+		libhttp.NewHTTPPathMatchers([]*libhttp.PathMatcher{
+			libhttp.NewPathMatcher(http.MethodGet, "/metrics", "^/metrics.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/swagger", "^/swagger.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/status", "^/status.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/healthz", "^/healthz.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/readyz", "^/readyz.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/debug", "^/debug.*$"),
+			libhttp.NewPathMatcher(http.MethodGet, "/config", "^/config.*$"),
+			libhttp.NewPathMatcher(http.MethodPost, "/api/v1/auth", "/api/v1/auth"),
+			libhttp.NewPathMatcher(http.MethodPost, "/api/v1/auth/simple", "/api/v1/auth/simple"),
+			libhttp.NewPathMatcher(http.MethodPost, "/api/v1/users/register", "/api/v1/users/register"),
 		}),
 		authHelper,
 		logger,

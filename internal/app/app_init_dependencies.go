@@ -171,6 +171,7 @@ func (app *App) initDependencies() error {
 		// auth
 		app.authFacade = audit.NewAuthFacade(
 			app.authAuditClient,
+			"tiny-auth-service",
 			facade.NewAuthFacade(
 				app.jwtHelper,
 				loginUC,
