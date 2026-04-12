@@ -159,7 +159,12 @@ func (app *App) initDependencies() error {
 		if err != nil {
 			return err
 		}
-		userAdminRepo = trace.NewUserAdminTraceRepository(metrics.NewUserAdminMetricsRepository(userAdminRepo))
+		userAdminRepo = dataaudit.NewUserAdminRepository(
+			"tiny-auth-service",
+			trace.NewUserAdminTraceRepository(metrics.NewUserAdminMetricsRepository(userAdminRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
 	}
 	// use cases
 	{
