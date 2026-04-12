@@ -1,4 +1,4 @@
-package repository
+package metrics
 
 import (
 	"context"

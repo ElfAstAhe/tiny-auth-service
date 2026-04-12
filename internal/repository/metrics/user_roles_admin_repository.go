@@ -1,4 +1,4 @@
-package repository
+package metrics
 
 import (
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"

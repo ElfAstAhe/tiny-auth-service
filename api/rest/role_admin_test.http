@@ -10,9 +10,10 @@ GET http://localhost:8080/api/v1/admin/roles
 ### POST resource (create)
 POST http://localhost:8080/api/v1/admin/roles
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0aW55LWF1dGgtc2VydmljZSIsInN1YiI6ImVsZiIsImV4cCI6MTc3NjAxOTI5OCwiaWF0IjoxNzc2MDE4Mzk4LCJqdGkiOiJ0YXMtYjUwYWRkYzItMDljOC00ZWQzLTg1NTgtNTdiNWNiMzQ0MTE3Iiwic3ViamVjdF9pZCI6ImJmOThmZTkyLWU5MzItNGMxYi1iNDU1LTJmNWVhNjY3MWEyOSIsInN1YmplY3RfdHlwZSI6InVzZXIiLCJyb2xlcyI6WyJhdWRpdC1yZWFkZXIiLCJhdWRpdC1hZG1pbiIsImFkbWluIiwidXNlciIsImF1ZGl0LXdyaXRlciJdfQ.aRZDC9VRFx3qP_UQPDwDChqJZXboYvHGq2fudE1RUcQ
 
 {
-  "name": "test001",
+  "name": "test004",
   "description": "test 001 role"
 }
 

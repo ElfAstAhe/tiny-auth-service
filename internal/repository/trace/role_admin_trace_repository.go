@@ -1,4 +1,4 @@
-package repository
+package trace
 
 import (
 	"context"
@@ -26,6 +26,7 @@ func NewRoleAdminTraceRepository(repo domain.RoleAdminRepository) *RoleAdminTrac
 	}
 }
 
+//goland:noinspection DuplicatedCode
 func (rat *RoleAdminTraceRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
 	ctx, span := rat.StartSpan(ctx, fmt.Sprintf("%s.FindByName", rat.BaseCRUDTraceRepository.GetRepositoryName()))
 	defer span.End()
