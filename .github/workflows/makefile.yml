@@ -28,11 +28,20 @@ jobs:
         run: go mod download
 
       # 4. Запускаем линтер (опционально, но очень советую)
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: latest
+#      - name: golangci-lint
+#        uses: golangci/golangci-lint-action@v4
+#        with:
+#          version: latest
+      - name: Staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          $(go env GOPATH)/bin/staticcheck ./...
 
+      - name: Revive
+        run: |
+          go install -v github.com/mgechev/revive@latest
+          $(go env GOPATH)/bin/revive -config revive.toml ./...
+          
       # 5. Запускаем тесты
       - name: Run tests
         run: go test -v -race ./...
