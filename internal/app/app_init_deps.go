@@ -113,8 +113,12 @@ func (app *App) initDependencies() error {
 		if err != nil {
 			return err
 		}
-		roleRepo = trace.NewRoleTraceRepository(metrics.NewRoleMetricsRepository(roleRepo))
-
+		roleRepo = dataaudit.NewRoleRepository(
+			"tiny-auth-service",
+			trace.NewRoleTraceRepository(metrics.NewRoleMetricsRepository(roleRepo)),
+			app.dataAuditClient,
+			app.logger,
+		)
 		// user roles repo
 		userRolesRepo, err = postgres.NewUserRolesPgRepository(app.db, app.db)
 		if err != nil {
