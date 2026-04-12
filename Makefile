@@ -87,6 +87,10 @@ run: build
 test:
 	go test -v ./...
 
+# Запуск static check
+static-check:
+	staticcheck $$(go list ./... | grep -vE "pkg/api|cmd/grpc-client-test")
+
 # Очистка бинарников
 clean:
 	rm -rf ./bin/*
