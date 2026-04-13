@@ -114,7 +114,7 @@ func (app *App) initDependencies() error {
 			return err
 		}
 		roleRepo = dataaudit.NewRoleRepository(
-			"tiny-auth-service",
+			app.config.App.NodeName,
 			trace.NewRoleTraceRepository(metrics.NewRoleMetricsRepository(roleRepo)),
 			app.dataAuditClient,
 			app.logger,
@@ -132,7 +132,7 @@ func (app *App) initDependencies() error {
 			return err
 		}
 		userRepo = dataaudit.NewUserRepository(
-			"tiny-auth-service",
+			app.config.App.NodeName,
 			trace.NewUserTraceRepository(metrics.NewUserMetricsRepository(userRepo)),
 			app.dataAuditClient,
 			app.logger,
@@ -143,7 +143,7 @@ func (app *App) initDependencies() error {
 			return err
 		}
 		roleAdminRepo = dataaudit.NewRoleAdminRepository(
-			"tiny-auth-service",
+			app.config.App.NodeName,
 			trace.NewRoleAdminTraceRepository(metrics.NewRoleAdminMetricsRepository(roleAdminRepo)),
 			app.dataAuditClient,
 			app.logger,
@@ -160,7 +160,7 @@ func (app *App) initDependencies() error {
 			return err
 		}
 		userAdminRepo = dataaudit.NewUserAdminRepository(
-			"tiny-auth-service",
+			app.config.App.NodeName,
 			trace.NewUserAdminTraceRepository(metrics.NewUserAdminMetricsRepository(userAdminRepo)),
 			app.dataAuditClient,
 			app.logger,
@@ -198,7 +198,7 @@ func (app *App) initDependencies() error {
 		// auth
 		app.authFacade = authaudit.NewAuthFacade(
 			app.authAuditClient,
-			"tiny-auth-service",
+			app.config.App.NodeName,
 			facade.NewAuthFacade(
 				app.jwtHelper,
 				loginUC,
