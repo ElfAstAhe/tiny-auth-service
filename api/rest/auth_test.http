@@ -3,8 +3,8 @@ POST http://localhost:8080/api/v1/auth/simple
 Content-Type: application/json
 
 {
-  "username": "elf",
-  "password": "melkore"
+  "username": "svc_auth",
+  "password": "password"
 }
 
 
