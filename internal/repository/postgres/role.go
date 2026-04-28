@@ -19,7 +19,10 @@ var _ libdomain.CRUDRepository[*domain.Role, string] = (*RolePgRepository)(nil)
 var _ domain.RoleRepository = (*RolePgRepository)(nil)
 
 //goland:noinspection DuplicatedCode
-func NewRolePgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RolePgRepository, error) {
+func NewRolePgRepository(
+	executor db.Executor,
+	decipher db.ErrorDecipher,
+) (*RolePgRepository, error) {
 	// new instance
 	res := &RolePgRepository{}
 	// sql builders

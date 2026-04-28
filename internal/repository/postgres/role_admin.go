@@ -19,7 +19,10 @@ type RoleAdminPgRepository struct {
 var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleAdminPgRepository)(nil)
 var _ domain.RoleAdminRepository = (*RoleAdminPgRepository)(nil)
 
-func NewRoleAdminPgRepository(executor db.Executor, decipher db.ErrorDecipher) (*RoleAdminPgRepository, error) {
+func NewRoleAdminPgRepository(
+	executor db.Executor,
+	decipher db.ErrorDecipher,
+) (*RoleAdminPgRepository, error) {
 	// new instance
 	res := &RoleAdminPgRepository{}
 	// sql builders

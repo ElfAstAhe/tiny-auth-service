@@ -24,7 +24,13 @@ type UserAdminPgRepository struct {
 var _ libdomain.CRUDRepository[*domain.User, string] = (*UserAdminPgRepository)(nil)
 var _ domain.UserAdminRepository = (*UserAdminPgRepository)(nil)
 
-func NewUserAdminPgRepository(executor db.Executor, errDecipher db.ErrorDecipher, cipherHelper helper.Cipher, hashCipher utils.Cipher, userRolesRepo domain.UserRolesAdminRepository) (*UserAdminPgRepository, error) {
+func NewUserAdminPgRepository(
+	executor db.Executor,
+	errDecipher db.ErrorDecipher,
+	cipherHelper helper.Cipher,
+	hashCipher utils.Cipher,
+	userRolesRepo domain.UserRolesAdminRepository,
+) (*UserAdminPgRepository, error) {
 	res := &UserAdminPgRepository{
 		userRolesRepo: userRolesRepo,
 		cipherHelper:  cipherHelper,

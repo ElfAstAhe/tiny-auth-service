@@ -59,7 +59,7 @@ func NewBaseTokenRefresher(
 	return res
 }
 
-func (btr *BaseTokenRefresher) timerDispatcher(eventTime time.Time) error {
+func (btr *BaseTokenRefresher) timerDispatcher(ctx context.Context, eventTime time.Time) error {
 	btr.GetLogger().Debugf("token refresher %s timer event %s start", btr.GetName(), eventTime.Format(time.DateTime))
 	defer btr.GetLogger().Debugf("token refresher %s timer event %s finish", btr.GetName(), eventTime.Format(time.DateTime))
 
