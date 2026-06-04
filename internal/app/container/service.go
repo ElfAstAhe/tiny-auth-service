@@ -37,6 +37,7 @@ func (sc *ServiceContainer) Init(initCtx context.Context) error {
     if err != nil {
         return errs.NewContainerError(sc.GetName(), "container init: register providers failed", err)
     }
+
     confInst, err := container.GetInstance[*config.Config](InstanceConfig)
     if err != nil {
         return errs.NewContainerError(sc.GetName(), "container init: retrieve instance failed", err)
@@ -62,6 +63,8 @@ func (sc *ServiceContainer) Init(initCtx context.Context) error {
     if err != nil {
         return errs.NewContainerError(sc.GetName(), "container init: register health status check failed", err)
     }
+    // init token refresher
+    simpleLoginUCInst, err :=
 
     return nil
 }

@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	InstanceAuthAuditTailCutter string = "authAuditTailCutter"
-	InstanceDataAuditTailCutter string = "dataAuditTailCutter"
+	InstanceTokenRefresher string = "InstanceTokenRefresher"
 )
 
 type WorkerContainer struct {
@@ -28,8 +27,7 @@ func NewWorkerContainer(orchestrator container.Orchestrator) *WorkerContainer {
 
 func (wc *WorkerContainer) Init(initCtx context.Context) error {
 	err := errors.Join(
-		wc.RegisterProvider(InstanceAuthAuditTailCutter, wc.providerAuthAuditTailCutter),
-		wc.RegisterProvider(InstanceDataAuditTailCutter, wc.providerDataAuditTailCutter),
+		wc.RegisterProvider(InstanceTokenRefresher, wc.providerTokenRefresher),
 	)
 	if err != nil {
 		return errs.NewContainerError(wc.GetName(), "container init: register providers failed", err)

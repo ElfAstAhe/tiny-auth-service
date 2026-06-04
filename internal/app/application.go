@@ -42,6 +42,10 @@ func NewApplication(opts ...Option) (*Application, error) {
 		res.GetOrchestrator().Register(container.NewAppContainer(res.GetOrchestrator())),
 		// tools container
 		res.GetOrchestrator().Register(container.NewToolsContainer(res.GetOrchestrator())),
+		// worker container
+		res.GetOrchestrator().Register(container.NewWorkerContainer(res.GetOrchestrator())),
+		// client container
+		res.GetOrchestrator().Register(container.NewClientContainer(res.GetOrchestrator())),
 		// postgres container
 		res.GetOrchestrator().Register(container.NewPgContainer(res.GetOrchestrator())),
 		// repository container
@@ -52,8 +56,6 @@ func NewApplication(opts ...Option) (*Application, error) {
 		res.GetOrchestrator().Register(container.NewFacadeContainer(res.GetOrchestrator())),
 		// services container (inner kitchen)
 		res.GetOrchestrator().Register(container.NewServiceContainer(res.GetOrchestrator())),
-		// worker container
-		res.GetOrchestrator().Register(container.NewWorkerContainer(res.GetOrchestrator())),
 		// http container
 		res.GetOrchestrator().Register(container.NewHTTPContainer(res.GetOrchestrator())),
 		// gRPC container

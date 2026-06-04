@@ -67,6 +67,7 @@ func (app *App) initDependencies() error {
 				libworker.NewBaseSchedulerConfig(
 					100*time.Millisecond,
 					app.config.Credentials.ScheduleInterval,
+					app.config.App.DefShutdownTimeout,
 				),
 				app.config.Credentials.ErrorScheduleInterval,
 			),
@@ -84,6 +85,7 @@ func (app *App) initDependencies() error {
 				app.config.AuthAuditClient.WorkerCount,
 				app.config.AuthAuditClient.DataCapacity,
 				app.config.AuthAuditClient.CompleteProcessing,
+				app.config.AuthAuditClient.ShutdownTimeout,
 			),
 		)
 		if err != nil {
@@ -99,6 +101,7 @@ func (app *App) initDependencies() error {
 				app.config.DataAuditClient.WorkerCount,
 				app.config.DataAuditClient.DataCapacity,
 				app.config.DataAuditClient.CompleteProcessing,
+				app.config.DataAuditClient.ShutdownTimeout,
 			),
 		)
 		if err != nil {
