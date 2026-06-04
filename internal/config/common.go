@@ -5,7 +5,6 @@ const FlagConfig = "config-path"
 
 // App config flags
 const (
-	FlagAppEnv                string = "env"
 	FlagAppNodeName           string = "app-node-name"
 	FlagAppMaxListLimit       string = "app-max-list-limit"
 	FlagAppTokenIssuer        string = "app-token-issuer"
@@ -103,30 +102,3 @@ const (
 
 // EnvConfig - файл конфигурации
 const EnvConfig string = "CONFIG_PATH"
-
-type AppEnv string
-
-func (ae AppEnv) Exists() bool {
-	return appEnvs.Contains(ae)
-}
-
-type appEnvList map[AppEnv]struct{}
-
-func (ae appEnvList) Contains(env AppEnv) bool {
-	_, ok := ae[env]
-
-	return ok
-}
-
-// app env enum
-const (
-	AppEnvProduction  AppEnv = "prod"
-	AppEnvDevelopment AppEnv = "dev"
-	AppEnvTest        AppEnv = "test"
-)
-
-var appEnvs appEnvList = map[AppEnv]struct{}{
-	AppEnvProduction:  {},
-	AppEnvDevelopment: {},
-	AppEnvTest:        {},
-}

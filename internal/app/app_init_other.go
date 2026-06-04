@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -82,15 +83,15 @@ func (app *App) initDB() error {
 	return nil
 }
 
-func (app *App) migrateDB() error {
-	migrator, err := libmigr.NewGooseDBMigrator(app.ctx, app.db, app.logger)
+func (app *App) migrateDB(ctx context.Context) error {
+	migrator, err := libmigr.NewDBMigrator(app.db, app.logger)
 	if err != nil {
 		return errs.NewCommonError("create migrator", err)
 	}
 	if err = migrator.Initialize(); err != nil {
 		return errs.NewCommonError("init migrator", err)
 	}
-	if err = migrator.Up(); err != nil {
+	if err = migrator.Up(ctx); err != nil {
 		return errs.NewCommonError("migrator up", err)
 	}
 

@@ -15,7 +15,10 @@ import (
 //goland:noinspection DuplicatedCode
 func applyDefaults(v *viper.Viper) {
 	// App
-	v.SetDefault(keyAppEnv, defaultAppEnv)
+	v.SetDefault(config.KeyAppEnv, defaultAppEnv)
+	v.SetDefault(config.KeyAppInitTimeout, config.DefaultAppInitTimeout)
+	v.SetDefault(config.KeyAppStopTimeout, config.DefaultAppStopTimeout)
+	v.SetDefault(config.KeyAppCloseTimeout, config.DefaultAppCloseTimeout)
 	v.SetDefault(keyAppNodeName, defaultAppNodeName)
 	v.SetDefault(keyAppMaxListLimit, defaultMaxListLimit)
 	v.SetDefault(keyAppTokenIssuer, defaultTokenIssuer)
@@ -102,7 +105,10 @@ func initFLags() (res *pflag.FlagSet, err error) {
 	{
 		// app
 		res.String(FlagConfig, "config/config.yaml", "path to config file")
-		res.String(FlagAppEnv, string(defaultAppEnv), "application environment")
+		res.String(config.FlagAppEnv, string(defaultAppEnv), "application environment")
+		res.Duration(config.FlagAppInitTimeout, config.DefaultAppInitTimeout, "application init timeout")
+		res.Duration(config.FlagAppStopTimeout, config.DefaultAppStopTimeout, "application stop timeout")
+		res.Duration(config.FlagAppCloseTimeout, config.DefaultAppCloseTimeout, "application close timeout")
 		res.String(FlagAppNodeName, defaultAppNodeName, "application node name")
 		res.Int(FlagAppMaxListLimit, usecase.DefaultMaxLimit, "max list limit")
 		res.String(FlagAppTokenIssuer, defaultTokenIssuer, "token issuer")
@@ -192,7 +198,10 @@ func initFLags() (res *pflag.FlagSet, err error) {
 func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 	err := errors.Join(
 		// App
-		v.BindPFlag(keyAppEnv, flags.Lookup(FlagAppEnv)),
+		v.BindPFlag(config.KeyAppEnv, flags.Lookup(config.FlagAppEnv)),
+		v.BindPFlag(config.KeyAppInitTimeout, flags.Lookup(config.FlagAppInitTimeout)),
+		v.BindPFlag(config.KeyAppStopTimeout, flags.Lookup(config.FlagAppStopTimeout)),
+		v.BindPFlag(config.KeyAppCloseTimeout, flags.Lookup(config.FlagAppCloseTimeout)),
 		v.BindPFlag(keyAppNodeName, flags.Lookup(FlagAppNodeName)),
 		v.BindPFlag(keyAppMaxListLimit, flags.Lookup(FlagAppMaxListLimit)),
 		v.BindPFlag(keyAppTokenIssuer, flags.Lookup(FlagAppTokenIssuer)),
