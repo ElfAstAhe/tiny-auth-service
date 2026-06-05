@@ -7,7 +7,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/migration"
-	"github.com/ElfAstAhe/tiny-audit-service/internal/repository/postgres"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
 )
 
 const (

@@ -9,8 +9,10 @@ import (
 )
 
 const (
-	InstanceAuthFacade string = "AuthFacade"
-	InstanceDataFacade string = "DataFacade"
+	InstanceAuthFacade      string = "AuthFacade"
+	InstanceRoleAdminFacade string = "RoleAdminFacade"
+	InstanceUserFacade      string = "UserFacade"
+	InstanceUserAdminFacade string = "UserAdminFacade"
 )
 
 type FacadeContainer struct {
@@ -29,7 +31,9 @@ func NewFacadeContainer(orchestrator container.Orchestrator) *FacadeContainer {
 func (fc *FacadeContainer) Init(ctx context.Context) error {
 	err := errors.Join(
 		fc.RegisterProvider(InstanceAuthFacade, fc.providerAuthFacade),
-		fc.RegisterProvider(InstanceDataFacade, fc.providerDataFacade),
+		fc.RegisterProvider(InstanceRoleAdminFacade, fc.providerRoleAdminFacade),
+		fc.RegisterProvider(InstanceUserFacade, fc.providerUserFacade),
+		fc.RegisterProvider(InstanceUserAdminFacade, fc.providerUserAdminFacade),
 	)
 	if err != nil {
 		return errs.NewContainerError(fc.GetName(), "container init: register providers failed", err)

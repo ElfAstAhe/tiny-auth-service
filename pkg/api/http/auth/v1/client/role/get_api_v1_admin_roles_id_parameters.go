@@ -20,24 +20,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetAPIV1AdminRolesIDParams() *GetAPIV1AdminRolesIDParams {
-	return &GetAPIV1AdminRolesIDParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewGetAPIV1AdminRolesIDParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewGetAPIV1AdminRolesIDParamsWithTimeout creates a new GetAPIV1AdminRolesIDParams object
 // with the ability to set a timeout on a request.
 func NewGetAPIV1AdminRolesIDParamsWithTimeout(timeout time.Duration) *GetAPIV1AdminRolesIDParams {
 	return &GetAPIV1AdminRolesIDParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewGetAPIV1AdminRolesIDParamsWithContext creates a new GetAPIV1AdminRolesIDParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesIDParams].
 func NewGetAPIV1AdminRolesIDParamsWithContext(ctx context.Context) *GetAPIV1AdminRolesIDParams {
 	return &GetAPIV1AdminRolesIDParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -66,9 +70,9 @@ type GetAPIV1AdminRolesIDParams struct {
 	*/
 	ID string
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the get API v1 admin roles ID params (not the query body).
@@ -86,54 +90,57 @@ func (o *GetAPIV1AdminRolesIDParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get API v1 admin roles ID params
+// WithTimeout adds the timeout to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) WithTimeout(timeout time.Duration) *GetAPIV1AdminRolesIDParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get API v1 admin roles ID params
+// SetTimeout adds the timeout to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the get API v1 admin roles ID params
+// WithContext adds the context to the get API v1 admin roles ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesIDParams].
 func (o *GetAPIV1AdminRolesIDParams) WithContext(ctx context.Context) *GetAPIV1AdminRolesIDParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get API v1 admin roles ID params
+// SetContext adds the context to the get API v1 admin roles ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesIDParams].
 func (o *GetAPIV1AdminRolesIDParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get API v1 admin roles ID params
+// WithHTTPClient adds the HTTPClient to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) WithHTTPClient(client *http.Client) *GetAPIV1AdminRolesIDParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get API v1 admin roles ID params
+// SetHTTPClient adds the HTTPClient to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the get API v1 admin roles ID params
+// WithID adds the id to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) WithID(id string) *GetAPIV1AdminRolesIDParams {
 	o.SetID(id)
 	return o
 }
 
-// SetID adds the id to the get API v1 admin roles ID params
+// SetID adds the id to the get API v1 admin roles ID params.
 func (o *GetAPIV1AdminRolesIDParams) SetID(id string) {
 	o.ID = id
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *GetAPIV1AdminRolesIDParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

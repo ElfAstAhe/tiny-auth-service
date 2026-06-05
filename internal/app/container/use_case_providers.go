@@ -1,9 +1,16 @@
 package container
 
 import (
+	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/helper"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
 )
 
 func (ucc *UseCaseContainer) providerTM() (any, error) {
@@ -16,97 +23,278 @@ func (ucc *UseCaseContainer) providerTM() (any, error) {
 }
 
 func (ucc *UseCaseContainer) providerChangeKeysUC() (any, error) {
-	// ToDo: implement
+	keysHelperInst, err := container.GetInstance[helper.RSAKeys](InstanceKeysHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewChangeKeysTraceUseCase(
+		"ChangeKeysUseCase",
+		usecase.NewChangeKeysUseCase(
+			keysHelperInst,
+			tmInst,
+			userRepoInst,
+		)), nil
 }
 
 func (ucc *UseCaseContainer) providerChangePasswordUC() (any, error) {
-	// ToDo: implement
+	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewChangePasswordTraceUseCase(
+		"ChangePasswordUseCase",
+		usecase.NewChangePasswordUseCase(
+			hashCipherInst,
+			tmInst,
+			userRepoInst,
+		)), nil
 }
 
 func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
-	// ToDo: implement
+	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	keysHelperInst, err := container.GetInstance[helper.RSAKeys](InstanceKeysHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	authHelperInst, err := container.GetInstance[auth.Helper](InstanceAuthHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewLoginTraceUseCase(
+		"LoginUseCase",
+		usecase.NewLoginUseCase(
+			hashCipherInst,
+			keysHelperInst,
+			authHelperInst,
+			userRepoInst,
+		)), nil
 }
 
 func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
-	// ToDo: implement
+	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	authHelperInst, err := container.GetInstance[auth.Helper](InstanceAuthHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewLoginSimpleTraceUseCase(
+		"LoginSimpleUseCase",
+		usecase.NewLoginSimpleUseCase(
+			hashCipherInst,
+			authHelperInst,
+			userRepoInst,
+		)), nil
 }
 
 func (ucc *UseCaseContainer) providerProfileUC() (any, error) {
-	// ToDo: implement
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerRegisterUC() (any, error) {
-	// ToDo: implement
+	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	keysHelperInst, err := container.GetInstance[helper.RSAKeys](InstanceKeysHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewRegisterTraceUseCase(
+		"RegisterUseCase",
+		usecase.NewRegisterUseCase(
+			tmInst,
+			hashCipherInst,
+			keysHelperInst,
+			userRepoInst,
+		)), nil
 }
 
 func (ucc *UseCaseContainer) providerRoleAdminDeleteUC() (any, error) {
-	// ToDo: implement
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewRoleAdminDeleteTraceUseCase(
+		"RoleAdminDeleteUseCase",
+		usecase.NewRoleAdminDeleteUseCase(tmInst, roleAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerRoleAdminGetUC() (any, error) {
-	// ToDo: implement
+	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerRoleAdminGetByNameUC() (any, error) {
-	// ToDo: implement
+	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewROleAdminGetNameTraceUseCase("RoleAdminGetByNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerRoleAdminListUC() (any, error) {
-	// ToDo: implement
+	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewRoleAdminListTraceUseCase(
+		"RoleAdminListUseCase",
+		usecase.NewRoleAdminListUseCase(roleAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
 func (ucc *UseCaseContainer) providerRoleAdminSaveUC() (any, error) {
-	// ToDo: implement
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewRoleAdminSaveTraceUseCase(
+		"RoleAdminSaveUseCase",
+		usecase.NewRoleAdminSaveUseCase(tmInst, roleAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerUserAdminDeleteUC() (any, error) {
-	// ToDo: implement
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewUserAdminDeleteTraceUseCase(
+		"UserAdminDeleteUseCase",
+		usecase.NewUserAdminDeleteUseCase(tmInst, userAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerUserAdminGetUC() (any, error) {
-	// ToDo: implement
+	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewUserAdminGetTraceUseCase(
+		"UserAdminGetUseCase",
+		usecase.NewUserAdminGetUseCase(userAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerUserAdminGetByNameUC() (any, error) {
-	// ToDo: implement
+	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewUserAdminGetNameTraceUseCase(
+		"UserAdminGetByNameUseCase",
+		usecase.NewUserAdminGetNameUseCase(userAdminRepoInst)), nil
 }
 
 func (ucc *UseCaseContainer) providerUserAdminListUC() (any, error) {
-	// ToDo: implement
+	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewUserAdminListTraceUseCase(
+		"UserAdminListUseCase",
+		usecase.NewUserAdminListUseCase(userAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
 func (ucc *UseCaseContainer) providerUserAdminSaveUC() (any, error) {
-	// ToDo: implement
+	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	keysHelperInst, err := container.GetInstance[helper.RSAKeys](InstanceKeysHelper)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return nil, nil
+	return telemetry.NewUserAdminSaveTraceUseCase(
+		"UserAdminSaveUseCase",
+		usecase.NewUserAdminSaveUseCase(
+			tmInst,
+			hashCipherInst,
+			keysHelperInst,
+			userAdminRepoInst,
+		)), nil
 }

@@ -52,7 +52,7 @@ func NewBaseTokenRefresher(
 	res.BaseScheduler = worker.NewBaseScheduler(
 		"tokenRefresher",
 		res.timerDispatcher,
-		worker.NewBaseSchedulerConfig(conf.StartInterval, conf.ScheduleInterval),
+		worker.NewBaseSchedulerConfig(conf.StartInterval, conf.ScheduleInterval, conf.StopTimeout),
 		log,
 	)
 

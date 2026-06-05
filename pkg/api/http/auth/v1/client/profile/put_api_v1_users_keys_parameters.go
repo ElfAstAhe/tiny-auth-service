@@ -20,24 +20,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewPutAPIV1UsersKeysParams() *PutAPIV1UsersKeysParams {
-	return &PutAPIV1UsersKeysParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewPutAPIV1UsersKeysParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewPutAPIV1UsersKeysParamsWithTimeout creates a new PutAPIV1UsersKeysParams object
 // with the ability to set a timeout on a request.
 func NewPutAPIV1UsersKeysParamsWithTimeout(timeout time.Duration) *PutAPIV1UsersKeysParams {
 	return &PutAPIV1UsersKeysParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewPutAPIV1UsersKeysParamsWithContext creates a new PutAPIV1UsersKeysParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1UsersKeysParams].
 func NewPutAPIV1UsersKeysParamsWithContext(ctx context.Context) *PutAPIV1UsersKeysParams {
 	return &PutAPIV1UsersKeysParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -57,9 +61,9 @@ PutAPIV1UsersKeysParams contains all the parameters to send to the API endpoint
 	Typically these are written to a http.Request.
 */
 type PutAPIV1UsersKeysParams struct {
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the put API v1 users keys params (not the query body).
@@ -77,43 +81,46 @@ func (o *PutAPIV1UsersKeysParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the put API v1 users keys params
+// WithTimeout adds the timeout to the put API v1 users keys params.
 func (o *PutAPIV1UsersKeysParams) WithTimeout(timeout time.Duration) *PutAPIV1UsersKeysParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the put API v1 users keys params
+// SetTimeout adds the timeout to the put API v1 users keys params.
 func (o *PutAPIV1UsersKeysParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the put API v1 users keys params
+// WithContext adds the context to the put API v1 users keys params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1UsersKeysParams].
 func (o *PutAPIV1UsersKeysParams) WithContext(ctx context.Context) *PutAPIV1UsersKeysParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the put API v1 users keys params
+// SetContext adds the context to the put API v1 users keys params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1UsersKeysParams].
 func (o *PutAPIV1UsersKeysParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the put API v1 users keys params
+// WithHTTPClient adds the HTTPClient to the put API v1 users keys params.
 func (o *PutAPIV1UsersKeysParams) WithHTTPClient(client *http.Client) *PutAPIV1UsersKeysParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the put API v1 users keys params
+// SetHTTPClient adds the HTTPClient to the put API v1 users keys params.
 func (o *PutAPIV1UsersKeysParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *PutAPIV1UsersKeysParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

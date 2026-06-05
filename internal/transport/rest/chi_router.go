@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
+	libconfig "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	libmware "github.com/ElfAstAhe/go-service-template/pkg/transport/http/middleware"
@@ -131,7 +132,7 @@ func (cr *AppChiRouter) setupRoutes() {
 	// readiness check
 	cr.router.Get("/readyz", cr.getReadyz)
 	// config (debug)
-	if cr.config.App.Env != config.AppEnvProduction {
+	if cr.config.App.Env != libconfig.AppEnvProduction {
 		cr.router.Get("/config", cr.getConfig)
 	}
 
@@ -141,13 +142,13 @@ func (cr *AppChiRouter) setupRoutes() {
 			// /auth
 			r.Post("/auth", cr.postAPIV1Auth)
 			// /auth/simple
-			if cr.config.App.Env != config.AppEnvProduction {
+			if cr.config.App.Env != libconfig.AppEnvProduction {
 				r.Post("/auth/simple", cr.postAPIV1AuthSimple)
 			}
 			// users sub-router
 			r.Route("/users", func(r chi.Router) {
 				r.Get("/profile", cr.getAPIV1UserProfile)
-				if cr.config.App.Env != config.AppEnvProduction {
+				if cr.config.App.Env != libconfig.AppEnvProduction {
 					r.Post("/register", cr.postAPIV1UserRegister)
 				}
 				r.Put("/password", cr.putAPIV1UserChangePassword)
