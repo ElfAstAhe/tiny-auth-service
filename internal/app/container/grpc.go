@@ -9,9 +9,11 @@ import (
 )
 
 const (
-	InstanceAuthAuditGRPCService string = "authAuditGRPCService"
-	InstanceDataAuditGRPCService string = "dataAuditGRPCService"
-	InstanceGRPCRunner           string = "grpcRunner"
+	InstanceAuthGRPCService      string = "auth-gRPC-service"
+	InstanceUserGRPCService      string = "user-gRPC-service"
+	InstanceUserAdminGRPCService string = "user-admin-gRPC-service"
+	InstanceRoleAdminGRPCService string = "role-admin-gRPC-service"
+	InstanceGRPCRunner           string = "grpc-runner"
 )
 
 type GRPCContainer struct {
@@ -29,8 +31,10 @@ func NewGRPCContainer(orchestrator container.Orchestrator) *GRPCContainer {
 
 func (gc *GRPCContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		gc.RegisterProvider(InstanceAuthAuditGRPCService, gc.providerAuthAuditGRPCService),
-		gc.RegisterProvider(InstanceDataAuditGRPCService, gc.providerDataAuditGRPCService),
+		gc.RegisterProvider(InstanceAuthGRPCService, gc.providerAuthService),
+		gc.RegisterProvider(InstanceUserGRPCService, gc.providerUserService),
+		gc.RegisterProvider(InstanceUserAdminGRPCService, gc.providerUserAdminService),
+		gc.RegisterProvider(InstanceRoleAdminGRPCService, gc.providerRoleAdminService),
 		gc.RegisterProvider(InstanceGRPCRunner, gc.providerGRPCRunner),
 	)
 	if err != nil {
