@@ -6,7 +6,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type RoleAdminListUseCase interface {
@@ -29,12 +28,12 @@ func NewRoleAdminListUseCase(roleRepo domain.RoleAdminRepository, maxListLimit i
 
 func (ral *RoleAdminListInteractor) List(ctx context.Context, limit, offset int) ([]*domain.Role, error) {
 	if err := ral.validate(limit, offset); err != nil {
-		return nil, domerrs.NewBllValidateError("RoleAdminListInteractor.List", "validate income data failed", err)
+		return nil, errs.NewBllValidateError("RoleAdminListInteractor.List", "validate income data failed", err)
 	}
 
 	res, err := ral.roleRepo.List(ctx, limit, offset)
 	if err != nil {
-		return nil, domerrs.NewBllError("", fmt.Sprintf("list Role data with limit [%v] and offset [%v] failed", limit, offset), err)
+		return nil, errs.NewBllError("", fmt.Sprintf("list Role data with limit [%v] and offset [%v] failed", limit, offset), err)
 	}
 
 	return res, nil

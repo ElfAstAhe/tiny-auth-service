@@ -12,7 +12,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type RegisterUseCase interface {
@@ -39,12 +38,12 @@ func NewRegisterUseCase(tm usecase.TransactionManager, hashCipher utils.Cipher, 
 
 func (ri *RegisterInteractor) Register(ctx context.Context, username string, password string) (*domain.User, error) {
 	if err := ri.validate(username, password); err != nil {
-		return nil, domerrs.NewBllValidateError("RegisterInteractor.Register", "validate income data failed", err)
+		return nil, errs.NewBllValidateError("RegisterInteractor.Register", "validate income data failed", err)
 	}
 
 	model, err := ri.prepareUser(username, password)
 	if err != nil {
-		return nil, domerrs.NewBllError("RegisterInteractor.Register", "prepare user failed", err)
+		return nil, errs.NewBllError("RegisterInteractor.Register", "prepare user failed", err)
 	}
 
 	var res *domain.User
@@ -56,10 +55,10 @@ func (ri *RegisterInteractor) Register(ctx context.Context, username string, pas
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
-			return nil, domerrs.NewBllUniqueError("RegisterInteractor.Register", "User", username, err)
+			return nil, errs.NewBllUniqueError("RegisterInteractor.Register", "User", username, err)
 		}
 
-		return nil, domerrs.NewBllError("RegisterInteractor.Register", fmt.Sprintf("register user [%v] failed", username), err)
+		return nil, errs.NewBllError("RegisterInteractor.Register", fmt.Sprintf("register user [%v] failed", username), err)
 	}
 
 	return res, err
@@ -80,7 +79,7 @@ func (ri *RegisterInteractor) prepareUser(username, password string) (*domain.Us
 	res := domain.NewEmptyUser()
 	publicKey, privateKey, err := ri.keysHelper.Generate()
 	if err != nil {
-		return nil, domerrs.NewBllError("RegisterInteractor.prepareUser", "generate RSA keys pair", err)
+		return nil, errs.NewBllError("RegisterInteractor.prepareUser", "generate RSA keys pair", err)
 	}
 	//passwordHash, err := ri.hashCipher.EncryptString(password)
 	//if err != nil {

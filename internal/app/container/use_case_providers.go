@@ -13,6 +13,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
 )
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerTM() (any, error) {
 	dbInst, err := container.GetInstance[db.DB](InstanceDB)
 	if err != nil {
@@ -22,6 +23,7 @@ func (ucc *UseCaseContainer) providerTM() (any, error) {
 	return db.NewTxManager(dbInst), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerChangeKeysUC() (any, error) {
 	keysHelperInst, err := container.GetInstance[helper.RSAKeys](InstanceKeysHelper)
 	if err != nil {
@@ -45,6 +47,7 @@ func (ucc *UseCaseContainer) providerChangeKeysUC() (any, error) {
 		)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerChangePasswordUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
@@ -68,6 +71,7 @@ func (ucc *UseCaseContainer) providerChangePasswordUC() (any, error) {
 		)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
@@ -96,6 +100,7 @@ func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
 		)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
@@ -119,6 +124,7 @@ func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
 		)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerProfileUC() (any, error) {
 	userRepoInst, err := container.GetInstance[domain.UserRepository](InstanceUserAuditRepo)
 	if err != nil {
@@ -128,6 +134,7 @@ func (ucc *UseCaseContainer) providerProfileUC() (any, error) {
 	return telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRegisterUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
@@ -156,6 +163,7 @@ func (ucc *UseCaseContainer) providerRegisterUC() (any, error) {
 		)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRoleAdminDeleteUC() (any, error) {
 	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
 	if err != nil {
@@ -171,6 +179,7 @@ func (ucc *UseCaseContainer) providerRoleAdminDeleteUC() (any, error) {
 		usecase.NewRoleAdminDeleteUseCase(tmInst, roleAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRoleAdminGetUC() (any, error) {
 	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
 	if err != nil {
@@ -180,6 +189,7 @@ func (ucc *UseCaseContainer) providerRoleAdminGetUC() (any, error) {
 	return telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRoleAdminGetByNameUC() (any, error) {
 	roleAdminRepoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminAuditRepo)
 	if err != nil {
@@ -189,6 +199,7 @@ func (ucc *UseCaseContainer) providerRoleAdminGetByNameUC() (any, error) {
 	return telemetry.NewROleAdminGetNameTraceUseCase("RoleAdminGetByNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRoleAdminListUC() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
@@ -204,6 +215,7 @@ func (ucc *UseCaseContainer) providerRoleAdminListUC() (any, error) {
 		usecase.NewRoleAdminListUseCase(roleAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerRoleAdminSaveUC() (any, error) {
 	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
 	if err != nil {
@@ -219,6 +231,7 @@ func (ucc *UseCaseContainer) providerRoleAdminSaveUC() (any, error) {
 		usecase.NewRoleAdminSaveUseCase(tmInst, roleAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerUserAdminDeleteUC() (any, error) {
 	tmInst, err := container.GetInstance[db.TransactionManager](InstanceTM)
 	if err != nil {
@@ -234,6 +247,7 @@ func (ucc *UseCaseContainer) providerUserAdminDeleteUC() (any, error) {
 		usecase.NewUserAdminDeleteUseCase(tmInst, userAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerUserAdminGetUC() (any, error) {
 	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
 	if err != nil {
@@ -245,6 +259,7 @@ func (ucc *UseCaseContainer) providerUserAdminGetUC() (any, error) {
 		usecase.NewUserAdminGetUseCase(userAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerUserAdminGetByNameUC() (any, error) {
 	userAdminRepoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminAuditRepo)
 	if err != nil {
@@ -256,6 +271,7 @@ func (ucc *UseCaseContainer) providerUserAdminGetByNameUC() (any, error) {
 		usecase.NewUserAdminGetNameUseCase(userAdminRepoInst)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerUserAdminListUC() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
@@ -271,6 +287,7 @@ func (ucc *UseCaseContainer) providerUserAdminListUC() (any, error) {
 		usecase.NewUserAdminListUseCase(userAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (ucc *UseCaseContainer) providerUserAdminSaveUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {

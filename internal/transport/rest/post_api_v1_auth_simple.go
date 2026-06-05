@@ -3,8 +3,12 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/go-chi/chi/v5/middleware"
+
+	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
+	_ "github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 )
 
 // postAPIV1AuthSimple godoc
@@ -24,19 +28,19 @@ func (cr *AppChiRouter) postAPIV1AuthSimple(rw http.ResponseWriter, r *http.Requ
 	defer cr.log.Debugf("postAPIV1AuthSimple finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
 	var income = &dto.LoginDTO{}
-	err := cr.decodeJSON(r, income)
+	err := libhttp.DecodeJSON(r, income)
 	if err != nil {
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
 	res, err := cr.authFacade.LoginSimple(r.Context(), income)
 	if err != nil {
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

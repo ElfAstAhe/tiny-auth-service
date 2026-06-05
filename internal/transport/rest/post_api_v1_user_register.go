@@ -3,8 +3,12 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/go-chi/chi/v5/middleware"
+
+	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
+	_ "github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 )
 
 // postAPIV1UserRegister godoc
@@ -24,9 +28,9 @@ func (cr *AppChiRouter) postAPIV1UserRegister(rw http.ResponseWriter, r *http.Re
 	defer cr.log.Debugf("postAPIV1UserRegister finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
 	var incomeDTO = &dto.RegisterDTO{}
-	err := cr.decodeJSON(r, incomeDTO)
+	err := libhttp.DecodeJSON(r, incomeDTO)
 	if err != nil {
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
@@ -35,10 +39,10 @@ func (cr *AppChiRouter) postAPIV1UserRegister(rw http.ResponseWriter, r *http.Re
 	if err != nil {
 		cr.log.Errorf("userFacade register error: [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

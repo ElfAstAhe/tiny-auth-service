@@ -7,7 +7,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/mapper"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
@@ -58,11 +57,11 @@ func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDT
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "retrieve subject", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "user is not an admin", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Get", "user is not an admin", err)
 	}
 
 	if strings.TrimSpace(ID) == "" {
@@ -81,11 +80,11 @@ func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "retrieve subject", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "user is not an admin", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.GetByName", "user is not an admin", err)
 	}
 
 	if strings.TrimSpace(name) == "" {
@@ -104,11 +103,11 @@ func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "retrieve subject", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.List", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.List", "user is not an admin", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.List", "user is not an admin", err)
 	}
 
 	if err := uaf.validateList(limit, offset); err != nil {
@@ -141,11 +140,11 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "retrieve subject", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "user is not an admin", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Create", "user is not an admin", err)
 	}
 
 	if user == nil {
@@ -167,11 +166,11 @@ func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "retrieve subject", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return nil, domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "user is not an admin", err)
+		return nil, errs.NewBllForbiddenError("UserAdminFacadeImpl.Change", "user is not an admin", err)
 	}
 
 	if user == nil {
@@ -193,11 +192,11 @@ func (uaf *UserAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
 	if err != nil {
-		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "retrieve subject", err)
+		return errs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "retrieve subject", err)
 	}
 	// RBAC
 	if !IsSubjectAdmin(subj) {
-		return domerrs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "user is not an admin", err)
+		return errs.NewBllForbiddenError("UserAdminFacadeImpl.Delete", "user is not an admin", err)
 	}
 	// validate income
 	if strings.TrimSpace(ID) == "" {

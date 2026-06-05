@@ -8,7 +8,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type ProfileUseCase interface {
@@ -29,16 +28,16 @@ func NewProfileUseCase(userRepo domain.UserRepository) *ProfileInteractor {
 
 func (p *ProfileInteractor) Get(ctx context.Context, username string) (*domain.User, error) {
 	if err := p.validate(username); err != nil {
-		return nil, domerrs.NewBllValidateError("ProfileInteractor.Get", "validate income data failed", err)
+		return nil, errs.NewBllValidateError("ProfileInteractor.Get", "validate income data failed", err)
 	}
 
 	res, err := p.userRepo.FindByName(ctx, username)
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return nil, domerrs.NewBllNotFoundError("ProfileInteractor.Get", "User", username, err)
+			return nil, errs.NewBllNotFoundError("ProfileInteractor.Get", "User", username, err)
 		}
 
-		return nil, domerrs.NewBllError("ProfileInteractor.Get", fmt.Sprintf("get user name [%v] failed", username), err)
+		return nil, errs.NewBllError("ProfileInteractor.Get", fmt.Sprintf("get user name [%v] failed", username), err)
 	}
 
 	return res, nil

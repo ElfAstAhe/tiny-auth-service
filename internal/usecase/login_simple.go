@@ -9,7 +9,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -55,22 +54,22 @@ func NewLoginSimpleUseCase(hashCipher utils.Cipher, authHelper auth.Helper, user
 func (lsi *LoginSimpleInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
 	// fails-fast
 	if err := lsi.validate(username, encryptedPassword); err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginSimpleInteractor.Login", "validate income data failed", err)
+		return nil, nil, errs.NewBllValidateError("LoginSimpleInteractor.Login", "validate income data failed", err)
 	}
 	// пользователь
 	user, err := lsi.userRepo.FindByName(ctx, username)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginSimpleInteractor.Login", "load user", err)
+		return nil, nil, errs.NewBllError("LoginSimpleInteractor.Login", "load user", err)
 	}
 	// password hash
 	passwordHash, err := lsi.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginSimpleInteractor.Login", "hash password", err)
+		return nil, nil, errs.NewBllError("LoginSimpleInteractor.Login", "hash password", err)
 	}
 	// проверка пароля
 	err = lsi.validateUserAndPassword(user, passwordHash)
 	if err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginSimpleInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
+		return nil, nil, errs.NewBllValidateError("LoginSimpleInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
 	}
 
 	return lsi.buildAnswer(user)
@@ -102,7 +101,7 @@ func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password 
 	// password hash
 	passwordHash, err := lsi.hashCipher.EncryptString(password)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginSimpleInteractor.buildPasswordHash", "hash password", err)
+		return "", errs.NewBllError("LoginSimpleInteractor.buildPasswordHash", "hash password", err)
 	}
 
 	return passwordHash, nil
@@ -113,15 +112,15 @@ func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password 
 func (lsi *LoginSimpleInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
-		return domerrs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user is not active", nil)
+		return errs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user is not active", nil)
 	}
 	// deleted
 	if user.Deleted {
-		return domerrs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user is deleted", nil)
+		return errs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user is deleted", nil)
 	}
 	// passwords
 	if user.PasswordHash != passwordHash {
-		return domerrs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user password hash is invalid", nil)
+		return errs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user password hash is invalid", nil)
 	}
 
 	return nil
@@ -133,11 +132,11 @@ func (lsi *LoginSimpleInteractor) buildAnswer(user *domain.User) (*jwt.Token, *j
 	subject := ToSubject(user, nil)
 	token, err := lsi.buildToken(subject)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginSimpleInteractor.buildAnswer", "build token from subject", err)
+		return nil, nil, errs.NewBllError("LoginSimpleInteractor.buildAnswer", "build token from subject", err)
 	}
 	refreshToken, err := lsi.buildRefreshToken(user)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginSimpleInteractor.buildAnswer", "build refresh token from user", err)
+		return nil, nil, errs.NewBllError("LoginSimpleInteractor.buildAnswer", "build refresh token from user", err)
 	}
 
 	return token, refreshToken, nil

@@ -10,7 +10,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type ChangeKeysUseCase interface {
@@ -35,7 +34,7 @@ func NewChangeKeysUseCase(keysHelper helper.RSAKeys, tm usecase.TransactionManag
 
 func (ck *ChangeKeysInteractor) ChangeKeys(ctx context.Context, userID string) (string, string, error) {
 	if err := ck.validate(userID); err != nil {
-		return "", "", domerrs.NewBllValidateError("ChangeKeysInteractor.ChangeKeys", "validate income data failed", err)
+		return "", "", errs.NewBllValidateError("ChangeKeysInteractor.ChangeKeys", "validate income data failed", err)
 	}
 
 	var privateKey, publicKey string
@@ -49,7 +48,7 @@ func (ck *ChangeKeysInteractor) ChangeKeys(ctx context.Context, userID string) (
 		// генерируем пару
 		privateKey, publicKey, err = ck.keysHelper.Generate()
 		if err != nil {
-			return domerrs.NewBllError("ChangeKeysInteractor.ChangeKeys", "generate new RSA keys", err)
+			return errs.NewBllError("ChangeKeysInteractor.ChangeKeys", "generate new RSA keys", err)
 		}
 
 		// storing
@@ -65,10 +64,10 @@ func (ck *ChangeKeysInteractor) ChangeKeys(ctx context.Context, userID string) (
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return "", "", domerrs.NewBllNotFoundError("ChangeKeysInteractor.ChangeKeys", "User", userID, err)
+			return "", "", errs.NewBllNotFoundError("ChangeKeysInteractor.ChangeKeys", "User", userID, err)
 		}
 
-		return "", "", domerrs.NewBllError("ChangeKeysInteractor.ChangeKeys", fmt.Sprintf("change user id [%v] keys failed", userID), err)
+		return "", "", errs.NewBllError("ChangeKeysInteractor.ChangeKeys", fmt.Sprintf("change user id [%v] keys failed", userID), err)
 	}
 
 	return privateKey, publicKey, nil

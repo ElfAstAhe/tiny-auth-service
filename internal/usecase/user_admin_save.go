@@ -10,7 +10,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type UserAdminSaveUseCase interface {
@@ -42,7 +41,7 @@ func (uas *UserAdminSaveInteractor) Save(ctx context.Context, model *domain.User
 	if model.PublicKey == "" || model.PrivateKey == "" {
 		model.PrivateKey, model.PublicKey, err = uas.keysHelper.Generate()
 		if err != nil {
-			return nil, domerrs.NewBllError("UserAdminSaveInteractor.Save", "generate new RSA keys failed", err)
+			return nil, errs.NewBllError("UserAdminSaveInteractor.Save", "generate new RSA keys failed", err)
 		}
 	}
 	//// пароль для нового пользователя
@@ -66,13 +65,13 @@ func (uas *UserAdminSaveInteractor) Save(ctx context.Context, model *domain.User
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return nil, domerrs.NewBllNotFoundError("UserAdminSaveInteractor.Save", "User", model.ID, err)
+			return nil, errs.NewBllNotFoundError("UserAdminSaveInteractor.Save", "User", model.ID, err)
 		}
 		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
-			return nil, domerrs.NewBllUniqueError("UserAdminSaveInteractor.Save", "User", model.ID, err)
+			return nil, errs.NewBllUniqueError("UserAdminSaveInteractor.Save", "User", model.ID, err)
 		}
 
-		return nil, domerrs.NewBllError("UserAdminSaveInteractor.Save", fmt.Sprintf("save User model id [%v] failed", model.ID), err)
+		return nil, errs.NewBllError("UserAdminSaveInteractor.Save", fmt.Sprintf("save User model id [%v] failed", model.ID), err)
 	}
 
 	return res, err

@@ -13,6 +13,7 @@ import (
 	pkgworker "github.com/ElfAstAhe/tiny-auth-service/pkg/transport/worker"
 )
 
+//goland:noinspection DuplicatedCode
 func (wc *WorkerContainer) providerTokenRefresher() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {

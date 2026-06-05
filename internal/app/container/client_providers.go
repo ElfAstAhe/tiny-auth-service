@@ -43,6 +43,7 @@ func (cc *ClientContainer) providerAuthAuditRestClient() (any, error) {
 	return rest.NewAuthAuditClient(authAuditConf, tokenRefresherInst, logInst), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (cc *ClientContainer) providerDataAuditRestClient() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
