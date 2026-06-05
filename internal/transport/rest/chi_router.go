@@ -35,7 +35,32 @@ type AppChiRouter struct {
 
 var _ libhttp.Router = (*AppChiRouter)(nil)
 
-func NewAppChiRouter(
+func NewAppRouter(opts ...Option) (*AppChiRouter, error) {
+	options := &AppRouterOptions{}
+
+	for _, opt := range opts {
+		opt(options)
+	}
+
+	err := options.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	return newAppChiRouter(
+		options.Conf,
+		options.Logger,
+		options.AuthHelper,
+		options.Health,
+		options.Healthz,
+		options.Readyz,
+		options.AuthFacade,
+		options.UserFacade,
+		options.UserAdminFacade,
+		options.RoleAdminFacade), nil
+}
+
+func newAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
 	authHelper auth.Helper,
