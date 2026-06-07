@@ -20,7 +20,10 @@ type UserRolesAdminPgRepository struct {
 var _ libdomain.OwnedRepository[*domain.Role, string, string] = (*UserRolesPgRepository)(nil)
 var _ domain.UserRolesRepository = (*UserRolesAdminPgRepository)(nil)
 
-func NewUserRolesAdminPgRepository(exec db.Executor, errDecipher db.ErrorDecipher) (*UserRolesAdminPgRepository, error) {
+func NewUserRolesAdminPgRepository(
+	exec db.Executor,
+	errDecipher db.ErrorDecipher,
+) (*UserRolesAdminPgRepository, error) {
 	res := &UserRolesAdminPgRepository{}
 	// query builders
 	queryBuilders := repository.NewBaseOwnedQueryBuildersBuilder().NewInstance().

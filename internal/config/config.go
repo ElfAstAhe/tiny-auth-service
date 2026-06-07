@@ -9,6 +9,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	ApplicationName string = "tiny-auth-service"
+)
+
 type Config struct {
 	App             *AppConfig                `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
 	Credentials     *ServiceCredentialsConfig `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
@@ -24,7 +28,6 @@ type Config struct {
 
 // linker params
 var (
-	AppName      string
 	AppVersion   string
 	AppBuildTime string
 )

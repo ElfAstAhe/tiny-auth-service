@@ -8,10 +8,9 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 )
 
 // PostAPIV1UserRegisterReader is a Reader for the PostAPIV1UserRegister structure.

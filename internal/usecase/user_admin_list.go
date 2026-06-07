@@ -6,7 +6,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type UserAdminListUseCase interface {
@@ -34,12 +33,12 @@ func NewUserAdminListUseCase(userRepo domain.UserAdminRepository, maxListLimit i
 
 func (ual *UserAdminListInteractor) List(ctx context.Context, limit, offset int) ([]*domain.User, error) {
 	if err := ual.validate(limit, offset); err != nil {
-		return nil, domerrs.NewBllValidateError("UserAdminListInteractor.List", "validate income data failed", err)
+		return nil, errs.NewBllValidateError("UserAdminListInteractor.List", "validate income data failed", err)
 	}
 
 	res, err := ual.userRepo.List(ctx, limit, offset)
 	if err != nil {
-		return nil, domerrs.NewBllError("UserAdminListInteractor.List", fmt.Sprintf("list User data with limit [%v] and offset [%v] failed", limit, offset), err)
+		return nil, errs.NewBllError("UserAdminListInteractor.List", fmt.Sprintf("list User data with limit [%v] and offset [%v] failed", limit, offset), err)
 	}
 
 	return res, nil

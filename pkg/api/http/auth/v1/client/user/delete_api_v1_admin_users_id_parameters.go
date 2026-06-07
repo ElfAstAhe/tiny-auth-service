@@ -20,24 +20,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDeleteAPIV1AdminUsersIDParams() *DeleteAPIV1AdminUsersIDParams {
-	return &DeleteAPIV1AdminUsersIDParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewDeleteAPIV1AdminUsersIDParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewDeleteAPIV1AdminUsersIDParamsWithTimeout creates a new DeleteAPIV1AdminUsersIDParams object
 // with the ability to set a timeout on a request.
 func NewDeleteAPIV1AdminUsersIDParamsWithTimeout(timeout time.Duration) *DeleteAPIV1AdminUsersIDParams {
 	return &DeleteAPIV1AdminUsersIDParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewDeleteAPIV1AdminUsersIDParamsWithContext creates a new DeleteAPIV1AdminUsersIDParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [DeleteAPIV1AdminUsersIDParams].
 func NewDeleteAPIV1AdminUsersIDParamsWithContext(ctx context.Context) *DeleteAPIV1AdminUsersIDParams {
 	return &DeleteAPIV1AdminUsersIDParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -66,9 +70,9 @@ type DeleteAPIV1AdminUsersIDParams struct {
 	*/
 	ID string
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the delete API v1 admin users ID params (not the query body).
@@ -86,54 +90,57 @@ func (o *DeleteAPIV1AdminUsersIDParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the delete API v1 admin users ID params
+// WithTimeout adds the timeout to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) WithTimeout(timeout time.Duration) *DeleteAPIV1AdminUsersIDParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the delete API v1 admin users ID params
+// SetTimeout adds the timeout to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the delete API v1 admin users ID params
+// WithContext adds the context to the delete API v1 admin users ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [DeleteAPIV1AdminUsersIDParams].
 func (o *DeleteAPIV1AdminUsersIDParams) WithContext(ctx context.Context) *DeleteAPIV1AdminUsersIDParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the delete API v1 admin users ID params
+// SetContext adds the context to the delete API v1 admin users ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [DeleteAPIV1AdminUsersIDParams].
 func (o *DeleteAPIV1AdminUsersIDParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the delete API v1 admin users ID params
+// WithHTTPClient adds the HTTPClient to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) WithHTTPClient(client *http.Client) *DeleteAPIV1AdminUsersIDParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the delete API v1 admin users ID params
+// SetHTTPClient adds the HTTPClient to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the delete API v1 admin users ID params
+// WithID adds the id to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) WithID(id string) *DeleteAPIV1AdminUsersIDParams {
 	o.SetID(id)
 	return o
 }
 
-// SetID adds the id to the delete API v1 admin users ID params
+// SetID adds the id to the delete API v1 admin users ID params.
 func (o *DeleteAPIV1AdminUsersIDParams) SetID(id string) {
 	o.ID = id
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *DeleteAPIV1AdminUsersIDParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

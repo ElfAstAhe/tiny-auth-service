@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/go-chi/chi/v5/middleware"
 
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
@@ -27,10 +28,10 @@ func (cr *AppChiRouter) getAPIV1UserProfile(rw http.ResponseWriter, r *http.Requ
 	if err != nil {
 		cr.log.Errorf("getAPIV1UserProfile err: [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

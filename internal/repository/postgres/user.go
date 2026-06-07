@@ -25,7 +25,13 @@ var _ libdomain.CRUDRepository[*domain.User, string] = (*UserPgRepository)(nil)
 var _ domain.UserRepository = (*UserPgRepository)(nil)
 
 //goland:noinspection DuplicatedCode
-func NewUserPgRepository(executor db.Executor, decipher db.ErrorDecipher, hashCipher utils.Cipher, cipherHelper helper.Cipher, userRolesRepo domain.UserRolesRepository) (*UserPgRepository, error) {
+func NewUserPgRepository(
+	executor db.Executor,
+	decipher db.ErrorDecipher,
+	hashCipher utils.Cipher,
+	cipherHelper helper.Cipher,
+	userRolesRepo domain.UserRolesRepository,
+) (*UserPgRepository, error) {
 	res := &UserPgRepository{
 		hashCipher:    hashCipher,
 		cipherHelper:  cipherHelper,

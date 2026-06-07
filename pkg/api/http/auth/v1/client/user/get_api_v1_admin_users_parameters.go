@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
+	"github.com/go-openapi/swag/conv"
 )
 
 // NewGetAPIV1AdminUsersParams creates a new GetAPIV1AdminUsersParams object,
@@ -21,24 +21,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetAPIV1AdminUsersParams() *GetAPIV1AdminUsersParams {
-	return &GetAPIV1AdminUsersParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewGetAPIV1AdminUsersParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewGetAPIV1AdminUsersParamsWithTimeout creates a new GetAPIV1AdminUsersParams object
 // with the ability to set a timeout on a request.
 func NewGetAPIV1AdminUsersParamsWithTimeout(timeout time.Duration) *GetAPIV1AdminUsersParams {
 	return &GetAPIV1AdminUsersParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewGetAPIV1AdminUsersParamsWithContext creates a new GetAPIV1AdminUsersParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminUsersParams].
 func NewGetAPIV1AdminUsersParamsWithContext(ctx context.Context) *GetAPIV1AdminUsersParams {
 	return &GetAPIV1AdminUsersParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -75,9 +79,9 @@ type GetAPIV1AdminUsersParams struct {
 	*/
 	Offset *int64
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the get API v1 admin users params (not the query body).
@@ -95,65 +99,68 @@ func (o *GetAPIV1AdminUsersParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get API v1 admin users params
+// WithTimeout adds the timeout to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) WithTimeout(timeout time.Duration) *GetAPIV1AdminUsersParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get API v1 admin users params
+// SetTimeout adds the timeout to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the get API v1 admin users params
+// WithContext adds the context to the get API v1 admin users params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminUsersParams].
 func (o *GetAPIV1AdminUsersParams) WithContext(ctx context.Context) *GetAPIV1AdminUsersParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get API v1 admin users params
+// SetContext adds the context to the get API v1 admin users params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminUsersParams].
 func (o *GetAPIV1AdminUsersParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get API v1 admin users params
+// WithHTTPClient adds the HTTPClient to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) WithHTTPClient(client *http.Client) *GetAPIV1AdminUsersParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get API v1 admin users params
+// SetHTTPClient adds the HTTPClient to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithLimit adds the limit to the get API v1 admin users params
+// WithLimit adds the limit to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) WithLimit(limit *int64) *GetAPIV1AdminUsersParams {
 	o.SetLimit(limit)
 	return o
 }
 
-// SetLimit adds the limit to the get API v1 admin users params
+// SetLimit adds the limit to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) SetLimit(limit *int64) {
 	o.Limit = limit
 }
 
-// WithOffset adds the offset to the get API v1 admin users params
+// WithOffset adds the offset to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) WithOffset(offset *int64) *GetAPIV1AdminUsersParams {
 	o.SetOffset(offset)
 	return o
 }
 
-// SetOffset adds the offset to the get API v1 admin users params
+// SetOffset adds the offset to the get API v1 admin users params.
 func (o *GetAPIV1AdminUsersParams) SetOffset(offset *int64) {
 	o.Offset = offset
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *GetAPIV1AdminUsersParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error
@@ -166,7 +173,7 @@ func (o *GetAPIV1AdminUsersParams) WriteToRequest(r runtime.ClientRequest, reg s
 		if o.Limit != nil {
 			qrLimit = *o.Limit
 		}
-		qLimit := swag.FormatInt64(qrLimit)
+		qLimit := conv.FormatInteger(qrLimit)
 		if qLimit != "" {
 
 			if err := r.SetQueryParam("limit", qLimit); err != nil {
@@ -183,7 +190,7 @@ func (o *GetAPIV1AdminUsersParams) WriteToRequest(r runtime.ClientRequest, reg s
 		if o.Offset != nil {
 			qrOffset = *o.Offset
 		}
-		qOffset := swag.FormatInt64(qrOffset)
+		qOffset := conv.FormatInteger(qrOffset)
 		if qOffset != "" {
 
 			if err := r.SetQueryParam("offset", qOffset); err != nil {

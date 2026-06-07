@@ -3,7 +3,9 @@
 package user
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -11,11 +13,12 @@ import (
 )
 
 // New creates a new user API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
+func New(transport runtime.ContextualTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
 // New creates a new user API client with basic auth credentials.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -29,6 +32,7 @@ func NewClientWithBasicAuth(host, basePath, scheme, user, password string) Clien
 }
 
 // New creates a new user API client with a bearer token for authentication.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -41,43 +45,92 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 }
 
 /*
-Client for user API
+Client for user API.
 */
 type Client struct {
-	transport runtime.ClientTransport
+	transport runtime.ContextualTransport
 	formats   strfmt.Registry
 }
 
 // ClientOption may be used to customize the behavior of Client methods.
 type ClientOption func(*runtime.ClientOperation)
 
-// ClientService is the interface for Client methods
+// ClientService is the interface for Client methods.
 type ClientService interface {
+
+	// DeleteAPIV1AdminUsersID удаление пользователя.
 	DeleteAPIV1AdminUsersID(params *DeleteAPIV1AdminUsersIDParams, opts ...ClientOption) (*DeleteAPIV1AdminUsersIDNoContent, error)
 
+	// DeleteAPIV1AdminUsersIDContext удаление пользователя.
+	DeleteAPIV1AdminUsersIDContext(ctx context.Context, params *DeleteAPIV1AdminUsersIDParams, opts ...ClientOption) (*DeleteAPIV1AdminUsersIDNoContent, error)
+
+	// GetAPIV1AdminUsers получить.
 	GetAPIV1AdminUsers(params *GetAPIV1AdminUsersParams, opts ...ClientOption) (*GetAPIV1AdminUsersOK, error)
 
+	// GetAPIV1AdminUsersContext получить.
+	GetAPIV1AdminUsersContext(ctx context.Context, params *GetAPIV1AdminUsersParams, opts ...ClientOption) (*GetAPIV1AdminUsersOK, error)
+
+	// GetAPIV1AdminUsersID получить.
 	GetAPIV1AdminUsersID(params *GetAPIV1AdminUsersIDParams, opts ...ClientOption) (*GetAPIV1AdminUsersIDOK, error)
 
+	// GetAPIV1AdminUsersIDContext получить.
+	GetAPIV1AdminUsersIDContext(ctx context.Context, params *GetAPIV1AdminUsersIDParams, opts ...ClientOption) (*GetAPIV1AdminUsersIDOK, error)
+
+	// GetAPIV1AdminUsersSearch получить.
 	GetAPIV1AdminUsersSearch(params *GetAPIV1AdminUsersSearchParams, opts ...ClientOption) (*GetAPIV1AdminUsersSearchOK, error)
 
+	// GetAPIV1AdminUsersSearchContext получить.
+	GetAPIV1AdminUsersSearchContext(ctx context.Context, params *GetAPIV1AdminUsersSearchParams, opts ...ClientOption) (*GetAPIV1AdminUsersSearchOK, error)
+
+	// PostAPIV1AdminUsers создание пользователя.
 	PostAPIV1AdminUsers(params *PostAPIV1AdminUsersParams, opts ...ClientOption) (*PostAPIV1AdminUsersCreated, error)
 
+	// PostAPIV1AdminUsersContext создание пользователя.
+	PostAPIV1AdminUsersContext(ctx context.Context, params *PostAPIV1AdminUsersParams, opts ...ClientOption) (*PostAPIV1AdminUsersCreated, error)
+
+	// PutAPIV1AdminUsersID изменяет пользователя.
 	PutAPIV1AdminUsersID(params *PutAPIV1AdminUsersIDParams, opts ...ClientOption) (*PutAPIV1AdminUsersIDOK, error)
 
-	SetTransport(transport runtime.ClientTransport)
+	// PutAPIV1AdminUsersIDContext изменяет пользователя.
+	PutAPIV1AdminUsersIDContext(ctx context.Context, params *PutAPIV1AdminUsersIDParams, opts ...ClientOption) (*PutAPIV1AdminUsersIDOK, error)
+
+	SetTransport(transport runtime.ContextualTransport)
 }
 
 /*
-DeleteAPIV1AdminUsersID удалениеs пользователя
+DeleteAPIV1AdminUsersIDудалениеs пользователя.
 
-Удаляет запись по её ID
+Удаляет запись по её ID.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.DeleteAPIV1AdminUsersIDContext] instead.
 */
 func (a *Client) DeleteAPIV1AdminUsersID(params *DeleteAPIV1AdminUsersIDParams, opts ...ClientOption) (*DeleteAPIV1AdminUsersIDNoContent, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.DeleteAPIV1AdminUsersIDContext(ctx, params, opts...)
+}
+
+/*
+DeleteAPIV1AdminUsersIDContextудалениеs пользователя.
+
+Удаляет запись по её ID.
+
+Do not use the deprecated [DeleteAPIV1AdminUsersIDParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) DeleteAPIV1AdminUsersIDContext(ctx context.Context, params *DeleteAPIV1AdminUsersIDParams, opts ...ClientOption) (*DeleteAPIV1AdminUsersIDNoContent, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeleteAPIV1AdminUsersIDParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "DeleteAPIV1AdminUsersID",
 		Method:             "DELETE",
@@ -87,13 +140,14 @@ func (a *Client) DeleteAPIV1AdminUsersID(params *DeleteAPIV1AdminUsersIDParams, 
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &DeleteAPIV1AdminUsersIDReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -114,15 +168,39 @@ func (a *Client) DeleteAPIV1AdminUsersID(params *DeleteAPIV1AdminUsersIDParams, 
 }
 
 /*
-GetAPIV1AdminUsers получитьs
+GetAPIV1AdminUsersполучитьs.
 
-Получить список
+Получить список.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.GetAPIV1AdminUsersContext] instead.
 */
 func (a *Client) GetAPIV1AdminUsers(params *GetAPIV1AdminUsersParams, opts ...ClientOption) (*GetAPIV1AdminUsersOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.GetAPIV1AdminUsersContext(ctx, params, opts...)
+}
+
+/*
+GetAPIV1AdminUsersContextполучитьs.
+
+Получить список.
+
+Do not use the deprecated [GetAPIV1AdminUsersParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) GetAPIV1AdminUsersContext(ctx context.Context, params *GetAPIV1AdminUsersParams, opts ...ClientOption) (*GetAPIV1AdminUsersOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAPIV1AdminUsersParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "GetAPIV1AdminUsers",
 		Method:             "GET",
@@ -132,13 +210,14 @@ func (a *Client) GetAPIV1AdminUsers(params *GetAPIV1AdminUsersParams, opts ...Cl
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetAPIV1AdminUsersReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -159,15 +238,39 @@ func (a *Client) GetAPIV1AdminUsers(params *GetAPIV1AdminUsersParams, opts ...Cl
 }
 
 /*
-GetAPIV1AdminUsersID получитьs
+GetAPIV1AdminUsersIDполучитьs.
 
-Получает запись по её ID
+Получает запись по её ID.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.GetAPIV1AdminUsersIDContext] instead.
 */
 func (a *Client) GetAPIV1AdminUsersID(params *GetAPIV1AdminUsersIDParams, opts ...ClientOption) (*GetAPIV1AdminUsersIDOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.GetAPIV1AdminUsersIDContext(ctx, params, opts...)
+}
+
+/*
+GetAPIV1AdminUsersIDContextполучитьs.
+
+Получает запись по её ID.
+
+Do not use the deprecated [GetAPIV1AdminUsersIDParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) GetAPIV1AdminUsersIDContext(ctx context.Context, params *GetAPIV1AdminUsersIDParams, opts ...ClientOption) (*GetAPIV1AdminUsersIDOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAPIV1AdminUsersIDParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "GetAPIV1AdminUsersID",
 		Method:             "GET",
@@ -177,13 +280,14 @@ func (a *Client) GetAPIV1AdminUsersID(params *GetAPIV1AdminUsersIDParams, opts .
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetAPIV1AdminUsersIDReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -204,15 +308,39 @@ func (a *Client) GetAPIV1AdminUsersID(params *GetAPIV1AdminUsersIDParams, opts .
 }
 
 /*
-GetAPIV1AdminUsersSearch получитьs
+GetAPIV1AdminUsersSearchполучитьs.
 
-Поиск записи
+Поиск записи.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.GetAPIV1AdminUsersSearchContext] instead.
 */
 func (a *Client) GetAPIV1AdminUsersSearch(params *GetAPIV1AdminUsersSearchParams, opts ...ClientOption) (*GetAPIV1AdminUsersSearchOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.GetAPIV1AdminUsersSearchContext(ctx, params, opts...)
+}
+
+/*
+GetAPIV1AdminUsersSearchContextполучитьs.
+
+Поиск записи.
+
+Do not use the deprecated [GetAPIV1AdminUsersSearchParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) GetAPIV1AdminUsersSearchContext(ctx context.Context, params *GetAPIV1AdminUsersSearchParams, opts ...ClientOption) (*GetAPIV1AdminUsersSearchOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAPIV1AdminUsersSearchParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "GetAPIV1AdminUsersSearch",
 		Method:             "GET",
@@ -222,13 +350,14 @@ func (a *Client) GetAPIV1AdminUsersSearch(params *GetAPIV1AdminUsersSearchParams
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetAPIV1AdminUsersSearchReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -249,15 +378,39 @@ func (a *Client) GetAPIV1AdminUsersSearch(params *GetAPIV1AdminUsersSearchParams
 }
 
 /*
-PostAPIV1AdminUsers созданиеs пользователя
+PostAPIV1AdminUsersсозданиеs пользователя.
 
-Создаёт нового пользователя
+Создаёт нового пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PostAPIV1AdminUsersContext] instead.
 */
 func (a *Client) PostAPIV1AdminUsers(params *PostAPIV1AdminUsersParams, opts ...ClientOption) (*PostAPIV1AdminUsersCreated, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PostAPIV1AdminUsersContext(ctx, params, opts...)
+}
+
+/*
+PostAPIV1AdminUsersContextсозданиеs пользователя.
+
+Создаёт нового пользователя.
+
+Do not use the deprecated [PostAPIV1AdminUsersParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PostAPIV1AdminUsersContext(ctx context.Context, params *PostAPIV1AdminUsersParams, opts ...ClientOption) (*PostAPIV1AdminUsersCreated, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostAPIV1AdminUsersParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PostAPIV1AdminUsers",
 		Method:             "POST",
@@ -267,13 +420,14 @@ func (a *Client) PostAPIV1AdminUsers(params *PostAPIV1AdminUsersParams, opts ...
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PostAPIV1AdminUsersReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -294,15 +448,39 @@ func (a *Client) PostAPIV1AdminUsers(params *PostAPIV1AdminUsersParams, opts ...
 }
 
 /*
-PutAPIV1AdminUsersID изменяетs пользователя
+PutAPIV1AdminUsersIDизменяетs пользователя.
 
-Изменение атрибутов пользователя
+Изменение атрибутов пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PutAPIV1AdminUsersIDContext] instead.
 */
 func (a *Client) PutAPIV1AdminUsersID(params *PutAPIV1AdminUsersIDParams, opts ...ClientOption) (*PutAPIV1AdminUsersIDOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PutAPIV1AdminUsersIDContext(ctx, params, opts...)
+}
+
+/*
+PutAPIV1AdminUsersIDContextизменяетs пользователя.
+
+Изменение атрибутов пользователя.
+
+Do not use the deprecated [PutAPIV1AdminUsersIDParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PutAPIV1AdminUsersIDContext(ctx context.Context, params *PutAPIV1AdminUsersIDParams, opts ...ClientOption) (*PutAPIV1AdminUsersIDOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPutAPIV1AdminUsersIDParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PutAPIV1AdminUsersID",
 		Method:             "PUT",
@@ -312,13 +490,14 @@ func (a *Client) PutAPIV1AdminUsersID(params *PutAPIV1AdminUsersIDParams, opts .
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PutAPIV1AdminUsersIDReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -339,6 +518,14 @@ func (a *Client) PutAPIV1AdminUsersID(params *PutAPIV1AdminUsersIDParams, opts .
 }
 
 // SetTransport changes the transport on the client
-func (a *Client) SetTransport(transport runtime.ClientTransport) {
+func (a *Client) SetTransport(transport runtime.ContextualTransport) {
 	a.transport = transport
+}
+
+// innerParams captures internal fields so they don't conflict with user-supplied parameters.
+type innerParams struct {
+	timeout time.Duration
+
+	// Deprecated: use the operation call with context to pass the context instead of [UserParams].
+	ctx context.Context
 }

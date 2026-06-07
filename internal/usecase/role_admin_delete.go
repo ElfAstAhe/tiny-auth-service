@@ -9,7 +9,6 @@ import (
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type RoleAdminDeleteUseCase interface {
@@ -32,7 +31,7 @@ func NewRoleAdminDeleteUseCase(tm usecase.TransactionManager, roleRepo domain.Ro
 
 func (rad *RoleAdminDeleteInteractor) Delete(ctx context.Context, ID string) error {
 	if err := rad.validate(ID); err != nil {
-		return domerrs.NewBllValidateError("RoleAdminDeleteInteractor.Delete", "validate income data failed", err)
+		return errs.NewBllValidateError("RoleAdminDeleteInteractor.Delete", "validate income data failed", err)
 	}
 
 	err := rad.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
@@ -40,10 +39,10 @@ func (rad *RoleAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return domerrs.NewBllNotFoundError("RoleAdminDeleteInteractor.Delete", "Role", ID, err)
+			return errs.NewBllNotFoundError("RoleAdminDeleteInteractor.Delete", "Role", ID, err)
 		}
 
-		return domerrs.NewBllError("RoleAdminDeleteInteractor.Delete", fmt.Sprintf("delete role model id [%v] failed", ID), err)
+		return errs.NewBllError("RoleAdminDeleteInteractor.Delete", fmt.Sprintf("delete role model id [%v] failed", ID), err)
 	}
 
 	return nil

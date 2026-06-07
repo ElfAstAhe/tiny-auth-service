@@ -3,7 +3,9 @@
 package profile
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -11,11 +13,12 @@ import (
 )
 
 // New creates a new profile API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
+func New(transport runtime.ContextualTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
 // New creates a new profile API client with basic auth credentials.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -29,6 +32,7 @@ func NewClientWithBasicAuth(host, basePath, scheme, user, password string) Clien
 }
 
 // New creates a new profile API client with a bearer token for authentication.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -41,39 +45,80 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 }
 
 /*
-Client for profile API
+Client for profile API.
 */
 type Client struct {
-	transport runtime.ClientTransport
+	transport runtime.ContextualTransport
 	formats   strfmt.Registry
 }
 
 // ClientOption may be used to customize the behavior of Client methods.
 type ClientOption func(*runtime.ClientOperation)
 
-// ClientService is the interface for Client methods
+// ClientService is the interface for Client methods.
 type ClientService interface {
+
+	// GetAPIV1UsersProfile получить.
 	GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error)
 
+	// GetAPIV1UsersProfileContext получить.
+	GetAPIV1UsersProfileContext(ctx context.Context, params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error)
+
+	// PostAPIV1UserRegister регистрация.
 	PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error)
 
+	// PostAPIV1UserRegisterContext регистрация.
+	PostAPIV1UserRegisterContext(ctx context.Context, params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error)
+
+	// PutAPIV1UsersKeys изменяет роль.
 	PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error)
 
+	// PutAPIV1UsersKeysContext изменяет роль.
+	PutAPIV1UsersKeysContext(ctx context.Context, params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error)
+
+	// PutAPIV1UsersPassword смена пароля пользователя.
 	PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error)
 
-	SetTransport(transport runtime.ClientTransport)
+	// PutAPIV1UsersPasswordContext смена пароля пользователя.
+	PutAPIV1UsersPasswordContext(ctx context.Context, params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error)
+
+	SetTransport(transport runtime.ContextualTransport)
 }
 
 /*
-GetAPIV1UsersProfile получитьs
+GetAPIV1UsersProfileполучитьs.
 
-Получает запись по её ID
+Получает запись по её ID.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.GetAPIV1UsersProfileContext] instead.
 */
 func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.GetAPIV1UsersProfileContext(ctx, params, opts...)
+}
+
+/*
+GetAPIV1UsersProfileContextполучитьs.
+
+Получает запись по её ID.
+
+Do not use the deprecated [GetAPIV1UsersProfileParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) GetAPIV1UsersProfileContext(ctx context.Context, params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAPIV1UsersProfileParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "GetAPIV1UsersProfile",
 		Method:             "GET",
@@ -83,13 +128,14 @@ func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts .
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &GetAPIV1UsersProfileReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -110,15 +156,39 @@ func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts .
 }
 
 /*
-PostAPIV1UserRegister регистрацияs
+PostAPIV1UserRegisterрегистрацияs.
 
-Регистрация пользователя
+Регистрация пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PostAPIV1UserRegisterContext] instead.
 */
 func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PostAPIV1UserRegisterContext(ctx, params, opts...)
+}
+
+/*
+PostAPIV1UserRegisterContextрегистрацияs.
+
+Регистрация пользователя.
+
+Do not use the deprecated [PostAPIV1UserRegisterParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PostAPIV1UserRegisterContext(ctx context.Context, params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostAPIV1UserRegisterParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PostAPIV1UserRegister",
 		Method:             "POST",
@@ -128,13 +198,14 @@ func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PostAPIV1UserRegisterReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -155,15 +226,39 @@ func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts
 }
 
 /*
-PutAPIV1UsersKeys изменяетs роль
+PutAPIV1UsersKeysизменяетs роль.
 
-Изменение атрибутов роли
+Изменение атрибутов роли.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PutAPIV1UsersKeysContext] instead.
 */
 func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PutAPIV1UsersKeysContext(ctx, params, opts...)
+}
+
+/*
+PutAPIV1UsersKeysContextизменяетs роль.
+
+Изменение атрибутов роли.
+
+Do not use the deprecated [PutAPIV1UsersKeysParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PutAPIV1UsersKeysContext(ctx context.Context, params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPutAPIV1UsersKeysParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PutAPIV1UsersKeys",
 		Method:             "PUT",
@@ -173,13 +268,14 @@ func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...Clie
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PutAPIV1UsersKeysReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -200,15 +296,39 @@ func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...Clie
 }
 
 /*
-PutAPIV1UsersPassword сменаs пароля пользователя
+PutAPIV1UsersPasswordсменаs пароля пользователя.
 
-Изменяет пароль пользователя
+Изменяет пароль пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PutAPIV1UsersPasswordContext] instead.
 */
 func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PutAPIV1UsersPasswordContext(ctx, params, opts...)
+}
+
+/*
+PutAPIV1UsersPasswordContextсменаs пароля пользователя.
+
+Изменяет пароль пользователя.
+
+Do not use the deprecated [PutAPIV1UsersPasswordParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PutAPIV1UsersPasswordContext(ctx context.Context, params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPutAPIV1UsersPasswordParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PutAPIV1UsersPassword",
 		Method:             "PUT",
@@ -218,13 +338,14 @@ func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PutAPIV1UsersPasswordReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -245,6 +366,14 @@ func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts
 }
 
 // SetTransport changes the transport on the client
-func (a *Client) SetTransport(transport runtime.ClientTransport) {
+func (a *Client) SetTransport(transport runtime.ContextualTransport) {
 	a.transport = transport
+}
+
+// innerParams captures internal fields so they don't conflict with user-supplied parameters.
+type innerParams struct {
+	timeout time.Duration
+
+	// Deprecated: use the operation call with context to pass the context instead of [ProfileParams].
+	ctx context.Context
 }

@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -31,10 +32,10 @@ func (cr *AppChiRouter) getAPIV1AdminUser(rw http.ResponseWriter, r *http.Reques
 	if err != nil {
 		cr.log.Errorf("getAPIV1AdminUser get user error, [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/go-chi/chi/v5/middleware"
 
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
@@ -25,9 +26,9 @@ func (cr *AppChiRouter) getAPIV1AdminUserSearch(rw http.ResponseWriter, r *http.
 	cr.log.Debugf("getAPIV1AdminUserSearch start, requestID [%s]", middleware.GetReqID(r.Context()))
 	defer cr.log.Debugf("getAPIV1AdminUserSearch finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
-	name := cr.getQueryString(r, "name", "")
+	name := libhttp.GetQueryStringDefault(r, "name", "")
 	if name == "" {
-		cr.renderError(rw, errs.NewInvalidArgumentError("name", ""))
+		libhttp.RenderError(rw, errs.NewInvalidArgumentError("name", ""), mapToHTTPStatus)
 
 		return
 	}
@@ -36,10 +37,10 @@ func (cr *AppChiRouter) getAPIV1AdminUserSearch(rw http.ResponseWriter, r *http.
 	if err != nil {
 		cr.log.Errorf("getAPIV1AdminUserSearch get user error, [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }
