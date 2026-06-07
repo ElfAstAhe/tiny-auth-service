@@ -12,6 +12,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
 )
 
+//goland:noinspection DuplicatedCode
 func (cc *ClientContainer) providerAuthAuditRestClient() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
@@ -40,7 +41,7 @@ func (cc *ClientContainer) providerAuthAuditRestClient() (any, error) {
 		return nil, errs.NewContainerError(cc.GetName(), fmt.Sprintf("provider: create %s instance config failed", InstanceAuthAuditClient), err)
 	}
 
-	return rest.NewAuthAuditClient(authAuditConf, tokenRefresherInst, logInst), nil
+	return rest.NewAuthAuditClient("auth-audit-client", authAuditConf, tokenRefresherInst, logInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -71,5 +72,5 @@ func (cc *ClientContainer) providerDataAuditRestClient() (any, error) {
 		return nil, errs.NewContainerError(cc.GetName(), fmt.Sprintf("provider: create %s instance config failed", InstanceDataAuditClient), err)
 	}
 
-	return rest.NewDataAuditClient(dataAuditConf, tokenRefresherInst, logInst), nil
+	return rest.NewDataAuditClient("data-audit-client", dataAuditConf, tokenRefresherInst, logInst), nil
 }

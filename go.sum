@@ -6,6 +6,12 @@ github.com/ElfAstAhe/tiny-audit-service v0.0.17 h1:n44aB9oJCMHJlpXX2qNMn21DjmomY
 github.com/ElfAstAhe/tiny-audit-service v0.0.17/go.mod h1:zmhcwHcSTK6el3n9744W22B9c21F/GEhx7Rf+LKC8h4=
 github.com/ElfAstAhe/tiny-audit-service v0.0.18 h1:d4MF2jD2aaS6awavO7TNk+oVXIPhwdUV7dcPfpZhqlw=
 github.com/ElfAstAhe/tiny-audit-service v0.0.18/go.mod h1:5xwTdFmemIIT6y8l7ik8y6kov1XttQszsjZdZHLTb4k=
+github.com/ElfAstAhe/tiny-audit-service v0.0.19 h1:YHaEYOKrcb/DM/ndbzXptE1cCrxHOSDdTIOmno5jzCQ=
+github.com/ElfAstAhe/tiny-audit-service v0.0.19/go.mod h1:5xwTdFmemIIT6y8l7ik8y6kov1XttQszsjZdZHLTb4k=
+github.com/ElfAstAhe/tiny-audit-service v0.0.20 h1:5KHhgp1ty2q3QE6QhQBJ4Djtlz06Z/9p7jLwZOEhh7s=
+github.com/ElfAstAhe/tiny-audit-service v0.0.20/go.mod h1:5xwTdFmemIIT6y8l7ik8y6kov1XttQszsjZdZHLTb4k=
+github.com/ElfAstAhe/tiny-audit-service v0.0.21 h1:r55ChBCTumc5aFXkQmf7U0jApFQgzHPeSFQaJxdXhTg=
+github.com/ElfAstAhe/tiny-audit-service v0.0.21/go.mod h1:Qexay0/YP/KYmVySayJjFXrCL4m2OsT/Qr/GMSX+I3k=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
 github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
 github.com/XSAM/otelsql v0.42.0 h1:Li0xF4eJUxG2e0x3D4rvRlys1f27yJKvjTh7ljkUP5o=

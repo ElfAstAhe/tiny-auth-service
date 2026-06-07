@@ -5,6 +5,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
+	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
@@ -15,6 +16,10 @@ import (
 //goland:noinspection DuplicatedCode
 func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
+	}
+	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
@@ -42,7 +47,8 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 			jwtHelperInst,
 			loginUCInst,
 			loginSimpleUCInst,
-		)), nil
+		),
+		logInst), nil
 }
 
 //goland:noinspection DuplicatedCode
