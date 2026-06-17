@@ -74,7 +74,7 @@ type MockUserAdminGetNameUseCase_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
 //   - name string
-func (_e *MockUserAdminGetNameUseCase_Expecter) Get(ctx interface{}, name interface{}) *MockUserAdminGetNameUseCase_Get_Call {
+func (_e *MockUserAdminGetNameUseCase_Expecter) Get(ctx any, name any) *MockUserAdminGetNameUseCase_Get_Call {
 	return &MockUserAdminGetNameUseCase_Get_Call{Call: _e.mock.On("Get", ctx, name)}
 }
 
