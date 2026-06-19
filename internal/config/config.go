@@ -24,6 +24,7 @@ type Config struct {
 	Log             *config.LogConfig         `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
 	DB              *config.DBConfig          `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
 	Telemetry       *config.TelemetryConfig   `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
+	AMQPSender      *AMQPSenderConfig         `mapstructure:"amqp_sender" json:"amqp_sender,omitempty" yaml:"amqp_sender,omitempty"`
 }
 
 // linker params
@@ -43,6 +44,7 @@ func NewConfig(
 	log *config.LogConfig,
 	db *config.DBConfig,
 	telemetry *config.TelemetryConfig,
+	amqpSender *AMQPSenderConfig,
 ) *Config {
 	return &Config{
 		App:             app,
@@ -55,6 +57,7 @@ func NewConfig(
 		Log:             log,
 		DB:              db,
 		Telemetry:       telemetry,
+		AMQPSender:      amqpSender,
 	}
 }
 
@@ -70,6 +73,7 @@ func NewDefaultConfig() *Config {
 		config.NewDefaultLogConfig(),
 		config.NewDefaultDBConfig(),
 		config.NewDefaultTelemetryConfig(),
+		NewDefaultAMQPSenderConfig(),
 	)
 }
 
@@ -85,6 +89,9 @@ func NewEmptyConfig() *Config {
 		Log:             &config.LogConfig{},
 		DB:              &config.DBConfig{},
 		Telemetry:       &config.TelemetryConfig{},
+		AMQPSender: &AMQPSenderConfig{
+			AMQPSenderConfig: &config.AMQPSenderConfig{},
+		},
 	}
 }
 
@@ -102,6 +109,7 @@ func (c *Config) Validate() error {
 		c.Log,
 		c.DB,
 		c.Telemetry,
+		c.AMQPSender,
 	}
 
 	for _, validator := range validators {

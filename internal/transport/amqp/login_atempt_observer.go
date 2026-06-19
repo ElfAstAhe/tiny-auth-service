@@ -1,9 +1,9 @@
 package amqp
 
 import (
-	"github.com/Azure/go-amqp"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 )
 
 type LoginAttemptObserver struct {
-	client *amqp.Sender
+	client *libamqp.ClientSender
 }

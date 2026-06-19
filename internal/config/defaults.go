@@ -30,6 +30,14 @@ const (
 	defaultAuditClientShutdownTimeout    time.Duration = 15 * time.Second
 )
 
+// amqp sender
+const (
+	defaultAMQPSenderAddress    string = "tiny.auth"
+	defaultAMQPSenderTargetName string = "login.attempts"
+	defaultAMQPSenderUsername   string = "svc-auth"
+	defaultAMQPSenderPassword   string = "test"
+)
+
 // app
 const (
 	keyAppEnv                string = "app.env"
@@ -66,4 +74,19 @@ const (
 	keyDataAuditClientDataCapacity       string = "data_audit_client.data_capacity"
 	keyDataAuditClientCompleteProcessing string = "data_audit_client.complete_processing"
 	keyDataAuditClientShutdownTimeout    string = "data_audit_client.shutdown_timeout"
+)
+
+// amqp sender
+const (
+	keyAMQPSenderURL                string = "amqp_sender.url"
+	keyAMQPSenderAddress            string = "amqp_sender.address"
+	keyAMQPSenderTargetName         string = "amqp_sender.target_name"
+	keyAMQPSenderUsername           string = "amqp_sender.username"
+	keyAMQPSenderPassword           string = "amqp_sender.password"
+	keyAMQPSenderSecure             string = "amqp_sender.secure"
+	keyAMQPSenderInsecureSkipVerify string = "amqp_sender.insecure_skip_verify"
+	keyAMQPSenderConnectTimeout     string = "amqp_sender.connect_timeout"
+	keyAMQPSenderWriteTimeout       string = "amqp_sender.write_timeout"
+	keyAMQPSenderNotifyTimeout      string = "amqp_sender.notify_timeout"
+	keyAMQPSenderShutdownTimeout    string = "amqp_sender.shutdown_timeout"
 )

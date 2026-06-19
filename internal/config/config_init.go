@@ -83,6 +83,19 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(config.KeyTelemetryExporterEndpoint, config.DefaultTelemetryExporterEndpoint)
 	v.SetDefault(config.KeyTelemetrySampleRate, config.DefaultTelemetrySampleRate)
 	v.SetDefault(config.KeyTelemetryTimeout, config.DefaultTelemetryTimeout)
+
+	// amqp sender
+	v.SetDefault(keyAMQPSenderURL, config.DefaultAMQPSenderURL)
+	v.SetDefault(keyAMQPSenderAddress, defaultAMQPSenderAddress)
+	v.SetDefault(keyAMQPSenderTargetName, defaultAMQPSenderTargetName)
+	v.SetDefault(keyAMQPSenderUsername, defaultAMQPSenderUsername)
+	v.SetDefault(keyAMQPSenderPassword, defaultAMQPSenderPassword)
+	v.SetDefault(keyAMQPSenderSecure, config.DefaultAMQPSenderSecure)
+	v.SetDefault(keyAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
+	v.SetDefault(keyAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
+	v.SetDefault(keyAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
+	v.SetDefault(keyAMQPSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
+	v.SetDefault(keyAMQPSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
 }
 
 func initFLags() (res *pflag.FlagSet, err error) {
@@ -184,6 +197,19 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.String(FlagTelemetryExporterEndpoint, config.DefaultTelemetryExporterEndpoint, "telemetry exporter endpoint")
 		res.Float64(FlagTelemetrySampleRate, config.DefaultTelemetrySampleRate, "telemetry sample rate")
 		res.Duration(FlagTelemetryTimeout, config.DefaultTelemetryTimeout, "telemetry timeout")
+
+		// amqp sender
+		res.String(FlagAMQPSenderURL, config.DefaultAMQPSenderURL, "AMQP sender URL")
+		res.String(FlagAMQPSenderAddress, defaultAMQPSenderAddress, "AMQP sender address")
+		res.String(FlagAMQPSenderTargetName, defaultAMQPSenderTargetName, "AMQP sender target name")
+		res.String(FlagAMQPSenderUsername, defaultAMQPSenderUsername, "AMQP sender username")
+		res.String(FlagAMQPSenderPassword, defaultAMQPSenderPassword, "AMQP sender password")
+		res.Bool(FlagAMQPSenderSecure, config.DefaultAMQPSenderSecure, "AMQP sender secure mode")
+		res.Bool(FlagAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "AMQP sender insecure skip verify")
+		res.Duration(FlagAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "AMQP sender connect timeout")
+		res.Duration(FlagAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "AMQP sender write timeout")
+		res.Duration(FlagAMQPSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "AMQP sender notify timeout")
+		res.Duration(FlagAMQPSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "AMQP send shutdown timeout")
 	}
 
 	// Парсинг
@@ -268,6 +294,18 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(config.KeyTelemetryServiceName, flags.Lookup(FlagTelemetryServiceName)),
 		v.BindPFlag(config.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
 		v.BindPFlag(config.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
+		// amqp sender
+		v.BindPFlag(keyAMQPSenderURL, flags.Lookup(FlagAMQPSenderURL)),
+		v.BindPFlag(keyAMQPSenderAddress, flags.Lookup(FlagAMQPSenderAddress)),
+		v.BindPFlag(keyAMQPSenderTargetName, flags.Lookup(FlagAMQPSenderTargetName)),
+		v.BindPFlag(keyAMQPSenderUsername, flags.Lookup(FlagAMQPSenderUsername)),
+		v.BindPFlag(keyAMQPSenderPassword, flags.Lookup(FlagAMQPSenderPassword)),
+		v.BindPFlag(keyAMQPSenderSecure, flags.Lookup(FlagAMQPSenderSecure)),
+		v.BindPFlag(keyAMQPSenderInsecureSkipVerify, flags.Lookup(FlagAMQPSenderInsecureSkipVerify)),
+		v.BindPFlag(keyAMQPSenderConnectTimeout, flags.Lookup(FlagAMQPSenderConnectTimeout)),
+		v.BindPFlag(keyAMQPSenderWriteTimeout, flags.Lookup(FlagAMQPSenderWriteTimeout)),
+		v.BindPFlag(keyAMQPSenderNotifyTimeout, flags.Lookup(FlagAMQPSenderNotifyTimeout)),
+		v.BindPFlag(keyAMQPSenderShutdownTimeout, flags.Lookup(FlagAMQPSenderShutdownTimeout)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)
