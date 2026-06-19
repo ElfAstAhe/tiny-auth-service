@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/auth"
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/mapper"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"

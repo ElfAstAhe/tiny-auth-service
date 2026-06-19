@@ -10,7 +10,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -58,22 +57,22 @@ func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHel
 func (luc *LoginInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
 	// fails-fast
 	if err := luc.validate(username, encryptedPassword); err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginInteractor.Login", "validate income data failed", err)
+		return nil, nil, errs.NewBllValidateError("LoginInteractor.Login", "validate income data failed", err)
 	}
 	// пользователь
 	user, err := luc.userRepo.FindByName(ctx, username)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.Login", "load user", err)
+		return nil, nil, errs.NewBllError("LoginInteractor.Login", "load user", err)
 	}
 	// password hash
 	passwordHash, err := luc.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.Login", "hash password", err)
+		return nil, nil, errs.NewBllError("LoginInteractor.Login", "hash password", err)
 	}
 	// проверка пароля
 	err = luc.validateUserAndPassword(user, passwordHash)
 	if err != nil {
-		return nil, nil, domerrs.NewBllValidateError("LoginInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
+		return nil, nil, errs.NewBllValidateError("LoginInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
 	}
 
 	return luc.buildAnswer(user)
@@ -105,17 +104,17 @@ func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPasswo
 	// private RSA
 	userPrivateKey, err := luc.keysHelper.ParsePrivateKey(user.PrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "parse private key", err)
+		return "", errs.NewBllError("LoginInteractor.buildPasswordHash", "parse private key", err)
 	}
 	// decrypt password
 	password, err := luc.keysHelper.DecryptString(encryptedPassword, userPrivateKey)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "decrypt password", err)
+		return "", errs.NewBllError("LoginInteractor.buildPasswordHash", "decrypt password", err)
 	}
 	// password hash
 	passwordHash, err := luc.hashCipher.EncryptString(password)
 	if err != nil {
-		return "", domerrs.NewBllError("LoginInteractor.buildPasswordHash", "hash password", err)
+		return "", errs.NewBllError("LoginInteractor.buildPasswordHash", "hash password", err)
 	}
 
 	return passwordHash, nil
@@ -126,15 +125,15 @@ func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPasswo
 func (luc *LoginInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
-		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is not active", nil)
+		return errs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is not active", nil)
 	}
 	// deleted
 	if user.Deleted {
-		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is deleted", nil)
+		return errs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user is deleted", nil)
 	}
 	// passwords
 	if user.PasswordHash != passwordHash {
-		return domerrs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user password hash is invalid", nil)
+		return errs.NewBllUnauthorizedError("LoginInteractor.validateUserAndPassword", "user password hash is invalid", nil)
 	}
 
 	return nil
@@ -146,11 +145,11 @@ func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Tok
 	subject := ToSubject(user, nil)
 	token, err := luc.buildToken(subject)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build token from subject", err)
+		return nil, nil, errs.NewBllError("LoginInteractor.buildAnswer", "build token from subject", err)
 	}
 	refreshToken, err := luc.buildRefreshToken(user)
 	if err != nil {
-		return nil, nil, domerrs.NewBllError("LoginInteractor.buildAnswer", "build refresh token from user", err)
+		return nil, nil, errs.NewBllError("LoginInteractor.buildAnswer", "build refresh token from user", err)
 	}
 
 	return token, refreshToken, nil

@@ -3,7 +3,9 @@
 package auth
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -11,11 +13,12 @@ import (
 )
 
 // New creates a new auth API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
+func New(transport runtime.ContextualTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
 // New creates a new auth API client with basic auth credentials.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -29,6 +32,7 @@ func NewClientWithBasicAuth(host, basePath, scheme, user, password string) Clien
 }
 
 // New creates a new auth API client with a bearer token for authentication.
+//
 // It takes the following parameters:
 // - host: http host (github.com).
 // - basePath: any base path for the API client ("/v1", "/v3").
@@ -41,35 +45,68 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 }
 
 /*
-Client for auth API
+Client for auth API.
 */
 type Client struct {
-	transport runtime.ClientTransport
+	transport runtime.ContextualTransport
 	formats   strfmt.Registry
 }
 
 // ClientOption may be used to customize the behavior of Client methods.
 type ClientOption func(*runtime.ClientOperation)
 
-// ClientService is the interface for Client methods
+// ClientService is the interface for Client methods.
 type ClientService interface {
+
+	// PostAPIV1Auth аутентификация.
 	PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error)
 
+	// PostAPIV1AuthContext аутентификация.
+	PostAPIV1AuthContext(ctx context.Context, params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error)
+
+	// PostAPIV1AuthSimple аутентификация.
 	PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error)
 
-	SetTransport(transport runtime.ClientTransport)
+	// PostAPIV1AuthSimpleContext аутентификация.
+	PostAPIV1AuthSimpleContext(ctx context.Context, params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error)
+
+	SetTransport(transport runtime.ContextualTransport)
 }
 
 /*
-PostAPIV1Auth аутентификацияs
+PostAPIV1Authаутентификацияs.
 
-Аутентификация и авторизация пользователя
+Аутентификация и авторизация пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PostAPIV1AuthContext] instead.
 */
 func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PostAPIV1AuthContext(ctx, params, opts...)
+}
+
+/*
+PostAPIV1AuthContextаутентификацияs.
+
+Аутентификация и авторизация пользователя.
+
+Do not use the deprecated [PostAPIV1AuthParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PostAPIV1AuthContext(ctx context.Context, params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostAPIV1AuthParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PostAPIV1Auth",
 		Method:             "POST",
@@ -79,13 +116,14 @@ func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PostAPIV1AuthReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -106,15 +144,39 @@ func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption
 }
 
 /*
-PostAPIV1AuthSimple аутентификацияs
+PostAPIV1AuthSimpleаутентификацияs.
 
-Аутентификация и авторизация пользователя
+Аутентификация и авторизация пользователя.
+
+This method does not support injected context.
+However, timeout and opentracing contexts are honored whenever enabled.
+
+If you need to pass a specific context, use [Client.PostAPIV1AuthSimpleContext] instead.
 */
 func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error) {
+	var ctx context.Context
+	if params.inner.ctx != nil {
+		ctx = params.inner.ctx
+	} else {
+		ctx = context.Background()
+	}
+
+	return a.PostAPIV1AuthSimpleContext(ctx, params, opts...)
+}
+
+/*
+PostAPIV1AuthSimpleContextаутентификацияs.
+
+Аутентификация и авторизация пользователя.
+
+Do not use the deprecated [PostAPIV1AuthSimpleParams.Context] with this method: it would be ignored.
+*/
+func (a *Client) PostAPIV1AuthSimpleContext(ctx context.Context, params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostAPIV1AuthSimpleParams()
 	}
+
 	op := &runtime.ClientOperation{
 		ID:                 "PostAPIV1AuthSimple",
 		Method:             "POST",
@@ -124,13 +186,14 @@ func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...
 		Schemes:            []string{"http"},
 		Params:             params,
 		Reader:             &PostAPIV1AuthSimpleReader{formats: a.formats},
-		Context:            params.Context,
 		Client:             params.HTTPClient,
 	}
+
 	for _, opt := range opts {
 		opt(op)
 	}
-	result, err := a.transport.Submit(op)
+
+	result, err := a.transport.SubmitContext(ctx, op)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +214,14 @@ func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...
 }
 
 // SetTransport changes the transport on the client
-func (a *Client) SetTransport(transport runtime.ClientTransport) {
+func (a *Client) SetTransport(transport runtime.ContextualTransport) {
 	a.transport = transport
+}
+
+// innerParams captures internal fields so they don't conflict with user-supplied parameters.
+type innerParams struct {
+	timeout time.Duration
+
+	// Deprecated: use the operation call with context to pass the context instead of [AuthParams].
+	ctx context.Context
 }

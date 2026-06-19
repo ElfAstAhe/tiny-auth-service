@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/go-chi/chi/v5/middleware"
 
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
@@ -26,10 +27,10 @@ func (cr *AppChiRouter) putAPIV1UserChangeKeys(rw http.ResponseWriter, r *http.R
 
 	res, err := cr.userFacade.ChangeKeys(r.Context())
 	if err != nil {
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

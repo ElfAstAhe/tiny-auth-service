@@ -74,7 +74,7 @@ type MockUserRepository_Change_Call struct {
 // Change is a helper method to define mock.On call
 //   - ctx context.Context
 //   - entity *domain.User
-func (_e *MockUserRepository_Expecter) Change(ctx interface{}, entity interface{}) *MockUserRepository_Change_Call {
+func (_e *MockUserRepository_Expecter) Change(ctx any, entity any) *MockUserRepository_Change_Call {
 	return &MockUserRepository_Change_Call{Call: _e.mock.On("Change", ctx, entity)}
 }
 
@@ -142,7 +142,7 @@ type MockUserRepository_Create_Call struct {
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
 //   - entity *domain.User
-func (_e *MockUserRepository_Expecter) Create(ctx interface{}, entity interface{}) *MockUserRepository_Create_Call {
+func (_e *MockUserRepository_Expecter) Create(ctx any, entity any) *MockUserRepository_Create_Call {
 	return &MockUserRepository_Create_Call{Call: _e.mock.On("Create", ctx, entity)}
 }
 
@@ -199,7 +199,7 @@ type MockUserRepository_Delete_Call struct {
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockUserRepository_Expecter) Delete(ctx interface{}, id interface{}) *MockUserRepository_Delete_Call {
+func (_e *MockUserRepository_Expecter) Delete(ctx any, id any) *MockUserRepository_Delete_Call {
 	return &MockUserRepository_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
 }
 
@@ -267,7 +267,7 @@ type MockUserRepository_Find_Call struct {
 // Find is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockUserRepository_Expecter) Find(ctx interface{}, id interface{}) *MockUserRepository_Find_Call {
+func (_e *MockUserRepository_Expecter) Find(ctx any, id any) *MockUserRepository_Find_Call {
 	return &MockUserRepository_Find_Call{Call: _e.mock.On("Find", ctx, id)}
 }
 
@@ -335,7 +335,7 @@ type MockUserRepository_FindByName_Call struct {
 // FindByName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - login string
-func (_e *MockUserRepository_Expecter) FindByName(ctx interface{}, login interface{}) *MockUserRepository_FindByName_Call {
+func (_e *MockUserRepository_Expecter) FindByName(ctx any, login any) *MockUserRepository_FindByName_Call {
 	return &MockUserRepository_FindByName_Call{Call: _e.mock.On("FindByName", ctx, login)}
 }
 
@@ -404,7 +404,7 @@ type MockUserRepository_List_Call struct {
 //   - ctx context.Context
 //   - limit int
 //   - offset int
-func (_e *MockUserRepository_Expecter) List(ctx interface{}, limit interface{}, offset interface{}) *MockUserRepository_List_Call {
+func (_e *MockUserRepository_Expecter) List(ctx any, limit any, offset any) *MockUserRepository_List_Call {
 	return &MockUserRepository_List_Call{Call: _e.mock.On("List", ctx, limit, offset)}
 }
 

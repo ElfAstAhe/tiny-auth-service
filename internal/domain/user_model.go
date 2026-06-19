@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 	"golang.org/x/exp/slices"
 )
 

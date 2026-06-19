@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -28,9 +29,9 @@ func (cr *AppChiRouter) postAPIV1AdminUser(rw http.ResponseWriter, r *http.Reque
 	defer cr.log.Debugf("postAPIV1AdminUser finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
 	var income = &dto.UserDTO{}
-	err := cr.decodeJSON(r, income)
+	err := libhttp.DecodeJSON(r, income)
 	if err != nil {
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
@@ -39,12 +40,12 @@ func (cr *AppChiRouter) postAPIV1AdminUser(rw http.ResponseWriter, r *http.Reque
 	if err != nil {
 		cr.log.Errorf("postAPIV1AdminUser post user error, [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 	location := r.URL.JoinPath(res.ID)
 	rw.Header().Set("Location", location.String())
 
-	cr.renderJSON(rw, http.StatusCreated, res)
+	libhttp.RenderJSON(rw, http.StatusCreated, res, mapToHTTPStatus)
 }

@@ -3,9 +3,9 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	_ "github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport"
-	_ "github.com/ElfAstAhe/tiny-auth-service/internal/transport"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
@@ -25,27 +25,17 @@ func (cr *AppChiRouter) getAPIV1AdminRoles(rw http.ResponseWriter, r *http.Reque
 	cr.log.Debugf("getAPIV1AdminRoles start, requestID [%s]", middleware.GetReqID(r.Context()))
 	defer cr.log.Debugf("getAPIV1AdminRoles finish, requestID [%s]", middleware.GetReqID(r.Context()))
 
-	limit, err := cr.getQueryInt(r, "limit", transport.DefaultListLimit)
-	if err != nil {
-		cr.renderError(rw, err)
-
-		return
-	}
-	offset, err := cr.getQueryInt(r, "offset", transport.DefaultListOffset)
-	if err != nil {
-		cr.renderError(rw, err)
-
-		return
-	}
+	limit := libhttp.GetQueryIntDefault(r, "limit", transport.DefaultListLimit)
+	offset := libhttp.GetQueryIntDefault(r, "offset", transport.DefaultListOffset)
 
 	res, err := cr.roleAdminFacade.List(r.Context(), limit, offset)
 	if err != nil {
 		cr.log.Errorf("getAPIV1AdminRoles list roles error, [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderJSON(rw, http.StatusOK, res)
+	libhttp.RenderJSON(rw, http.StatusOK, res, mapToHTTPStatus)
 }

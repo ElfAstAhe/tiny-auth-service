@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/google/uuid"
 )
 

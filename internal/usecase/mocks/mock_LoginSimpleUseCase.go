@@ -83,7 +83,7 @@ type MockLoginSimpleUseCase_Login_Call struct {
 //   - ctx context.Context
 //   - username string
 //   - encryptedPassword string
-func (_e *MockLoginSimpleUseCase_Expecter) Login(ctx interface{}, username interface{}, encryptedPassword interface{}) *MockLoginSimpleUseCase_Login_Call {
+func (_e *MockLoginSimpleUseCase_Expecter) Login(ctx any, username any, encryptedPassword any) *MockLoginSimpleUseCase_Login_Call {
 	return &MockLoginSimpleUseCase_Login_Call{Call: _e.mock.On("Login", ctx, username, encryptedPassword)}
 }
 

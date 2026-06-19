@@ -7,7 +7,6 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type RoleAdminGetNameUseCase interface {
@@ -28,16 +27,16 @@ func NewRoleAdminGetNameUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminG
 
 func (agn *RoleAdminGetNameInteractor) Get(ctx context.Context, name string) (*domain.Role, error) {
 	if err := agn.validate(name); err != nil {
-		return nil, domerrs.NewBllValidateError("RoleAdminGetNameInteractor.Get", "validate income data failed", err)
+		return nil, errs.NewBllValidateError("RoleAdminGetNameInteractor.Get", "validate income data failed", err)
 	}
 
 	res, err := agn.roleRepo.FindByName(ctx, name)
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return nil, domerrs.NewBllNotFoundError("RoleAdminGetNameInteractor.Get", "Role", name, err)
+			return nil, errs.NewBllNotFoundError("RoleAdminGetNameInteractor.Get", "Role", name, err)
 		}
 
-		return nil, domerrs.NewBllError("RoleAdminGetNameInteractor.Get", fmt.Sprintf("find Role model name [%s] failed", name), err)
+		return nil, errs.NewBllError("RoleAdminGetNameInteractor.Get", fmt.Sprintf("find Role model name [%s] failed", name), err)
 	}
 
 	return res, nil

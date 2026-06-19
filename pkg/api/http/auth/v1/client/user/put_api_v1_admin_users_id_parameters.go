@@ -7,12 +7,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 )
 
 // NewPutAPIV1AdminUsersIDParams creates a new PutAPIV1AdminUsersIDParams object,
@@ -22,24 +21,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewPutAPIV1AdminUsersIDParams() *PutAPIV1AdminUsersIDParams {
-	return &PutAPIV1AdminUsersIDParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewPutAPIV1AdminUsersIDParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewPutAPIV1AdminUsersIDParamsWithTimeout creates a new PutAPIV1AdminUsersIDParams object
 // with the ability to set a timeout on a request.
 func NewPutAPIV1AdminUsersIDParamsWithTimeout(timeout time.Duration) *PutAPIV1AdminUsersIDParams {
 	return &PutAPIV1AdminUsersIDParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewPutAPIV1AdminUsersIDParamsWithContext creates a new PutAPIV1AdminUsersIDParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1AdminUsersIDParams].
 func NewPutAPIV1AdminUsersIDParamsWithContext(ctx context.Context) *PutAPIV1AdminUsersIDParams {
 	return &PutAPIV1AdminUsersIDParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -74,9 +77,9 @@ type PutAPIV1AdminUsersIDParams struct {
 	*/
 	Input *models.UserDTO
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the put API v1 admin users ID params (not the query body).
@@ -94,65 +97,68 @@ func (o *PutAPIV1AdminUsersIDParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the put API v1 admin users ID params
+// WithTimeout adds the timeout to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) WithTimeout(timeout time.Duration) *PutAPIV1AdminUsersIDParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the put API v1 admin users ID params
+// SetTimeout adds the timeout to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the put API v1 admin users ID params
+// WithContext adds the context to the put API v1 admin users ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1AdminUsersIDParams].
 func (o *PutAPIV1AdminUsersIDParams) WithContext(ctx context.Context) *PutAPIV1AdminUsersIDParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the put API v1 admin users ID params
+// SetContext adds the context to the put API v1 admin users ID params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PutAPIV1AdminUsersIDParams].
 func (o *PutAPIV1AdminUsersIDParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the put API v1 admin users ID params
+// WithHTTPClient adds the HTTPClient to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) WithHTTPClient(client *http.Client) *PutAPIV1AdminUsersIDParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the put API v1 admin users ID params
+// SetHTTPClient adds the HTTPClient to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithID adds the id to the put API v1 admin users ID params
+// WithID adds the id to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) WithID(id string) *PutAPIV1AdminUsersIDParams {
 	o.SetID(id)
 	return o
 }
 
-// SetID adds the id to the put API v1 admin users ID params
+// SetID adds the id to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) SetID(id string) {
 	o.ID = id
 }
 
-// WithInput adds the input to the put API v1 admin users ID params
+// WithInput adds the input to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) WithInput(input *models.UserDTO) *PutAPIV1AdminUsersIDParams {
 	o.SetInput(input)
 	return o
 }
 
-// SetInput adds the input to the put API v1 admin users ID params
+// SetInput adds the input to the put API v1 admin users ID params.
 func (o *PutAPIV1AdminUsersIDParams) SetInput(input *models.UserDTO) {
 	o.Input = input
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *PutAPIV1AdminUsersIDParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

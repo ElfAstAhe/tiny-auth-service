@@ -9,7 +9,6 @@ import (
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type UserAdminDeleteUseCase interface {
@@ -32,7 +31,7 @@ func NewUserAdminDeleteUseCase(tm usecase.TransactionManager, userRepo domain.Us
 
 func (uad *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) error {
 	if err := uad.validate(ID); err != nil {
-		return domerrs.NewBllValidateError("UserAdminDeleteInteractor.Delete", "validate income data failed", err)
+		return errs.NewBllValidateError("UserAdminDeleteInteractor.Delete", "validate income data failed", err)
 	}
 
 	err := uad.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
@@ -40,10 +39,10 @@ func (uad *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) err
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return domerrs.NewBllNotFoundError("UserAdminDeleteInteractor.Delete", "User", ID, err)
+			return errs.NewBllNotFoundError("UserAdminDeleteInteractor.Delete", "User", ID, err)
 		}
 
-		return domerrs.NewBllError("UserAdminDeleteInteractor.Delete", fmt.Sprintf("delete User model id [%s] failed", ID), err)
+		return errs.NewBllError("UserAdminDeleteInteractor.Delete", fmt.Sprintf("delete User model id [%s] failed", ID), err)
 	}
 
 	return nil

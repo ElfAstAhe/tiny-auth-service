@@ -75,7 +75,7 @@ type MockRoleAdminFacade_Change_Call struct {
 //   - ctx context.Context
 //   - ID string
 //   - role *dto.RoleDTO
-func (_e *MockRoleAdminFacade_Expecter) Change(ctx interface{}, ID interface{}, role interface{}) *MockRoleAdminFacade_Change_Call {
+func (_e *MockRoleAdminFacade_Expecter) Change(ctx any, ID any, role any) *MockRoleAdminFacade_Change_Call {
 	return &MockRoleAdminFacade_Change_Call{Call: _e.mock.On("Change", ctx, ID, role)}
 }
 
@@ -148,7 +148,7 @@ type MockRoleAdminFacade_Create_Call struct {
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
 //   - role *dto.RoleDTO
-func (_e *MockRoleAdminFacade_Expecter) Create(ctx interface{}, role interface{}) *MockRoleAdminFacade_Create_Call {
+func (_e *MockRoleAdminFacade_Expecter) Create(ctx any, role any) *MockRoleAdminFacade_Create_Call {
 	return &MockRoleAdminFacade_Create_Call{Call: _e.mock.On("Create", ctx, role)}
 }
 
@@ -205,7 +205,7 @@ type MockRoleAdminFacade_Delete_Call struct {
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
 //   - ID string
-func (_e *MockRoleAdminFacade_Expecter) Delete(ctx interface{}, ID interface{}) *MockRoleAdminFacade_Delete_Call {
+func (_e *MockRoleAdminFacade_Expecter) Delete(ctx any, ID any) *MockRoleAdminFacade_Delete_Call {
 	return &MockRoleAdminFacade_Delete_Call{Call: _e.mock.On("Delete", ctx, ID)}
 }
 
@@ -273,7 +273,7 @@ type MockRoleAdminFacade_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
 //   - ID string
-func (_e *MockRoleAdminFacade_Expecter) Get(ctx interface{}, ID interface{}) *MockRoleAdminFacade_Get_Call {
+func (_e *MockRoleAdminFacade_Expecter) Get(ctx any, ID any) *MockRoleAdminFacade_Get_Call {
 	return &MockRoleAdminFacade_Get_Call{Call: _e.mock.On("Get", ctx, ID)}
 }
 
@@ -341,7 +341,7 @@ type MockRoleAdminFacade_GetByName_Call struct {
 // GetByName is a helper method to define mock.On call
 //   - ctx context.Context
 //   - name string
-func (_e *MockRoleAdminFacade_Expecter) GetByName(ctx interface{}, name interface{}) *MockRoleAdminFacade_GetByName_Call {
+func (_e *MockRoleAdminFacade_Expecter) GetByName(ctx any, name any) *MockRoleAdminFacade_GetByName_Call {
 	return &MockRoleAdminFacade_GetByName_Call{Call: _e.mock.On("GetByName", ctx, name)}
 }
 
@@ -410,7 +410,7 @@ type MockRoleAdminFacade_List_Call struct {
 //   - ctx context.Context
 //   - limit int
 //   - offset int
-func (_e *MockRoleAdminFacade_Expecter) List(ctx interface{}, limit interface{}, offset interface{}) *MockRoleAdminFacade_List_Call {
+func (_e *MockRoleAdminFacade_Expecter) List(ctx any, limit any, offset any) *MockRoleAdminFacade_List_Call {
 	return &MockRoleAdminFacade_List_Call{Call: _e.mock.On("List", ctx, limit, offset)}
 }
 

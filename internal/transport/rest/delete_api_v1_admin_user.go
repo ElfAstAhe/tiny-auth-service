@@ -3,6 +3,7 @@ package rest
 import (
 	"net/http"
 
+	libhttp "github.com/ElfAstAhe/go-service-template/pkg/transport/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -30,10 +31,10 @@ func (cr *AppChiRouter) deleteAPIV1AdminUser(rw http.ResponseWriter, r *http.Req
 	if err != nil {
 		cr.log.Errorf("deleteAPIV1AdminUser delete user error, [%v]", err)
 
-		cr.renderError(rw, err)
+		libhttp.RenderError(rw, err, mapToHTTPStatus)
 
 		return
 	}
 
-	cr.renderEmpty(rw, http.StatusNoContent)
+	libhttp.RenderEmpty(rw, http.StatusNoContent)
 }

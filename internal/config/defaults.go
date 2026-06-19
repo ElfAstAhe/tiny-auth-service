@@ -2,11 +2,13 @@ package config
 
 import (
 	"time"
+
+	"github.com/ElfAstAhe/go-service-template/pkg/config"
 )
 
 // app
 const (
-	defaultAppEnv             AppEnv        = AppEnvDevelopment
+	defaultAppEnv             config.AppEnv = config.AppEnvDevelopment
 	defaultAppNodeName        string        = ApplicationName
 	defaultMaxListLimit       int           = 100
 	defaultTokenIssuer        string        = "tiny-auth-service"

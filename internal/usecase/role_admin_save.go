@@ -8,7 +8,6 @@ import (
 	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	domerrs "github.com/ElfAstAhe/tiny-auth-service/internal/domain/errs"
 )
 
 type RoleAdminSaveUseCase interface {
@@ -43,13 +42,13 @@ func (ras *RoleAdminSaveInteractor) Save(ctx context.Context, model *domain.Role
 	})
 	if err != nil {
 		if _, ok := errors.AsType[*errs.DalNotFoundError](err); ok {
-			return nil, domerrs.NewBllNotFoundError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
+			return nil, errs.NewBllNotFoundError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
 		}
 		if _, ok := errors.AsType[*errs.DalAlreadyExistsError](err); ok {
-			return nil, domerrs.NewBllUniqueError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
+			return nil, errs.NewBllUniqueError("RoleAdminSaveInteractor.Save", "Role", model.ID, err)
 		}
 
-		return nil, domerrs.NewBllError("RoleAdminSaveInteractor.Save", fmt.Sprintf("save Role model id [%v] failed", model.ID), err)
+		return nil, errs.NewBllError("RoleAdminSaveInteractor.Save", fmt.Sprintf("save Role model id [%v] failed", model.ID), err)
 	}
 
 	return res, nil

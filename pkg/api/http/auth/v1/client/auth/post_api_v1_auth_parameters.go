@@ -7,12 +7,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 )
 
 // NewPostAPIV1AuthParams creates a new PostAPIV1AuthParams object,
@@ -22,24 +21,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewPostAPIV1AuthParams() *PostAPIV1AuthParams {
-	return &PostAPIV1AuthParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewPostAPIV1AuthParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewPostAPIV1AuthParamsWithTimeout creates a new PostAPIV1AuthParams object
 // with the ability to set a timeout on a request.
 func NewPostAPIV1AuthParamsWithTimeout(timeout time.Duration) *PostAPIV1AuthParams {
 	return &PostAPIV1AuthParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewPostAPIV1AuthParamsWithContext creates a new PostAPIV1AuthParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AuthParams].
 func NewPostAPIV1AuthParamsWithContext(ctx context.Context) *PostAPIV1AuthParams {
 	return &PostAPIV1AuthParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -66,9 +69,9 @@ type PostAPIV1AuthParams struct {
 	*/
 	Input *models.LoginDTO
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the post API v1 auth params (not the query body).
@@ -86,54 +89,57 @@ func (o *PostAPIV1AuthParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the post API v1 auth params
+// WithTimeout adds the timeout to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) WithTimeout(timeout time.Duration) *PostAPIV1AuthParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the post API v1 auth params
+// SetTimeout adds the timeout to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the post API v1 auth params
+// WithContext adds the context to the post API v1 auth params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AuthParams].
 func (o *PostAPIV1AuthParams) WithContext(ctx context.Context) *PostAPIV1AuthParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the post API v1 auth params
+// SetContext adds the context to the post API v1 auth params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AuthParams].
 func (o *PostAPIV1AuthParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the post API v1 auth params
+// WithHTTPClient adds the HTTPClient to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) WithHTTPClient(client *http.Client) *PostAPIV1AuthParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the post API v1 auth params
+// SetHTTPClient adds the HTTPClient to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithInput adds the input to the post API v1 auth params
+// WithInput adds the input to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) WithInput(input *models.LoginDTO) *PostAPIV1AuthParams {
 	o.SetInput(input)
 	return o
 }
 
-// SetInput adds the input to the post API v1 auth params
+// SetInput adds the input to the post API v1 auth params.
 func (o *PostAPIV1AuthParams) SetInput(input *models.LoginDTO) {
 	o.Input = input
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *PostAPIV1AuthParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

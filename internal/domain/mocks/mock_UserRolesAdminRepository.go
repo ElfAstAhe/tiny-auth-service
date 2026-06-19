@@ -75,7 +75,7 @@ type MockUserRolesAdminRepository_Change_Call struct {
 //   - ctx context.Context
 //   - ownerID string
 //   - entity *domain.Role
-func (_e *MockUserRolesAdminRepository_Expecter) Change(ctx interface{}, ownerID interface{}, entity interface{}) *MockUserRolesAdminRepository_Change_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) Change(ctx any, ownerID any, entity any) *MockUserRolesAdminRepository_Change_Call {
 	return &MockUserRolesAdminRepository_Change_Call{Call: _e.mock.On("Change", ctx, ownerID, entity)}
 }
 
@@ -149,7 +149,7 @@ type MockUserRolesAdminRepository_Create_Call struct {
 //   - ctx context.Context
 //   - ownerID string
 //   - entity *domain.Role
-func (_e *MockUserRolesAdminRepository_Expecter) Create(ctx interface{}, ownerID interface{}, entity interface{}) *MockUserRolesAdminRepository_Create_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) Create(ctx any, ownerID any, entity any) *MockUserRolesAdminRepository_Create_Call {
 	return &MockUserRolesAdminRepository_Create_Call{Call: _e.mock.On("Create", ctx, ownerID, entity)}
 }
 
@@ -212,7 +212,7 @@ type MockUserRolesAdminRepository_Delete_Call struct {
 //   - ctx context.Context
 //   - ownerID string
 //   - id string
-func (_e *MockUserRolesAdminRepository_Expecter) Delete(ctx interface{}, ownerID interface{}, id interface{}) *MockUserRolesAdminRepository_Delete_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) Delete(ctx any, ownerID any, id any) *MockUserRolesAdminRepository_Delete_Call {
 	return &MockUserRolesAdminRepository_Delete_Call{Call: _e.mock.On("Delete", ctx, ownerID, id)}
 }
 
@@ -274,7 +274,7 @@ type MockUserRolesAdminRepository_DeleteAll_Call struct {
 // DeleteAll is a helper method to define mock.On call
 //   - ctx context.Context
 //   - ownerID string
-func (_e *MockUserRolesAdminRepository_Expecter) DeleteAll(ctx interface{}, ownerID interface{}) *MockUserRolesAdminRepository_DeleteAll_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) DeleteAll(ctx any, ownerID any) *MockUserRolesAdminRepository_DeleteAll_Call {
 	return &MockUserRolesAdminRepository_DeleteAll_Call{Call: _e.mock.On("DeleteAll", ctx, ownerID)}
 }
 
@@ -343,7 +343,7 @@ type MockUserRolesAdminRepository_Find_Call struct {
 //   - ctx context.Context
 //   - ownerID string
 //   - id string
-func (_e *MockUserRolesAdminRepository_Expecter) Find(ctx interface{}, ownerID interface{}, id interface{}) *MockUserRolesAdminRepository_Find_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) Find(ctx any, ownerID any, id any) *MockUserRolesAdminRepository_Find_Call {
 	return &MockUserRolesAdminRepository_Find_Call{Call: _e.mock.On("Find", ctx, ownerID, id)}
 }
 
@@ -418,7 +418,7 @@ type MockUserRolesAdminRepository_List_Call struct {
 //   - ownerID string
 //   - limit int
 //   - offset int
-func (_e *MockUserRolesAdminRepository_Expecter) List(ctx interface{}, ownerID interface{}, limit interface{}, offset interface{}) *MockUserRolesAdminRepository_List_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) List(ctx any, ownerID any, limit any, offset any) *MockUserRolesAdminRepository_List_Call {
 	return &MockUserRolesAdminRepository_List_Call{Call: _e.mock.On("List", ctx, ownerID, limit, offset)}
 }
 
@@ -496,7 +496,7 @@ type MockUserRolesAdminRepository_ListAll_Call struct {
 // ListAll is a helper method to define mock.On call
 //   - ctx context.Context
 //   - ownerID string
-func (_e *MockUserRolesAdminRepository_Expecter) ListAll(ctx interface{}, ownerID interface{}) *MockUserRolesAdminRepository_ListAll_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) ListAll(ctx any, ownerID any) *MockUserRolesAdminRepository_ListAll_Call {
 	return &MockUserRolesAdminRepository_ListAll_Call{Call: _e.mock.On("ListAll", ctx, ownerID)}
 }
 
@@ -570,9 +570,9 @@ type MockUserRolesAdminRepository_ListAllByOwners_Call struct {
 // ListAllByOwners is a helper method to define mock.On call
 //   - ctx context.Context
 //   - ownerIDs ...string
-func (_e *MockUserRolesAdminRepository_Expecter) ListAllByOwners(ctx interface{}, ownerIDs ...interface{}) *MockUserRolesAdminRepository_ListAllByOwners_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) ListAllByOwners(ctx any, ownerIDs ...any) *MockUserRolesAdminRepository_ListAllByOwners_Call {
 	return &MockUserRolesAdminRepository_ListAllByOwners_Call{Call: _e.mock.On("ListAllByOwners",
-		append([]interface{}{ctx}, ownerIDs...)...)}
+		append([]any{ctx}, ownerIDs...)...)}
 }
 
 func (_c *MockUserRolesAdminRepository_ListAllByOwners_Call) Run(run func(ctx context.Context, ownerIDs ...string)) *MockUserRolesAdminRepository_ListAllByOwners_Call {
@@ -642,7 +642,7 @@ type MockUserRolesAdminRepository_Save_Call struct {
 //   - ctx context.Context
 //   - ownerID string
 //   - owned []*domain.Role
-func (_e *MockUserRolesAdminRepository_Expecter) Save(ctx interface{}, ownerID interface{}, owned interface{}) *MockUserRolesAdminRepository_Save_Call {
+func (_e *MockUserRolesAdminRepository_Expecter) Save(ctx any, ownerID any, owned any) *MockUserRolesAdminRepository_Save_Call {
 	return &MockUserRolesAdminRepository_Save_Call{Call: _e.mock.On("Save", ctx, ownerID, owned)}
 }
 

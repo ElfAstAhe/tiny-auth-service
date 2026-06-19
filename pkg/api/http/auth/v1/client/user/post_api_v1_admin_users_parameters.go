@@ -7,12 +7,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/ElfAstAhe/tiny-auth-service/pkg/api/http/auth/v1/models"
 )
 
 // NewPostAPIV1AdminUsersParams creates a new PostAPIV1AdminUsersParams object,
@@ -22,24 +21,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewPostAPIV1AdminUsersParams() *PostAPIV1AdminUsersParams {
-	return &PostAPIV1AdminUsersParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewPostAPIV1AdminUsersParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewPostAPIV1AdminUsersParamsWithTimeout creates a new PostAPIV1AdminUsersParams object
 // with the ability to set a timeout on a request.
 func NewPostAPIV1AdminUsersParamsWithTimeout(timeout time.Duration) *PostAPIV1AdminUsersParams {
 	return &PostAPIV1AdminUsersParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewPostAPIV1AdminUsersParamsWithContext creates a new PostAPIV1AdminUsersParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AdminUsersParams].
 func NewPostAPIV1AdminUsersParamsWithContext(ctx context.Context) *PostAPIV1AdminUsersParams {
 	return &PostAPIV1AdminUsersParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -66,9 +69,9 @@ type PostAPIV1AdminUsersParams struct {
 	*/
 	Input *models.UserDTO
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the post API v1 admin users params (not the query body).
@@ -86,54 +89,57 @@ func (o *PostAPIV1AdminUsersParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the post API v1 admin users params
+// WithTimeout adds the timeout to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) WithTimeout(timeout time.Duration) *PostAPIV1AdminUsersParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the post API v1 admin users params
+// SetTimeout adds the timeout to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the post API v1 admin users params
+// WithContext adds the context to the post API v1 admin users params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AdminUsersParams].
 func (o *PostAPIV1AdminUsersParams) WithContext(ctx context.Context) *PostAPIV1AdminUsersParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the post API v1 admin users params
+// SetContext adds the context to the post API v1 admin users params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [PostAPIV1AdminUsersParams].
 func (o *PostAPIV1AdminUsersParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the post API v1 admin users params
+// WithHTTPClient adds the HTTPClient to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) WithHTTPClient(client *http.Client) *PostAPIV1AdminUsersParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the post API v1 admin users params
+// SetHTTPClient adds the HTTPClient to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithInput adds the input to the post API v1 admin users params
+// WithInput adds the input to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) WithInput(input *models.UserDTO) *PostAPIV1AdminUsersParams {
 	o.SetInput(input)
 	return o
 }
 
-// SetInput adds the input to the post API v1 admin users params
+// SetInput adds the input to the post API v1 admin users params.
 func (o *PostAPIV1AdminUsersParams) SetInput(input *models.UserDTO) {
 	o.Input = input
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *PostAPIV1AdminUsersParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

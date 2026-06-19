@@ -20,24 +20,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetAPIV1UsersProfileParams() *GetAPIV1UsersProfileParams {
-	return &GetAPIV1UsersProfileParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewGetAPIV1UsersProfileParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewGetAPIV1UsersProfileParamsWithTimeout creates a new GetAPIV1UsersProfileParams object
 // with the ability to set a timeout on a request.
 func NewGetAPIV1UsersProfileParamsWithTimeout(timeout time.Duration) *GetAPIV1UsersProfileParams {
 	return &GetAPIV1UsersProfileParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewGetAPIV1UsersProfileParamsWithContext creates a new GetAPIV1UsersProfileParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1UsersProfileParams].
 func NewGetAPIV1UsersProfileParamsWithContext(ctx context.Context) *GetAPIV1UsersProfileParams {
 	return &GetAPIV1UsersProfileParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -57,9 +61,9 @@ GetAPIV1UsersProfileParams contains all the parameters to send to the API endpoi
 	Typically these are written to a http.Request.
 */
 type GetAPIV1UsersProfileParams struct {
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the get API v1 users profile params (not the query body).
@@ -77,43 +81,46 @@ func (o *GetAPIV1UsersProfileParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get API v1 users profile params
+// WithTimeout adds the timeout to the get API v1 users profile params.
 func (o *GetAPIV1UsersProfileParams) WithTimeout(timeout time.Duration) *GetAPIV1UsersProfileParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get API v1 users profile params
+// SetTimeout adds the timeout to the get API v1 users profile params.
 func (o *GetAPIV1UsersProfileParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the get API v1 users profile params
+// WithContext adds the context to the get API v1 users profile params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1UsersProfileParams].
 func (o *GetAPIV1UsersProfileParams) WithContext(ctx context.Context) *GetAPIV1UsersProfileParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get API v1 users profile params
+// SetContext adds the context to the get API v1 users profile params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1UsersProfileParams].
 func (o *GetAPIV1UsersProfileParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get API v1 users profile params
+// WithHTTPClient adds the HTTPClient to the get API v1 users profile params.
 func (o *GetAPIV1UsersProfileParams) WithHTTPClient(client *http.Client) *GetAPIV1UsersProfileParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get API v1 users profile params
+// SetHTTPClient adds the HTTPClient to the get API v1 users profile params.
 func (o *GetAPIV1UsersProfileParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *GetAPIV1UsersProfileParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error

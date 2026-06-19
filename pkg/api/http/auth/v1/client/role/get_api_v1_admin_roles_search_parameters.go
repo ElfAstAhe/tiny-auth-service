@@ -20,24 +20,28 @@ import (
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetAPIV1AdminRolesSearchParams() *GetAPIV1AdminRolesSearchParams {
-	return &GetAPIV1AdminRolesSearchParams{
-		timeout: cr.DefaultTimeout,
-	}
+	return NewGetAPIV1AdminRolesSearchParamsWithTimeout(cr.DefaultTimeout)
 }
 
 // NewGetAPIV1AdminRolesSearchParamsWithTimeout creates a new GetAPIV1AdminRolesSearchParams object
 // with the ability to set a timeout on a request.
 func NewGetAPIV1AdminRolesSearchParamsWithTimeout(timeout time.Duration) *GetAPIV1AdminRolesSearchParams {
 	return &GetAPIV1AdminRolesSearchParams{
-		timeout: timeout,
+		inner: innerParams{
+			timeout: timeout,
+		},
 	}
 }
 
 // NewGetAPIV1AdminRolesSearchParamsWithContext creates a new GetAPIV1AdminRolesSearchParams object
 // with the ability to set a context for a request.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesSearchParams].
 func NewGetAPIV1AdminRolesSearchParamsWithContext(ctx context.Context) *GetAPIV1AdminRolesSearchParams {
 	return &GetAPIV1AdminRolesSearchParams{
-		Context: ctx,
+		inner: innerParams{
+			ctx: ctx,
+		},
 	}
 }
 
@@ -66,9 +70,9 @@ type GetAPIV1AdminRolesSearchParams struct {
 	*/
 	Name string
 
-	timeout    time.Duration
-	Context    context.Context
 	HTTPClient *http.Client
+
+	inner innerParams
 }
 
 // WithDefaults hydrates default values in the get API v1 admin roles search params (not the query body).
@@ -86,54 +90,57 @@ func (o *GetAPIV1AdminRolesSearchParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get API v1 admin roles search params
+// WithTimeout adds the timeout to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) WithTimeout(timeout time.Duration) *GetAPIV1AdminRolesSearchParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get API v1 admin roles search params
+// SetTimeout adds the timeout to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) SetTimeout(timeout time.Duration) {
-	o.timeout = timeout
+	o.inner.timeout = timeout
 }
 
-// WithContext adds the context to the get API v1 admin roles search params
+// WithContext adds the context to the get API v1 admin roles search params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesSearchParams].
 func (o *GetAPIV1AdminRolesSearchParams) WithContext(ctx context.Context) *GetAPIV1AdminRolesSearchParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get API v1 admin roles search params
+// SetContext adds the context to the get API v1 admin roles search params.
+//
+// Deprecated: use the operation call with context to pass the context instead of [GetAPIV1AdminRolesSearchParams].
 func (o *GetAPIV1AdminRolesSearchParams) SetContext(ctx context.Context) {
-	o.Context = ctx
+	o.inner.ctx = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get API v1 admin roles search params
+// WithHTTPClient adds the HTTPClient to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) WithHTTPClient(client *http.Client) *GetAPIV1AdminRolesSearchParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get API v1 admin roles search params
+// SetHTTPClient adds the HTTPClient to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithName adds the name to the get API v1 admin roles search params
+// WithName adds the name to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) WithName(name string) *GetAPIV1AdminRolesSearchParams {
 	o.SetName(name)
 	return o
 }
 
-// SetName adds the name to the get API v1 admin roles search params
+// SetName adds the name to the get API v1 admin roles search params.
 func (o *GetAPIV1AdminRolesSearchParams) SetName(name string) {
 	o.Name = name
 }
 
-// WriteToRequest writes these params to a swagger request
+// WriteToRequest writes these params to a [runtime.ClientRequest].
 func (o *GetAPIV1AdminRolesSearchParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
-
-	if err := r.SetTimeout(o.timeout); err != nil {
+	if err := r.SetTimeout(o.inner.timeout); err != nil {
 		return err
 	}
 	var res []error
