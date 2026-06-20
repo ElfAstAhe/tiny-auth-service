@@ -12,11 +12,9 @@ type AMQPSenderConfig struct {
 
 func NewAMQPSenderConfig(
 	url string,
-	address string,
 	targetName string,
 	username string,
 	password string,
-	secure bool,
 	insecureSkipVerify bool,
 	connectTimeout time.Duration,
 	writeTimeout time.Duration,
@@ -26,11 +24,9 @@ func NewAMQPSenderConfig(
 	return &AMQPSenderConfig{
 		AMQPSenderConfig: config.NewAMQPSenderConfig(
 			url,
-			address,
 			targetName,
 			username,
 			password,
-			secure,
 			insecureSkipVerify,
 			connectTimeout,
 			writeTimeout,

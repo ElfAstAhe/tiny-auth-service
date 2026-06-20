@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	InstanceAuthAuditClient string = "audit-client"
-	InstanceDataAuditClient string = "data-audit-client"
+	InstanceAuthAuditClient  string = "audit-client"
+	InstanceDataAuditClient  string = "data-audit-client"
+	InstanceAMQPClientSender string = "amqp-client-sender"
 )
 
 type ClientContainer struct {
@@ -30,6 +31,7 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
 		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
+		cc.RegisterProvider(InstanceAMQPClientSender, cc.providerAMQPClientSender),
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)

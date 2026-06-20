@@ -86,5 +86,21 @@ func (cc *ClientContainer) providerAMQPClientSender() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
-	clientSender := azure.NewClientSender()
+
+	/*
+	   tlsConfInst, err := ....
+	*/
+
+	clientSender := azure.NewClientSender(
+		confInst.AMQPSender.URL,
+		logInst,
+		azure.WithHostName(confInst.App.NodeName),
+		azure.WithSASLPlain(confInst.AMQPSender.Username, confInst.AMQPSender.Password),
+		// tls conf пропускаем.. потом добавим..
+		azure.WithInsecureSkipVerify(confInst.AMQPSender.InsecureSkipVerify),
+		azure.WithConnectTimeout(confInst.AMQPSender.ConnectTimeout),
+		azure.WithWriteTimeout(confInst.AMQPSender.WriteTimeout),
+	)
+
+	return clientSender, nil
 }

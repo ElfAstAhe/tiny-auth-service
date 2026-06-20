@@ -40,7 +40,7 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return audit.NewAuthFacade(
+	return audit.NewAuthFacadeRest(
 		authAuditClientInst,
 		confInst.App.NodeName,
 		facade.NewAuthFacade(
