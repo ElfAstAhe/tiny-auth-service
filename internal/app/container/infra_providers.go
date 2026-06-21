@@ -16,7 +16,7 @@ func (ic *InfraContainer) providerLoginAttemptsObserver() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
 	}
-	clientSender, err := container.GetInstance[amqp.ClientSender[*dto.LoginAttemptEventDTO]](InstanceAMQPClientSender)
+	clientSender, err := container.GetInstance[amqp.ClientSender](InstanceAMQPClientSender)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}

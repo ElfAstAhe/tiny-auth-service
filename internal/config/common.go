@@ -110,7 +110,6 @@ const (
 	FlagAMQPSenderTargetName         string = "amqp-sender-target-name"
 	FlagAMQPSenderUsername           string = "amqp-sender-username"
 	FlagAMQPSenderPassword           string = "amqp-sender-password"
-	FlagAMQPSenderSecure             string = "amqp-sender-secure"
 	FlagAMQPSenderInsecureSkipVerify string = "amqp-sender-insecure-skip-verify"
 	FlagAMQPSenderConnectTimeout     string = "amqp-sender-connect-timeout"
 	FlagAMQPSenderWriteTimeout       string = "amqp-sender-write-timeout"

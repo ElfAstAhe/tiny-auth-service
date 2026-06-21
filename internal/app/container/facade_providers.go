@@ -5,11 +5,12 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
+	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/audit"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 )
 
@@ -27,10 +28,10 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
-	authAuditClientInst, err := container.GetInstance[client.AuthAuditClient](InstanceAuthAuditClient)
-	if err != nil {
-		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
-	}
+	//authAuditClientInst, err := container.GetInstance[client.AuthAuditClient](InstanceAuthAuditClient)
+	//if err != nil {
+	//    return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
+	//}
 	loginUCInst, err := container.GetInstance[usecase.LoginUseCase](InstanceLoginUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
@@ -39,16 +40,30 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
+	publisherInst, err := container.GetInstance[pubsub.Publisher[*dto.LoginAttemptEventDTO]](InstanceLoginAttemptsPublisher)
+	if err != nil {
+		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	return audit.NewAuthFacadeRest(
-		authAuditClientInst,
+	//return audit.NewAuthFacadeRest(
+	//	authAuditClientInst,
+	//	confInst.App.NodeName,
+	//	facade.NewAuthFacade(
+	//		jwtHelperInst,
+	//		loginUCInst,
+	//		loginSimpleUCInst,
+	//	),
+	//	logInst), nil
+	return audit.NewAuthFacadeAMQP(
 		confInst.App.NodeName,
+		publisherInst,
 		facade.NewAuthFacade(
 			jwtHelperInst,
 			loginUCInst,
 			loginSimpleUCInst,
 		),
-		logInst), nil
+		logInst,
+	), nil
 }
 
 //goland:noinspection DuplicatedCode

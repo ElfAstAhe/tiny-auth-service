@@ -83,7 +83,6 @@ const (
 	keyAMQPSenderTargetName         string = "amqp_sender.target_name"
 	keyAMQPSenderUsername           string = "amqp_sender.username"
 	keyAMQPSenderPassword           string = "amqp_sender.password"
-	keyAMQPSenderSecure             string = "amqp_sender.secure"
 	keyAMQPSenderInsecureSkipVerify string = "amqp_sender.insecure_skip_verify"
 	keyAMQPSenderConnectTimeout     string = "amqp_sender.connect_timeout"
 	keyAMQPSenderWriteTimeout       string = "amqp_sender.write_timeout"

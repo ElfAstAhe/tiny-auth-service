@@ -90,7 +90,6 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyAMQPSenderTargetName, defaultAMQPSenderTargetName)
 	v.SetDefault(keyAMQPSenderUsername, defaultAMQPSenderUsername)
 	v.SetDefault(keyAMQPSenderPassword, defaultAMQPSenderPassword)
-	v.SetDefault(keyAMQPSenderSecure, config.DefaultAMQPSenderSecure)
 	v.SetDefault(keyAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
 	v.SetDefault(keyAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
 	v.SetDefault(keyAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
@@ -204,7 +203,6 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.String(FlagAMQPSenderTargetName, defaultAMQPSenderTargetName, "AMQP sender target name")
 		res.String(FlagAMQPSenderUsername, defaultAMQPSenderUsername, "AMQP sender username")
 		res.String(FlagAMQPSenderPassword, defaultAMQPSenderPassword, "AMQP sender password")
-		res.Bool(FlagAMQPSenderSecure, config.DefaultAMQPSenderSecure, "AMQP sender secure mode")
 		res.Bool(FlagAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "AMQP sender insecure skip verify")
 		res.Duration(FlagAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "AMQP sender connect timeout")
 		res.Duration(FlagAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "AMQP sender write timeout")
@@ -300,7 +298,6 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyAMQPSenderTargetName, flags.Lookup(FlagAMQPSenderTargetName)),
 		v.BindPFlag(keyAMQPSenderUsername, flags.Lookup(FlagAMQPSenderUsername)),
 		v.BindPFlag(keyAMQPSenderPassword, flags.Lookup(FlagAMQPSenderPassword)),
-		v.BindPFlag(keyAMQPSenderSecure, flags.Lookup(FlagAMQPSenderSecure)),
 		v.BindPFlag(keyAMQPSenderInsecureSkipVerify, flags.Lookup(FlagAMQPSenderInsecureSkipVerify)),
 		v.BindPFlag(keyAMQPSenderConnectTimeout, flags.Lookup(FlagAMQPSenderConnectTimeout)),
 		v.BindPFlag(keyAMQPSenderWriteTimeout, flags.Lookup(FlagAMQPSenderWriteTimeout)),
