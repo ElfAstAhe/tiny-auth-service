@@ -6,6 +6,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 )
 
 const (
@@ -35,6 +36,28 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)
+	}
+
+	return nil
+}
+
+func (cc *ClientContainer) Close(ctx context.Context) error {
+	var closeErrs []error
+	// retrieve all instances to close
+	amqpClientSenderInst, err := container.GetInstance[amqp.ClientSender](InstanceAMQPClientSender)
+	if err != nil {
+		return errs.NewContainerError(cc.GetName(), "container close: get amqp client sender failed", err)
+	}
+	// close all instances
+	err = amqpClientSenderInst.Close(ctx)
+	if err != nil {
+		closeErrs = append(closeErrs, err)
+	}
+
+	// checks
+	err = errors.Join(closeErrs...)
+	if err != nil {
+		return errs.NewContainerError(cc.GetName(), "container close: close fails", err)
 	}
 
 	return nil

@@ -30,7 +30,8 @@ func NewInfraContainer(orchestrator container.Orchestrator) *InfraContainer {
 
 func (ic *InfraContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		ic.RegisterProvider(InstanceAuthAuditClient, ic.providerLoginAttemptsPublisher),
+		ic.RegisterProvider(InstanceLoginAttemptsPublisher, ic.providerLoginAttemptsPublisher),
+		ic.RegisterProvider(InstanceLoginAttemptsSubscriber, ic.providerLoginAttemptsObserver),
 	)
 	if err != nil {
 		return errs.NewContainerError(ic.GetName(), "container init: register providers failed", err)
@@ -49,4 +50,8 @@ func (ic *InfraContainer) Init(ctx context.Context) error {
 	publisher.Register(subscriber)
 
 	return nil
+}
+
+func (ic *InfraContainer) Close(ctx context.Context) error {
+
 }
