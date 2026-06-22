@@ -92,14 +92,14 @@ func (cc *ClientContainer) providerAMQPClientSender() (any, error) {
 	*/
 
 	clientSender := azure.NewClientSender(
-		confInst.AMQPSender.URL,
+		confInst.LoginAttemptsSender.URL,
 		logInst,
 		azure.WithHostName(confInst.App.NodeName),
-		azure.WithSASLPlain(confInst.AMQPSender.Username, confInst.AMQPSender.Password),
+		azure.WithSASLPlain(confInst.LoginAttemptsSender.Username, confInst.LoginAttemptsSender.Password),
 		// tls conf пропускаем.. потом добавим..
-		azure.WithInsecureSkipVerify(confInst.AMQPSender.InsecureSkipVerify),
-		azure.WithConnectTimeout(confInst.AMQPSender.ConnectTimeout),
-		azure.WithWriteTimeout(confInst.AMQPSender.WriteTimeout),
+		azure.WithInsecureSkipVerify(confInst.LoginAttemptsSender.InsecureSkipVerify),
+		azure.WithConnectTimeout(confInst.LoginAttemptsSender.ConnectTimeout),
+		azure.WithWriteTimeout(confInst.LoginAttemptsSender.WriteTimeout),
 	)
 
 	return clientSender, nil

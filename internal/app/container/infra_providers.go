@@ -20,7 +20,7 @@ func (ic *InfraContainer) providerLoginAttemptsObserver() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}
-	observer := appamqp.NewLoginAttemptObserver("login-attempts-amqp-observer", confInst.AMQPSender.TargetName, clientSender)
+	observer := appamqp.NewLoginAttemptObserver("login-attempts-amqp-observer", confInst.LoginAttemptsSender.TargetName, clientSender)
 
 	return observer, nil
 }
@@ -35,7 +35,7 @@ func (ic *InfraContainer) providerLoginAttemptsPublisher() (any, error) {
 		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	publisher := pubsub.NewEventDispatcher[*dto.LoginAttemptEventDTO]("login-attempts-publisher", confInst.AMQPSender.NotifyTimeout, logInst)
+	publisher := pubsub.NewEventDispatcher[*dto.LoginAttemptEventDTO]("login-attempts-publisher", confInst.LoginAttemptsSender.NotifyTimeout, logInst)
 
 	return publisher, nil
 }

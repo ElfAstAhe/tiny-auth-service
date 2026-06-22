@@ -51,7 +51,3 @@ func (ic *InfraContainer) Init(ctx context.Context) error {
 
 	return nil
 }
-
-func (ic *InfraContainer) Close(ctx context.Context) error {
-
-}

@@ -6,11 +6,11 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/config"
 )
 
-type AMQPSenderConfig struct {
+type LoginAttemptsSenderConfig struct {
 	*config.AMQPSenderConfig `mapstructure:",squash"`
 }
 
-func NewAMQPSenderConfig(
+func NewLoginAttemptsSenderConfig(
 	url string,
 	targetName string,
 	username string,
@@ -20,8 +20,8 @@ func NewAMQPSenderConfig(
 	writeTimeout time.Duration,
 	notifyTimeout time.Duration,
 	shutdownTimeout time.Duration,
-) *AMQPSenderConfig {
-	return &AMQPSenderConfig{
+) *LoginAttemptsSenderConfig {
+	return &LoginAttemptsSenderConfig{
 		AMQPSenderConfig: config.NewAMQPSenderConfig(
 			url,
 			targetName,
@@ -36,8 +36,8 @@ func NewAMQPSenderConfig(
 	}
 }
 
-func NewDefaultAMQPSenderConfig() *AMQPSenderConfig {
-	return &AMQPSenderConfig{
+func NewDefaultLoginAttemptsSenderConfig() *LoginAttemptsSenderConfig {
+	return &LoginAttemptsSenderConfig{
 		AMQPSenderConfig: config.NewDefaultAMQPSenderConfig(),
 	}
 }

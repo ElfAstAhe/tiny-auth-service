@@ -85,16 +85,15 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(config.KeyTelemetryTimeout, config.DefaultTelemetryTimeout)
 
 	// amqp sender
-	v.SetDefault(keyAMQPSenderURL, config.DefaultAMQPSenderURL)
-	v.SetDefault(keyAMQPSenderAddress, defaultAMQPSenderAddress)
-	v.SetDefault(keyAMQPSenderTargetName, defaultAMQPSenderTargetName)
-	v.SetDefault(keyAMQPSenderUsername, defaultAMQPSenderUsername)
-	v.SetDefault(keyAMQPSenderPassword, defaultAMQPSenderPassword)
-	v.SetDefault(keyAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
-	v.SetDefault(keyAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
-	v.SetDefault(keyAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
-	v.SetDefault(keyAMQPSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
-	v.SetDefault(keyAMQPSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
+	v.SetDefault(keyLoginAttemptsSenderURL, config.DefaultAMQPSenderURL)
+	v.SetDefault(keyLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName)
+	v.SetDefault(keyLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername)
+	v.SetDefault(keyLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword)
+	v.SetDefault(keyLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
+	v.SetDefault(keyLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
+	v.SetDefault(keyLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
+	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
+	v.SetDefault(keyLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
 }
 
 func initFLags() (res *pflag.FlagSet, err error) {
@@ -198,16 +197,15 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagTelemetryTimeout, config.DefaultTelemetryTimeout, "telemetry timeout")
 
 		// amqp sender
-		res.String(FlagAMQPSenderURL, config.DefaultAMQPSenderURL, "AMQP sender URL")
-		res.String(FlagAMQPSenderAddress, defaultAMQPSenderAddress, "AMQP sender address")
-		res.String(FlagAMQPSenderTargetName, defaultAMQPSenderTargetName, "AMQP sender target name")
-		res.String(FlagAMQPSenderUsername, defaultAMQPSenderUsername, "AMQP sender username")
-		res.String(FlagAMQPSenderPassword, defaultAMQPSenderPassword, "AMQP sender password")
-		res.Bool(FlagAMQPSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "AMQP sender insecure skip verify")
-		res.Duration(FlagAMQPSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "AMQP sender connect timeout")
-		res.Duration(FlagAMQPSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "AMQP sender write timeout")
-		res.Duration(FlagAMQPSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "AMQP sender notify timeout")
-		res.Duration(FlagAMQPSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "AMQP send shutdown timeout")
+		res.String(FlagLoginAttemptsSenderURL, config.DefaultAMQPSenderURL, "login attempts sender AMQP server URL")
+		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/tipic name")
+		res.String(FlagLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername, "login attempts sender username")
+		res.String(FlagLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword, "login attempts sender password")
+		res.Bool(FlagLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "login attempts sender insecure skip verify")
+		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
+		res.Duration(FlagLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "login attempts sender write timeout")
+		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "login attempts sender notify timeout")
+		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts send shutdown timeout")
 	}
 
 	// Парсинг
@@ -293,16 +291,15 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(config.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
 		v.BindPFlag(config.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
 		// amqp sender
-		v.BindPFlag(keyAMQPSenderURL, flags.Lookup(FlagAMQPSenderURL)),
-		v.BindPFlag(keyAMQPSenderAddress, flags.Lookup(FlagAMQPSenderAddress)),
-		v.BindPFlag(keyAMQPSenderTargetName, flags.Lookup(FlagAMQPSenderTargetName)),
-		v.BindPFlag(keyAMQPSenderUsername, flags.Lookup(FlagAMQPSenderUsername)),
-		v.BindPFlag(keyAMQPSenderPassword, flags.Lookup(FlagAMQPSenderPassword)),
-		v.BindPFlag(keyAMQPSenderInsecureSkipVerify, flags.Lookup(FlagAMQPSenderInsecureSkipVerify)),
-		v.BindPFlag(keyAMQPSenderConnectTimeout, flags.Lookup(FlagAMQPSenderConnectTimeout)),
-		v.BindPFlag(keyAMQPSenderWriteTimeout, flags.Lookup(FlagAMQPSenderWriteTimeout)),
-		v.BindPFlag(keyAMQPSenderNotifyTimeout, flags.Lookup(FlagAMQPSenderNotifyTimeout)),
-		v.BindPFlag(keyAMQPSenderShutdownTimeout, flags.Lookup(FlagAMQPSenderShutdownTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderURL, flags.Lookup(FlagLoginAttemptsSenderURL)),
+		v.BindPFlag(keyLoginAttemptsSenderTargetName, flags.Lookup(FlagLoginAttemptsSenderTargetName)),
+		v.BindPFlag(keyLoginAttemptsSenderUsername, flags.Lookup(FlagLoginAttemptsSenderUsername)),
+		v.BindPFlag(keyLoginAttemptsSenderPassword, flags.Lookup(FlagLoginAttemptsSenderPassword)),
+		v.BindPFlag(keyLoginAttemptsSenderInsecureSkipVerify, flags.Lookup(FlagLoginAttemptsSenderInsecureSkipVerify)),
+		v.BindPFlag(keyLoginAttemptsSenderConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderConnectTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderWriteTimeout, flags.Lookup(FlagLoginAttemptsSenderWriteTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderNotifyTimeout, flags.Lookup(FlagLoginAttemptsSenderNotifyTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderShutdownTimeout)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)
