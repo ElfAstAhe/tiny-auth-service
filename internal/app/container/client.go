@@ -30,7 +30,7 @@ func NewClientContainer(orchestrator container.Orchestrator) *ClientContainer {
 
 func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
+		//		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
 		cc.RegisterProvider(InstanceAMQPClientSender, cc.providerAMQPClientSender),
 	)
@@ -41,15 +41,15 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	return nil
 }
 
-func (cc *ClientContainer) Close(ctx context.Context) error {
+func (cc *ClientContainer) Close2(ctx context.Context) error {
 	var closeErrs []error
 	// retrieve all instances to close
-	amqpClientSenderInst, err := container.GetInstance[amqp.ClientSender](InstanceAMQPClientSender)
+	loginAttemptsSenderInst, err := container.GetInstance[amqp.ClientSender](InstanceAMQPClientSender)
 	if err != nil {
-		return errs.NewContainerError(cc.GetName(), "container close: get amqp client sender failed", err)
+		return errs.NewContainerError(cc.GetName(), "container close: retrieve instance failed", err)
 	}
 	// close all instances
-	err = amqpClientSenderInst.Close(ctx)
+	err = loginAttemptsSenderInst.Close(ctx)
 	if err != nil {
 		closeErrs = append(closeErrs, err)
 	}

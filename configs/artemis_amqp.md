@@ -44,7 +44,7 @@ console URL: http://localhost:8161
             <permission type="deleteAddress" roles="amq"/>
             <permission type="consume" roles="amq,auth-consumer"/>
             <permission type="browse" roles="amq,auth-producer,auth-consumer"/>
-            <permission type="send" roles="amq,auth-consumer"/>
+            <permission type="send" roles="amq,auth-producer"/>
          </security-setting>
 ```
 ```xml
