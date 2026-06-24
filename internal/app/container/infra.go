@@ -7,6 +7,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
+	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
@@ -22,9 +23,16 @@ type InfraContainer struct {
 var _ container.Container = (*InfraContainer)(nil)
 var _ container.LazyContainer = (*InfraContainer)(nil)
 
-func NewInfraContainer(orchestrator container.Orchestrator) *InfraContainer {
+func NewInfraContainer(
+	orchestrator container.Orchestrator,
+	log logger.Logger,
+) *InfraContainer {
 	return &InfraContainer{
-		BaseLazyContainer: container.NewBaseLazyContainer(InfraContainerName, orchestrator),
+		BaseLazyContainer: container.NewBaseLazyContainer(
+			container.WithLazyName(InfraContainerName),
+			container.WithLazyOrchestrator(orchestrator),
+			container.WithLazyLogger(log),
+		),
 	}
 }
 

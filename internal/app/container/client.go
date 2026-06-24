@@ -6,6 +6,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 )
 
@@ -22,9 +23,16 @@ type ClientContainer struct {
 var _ container.Container = (*ClientContainer)(nil)
 var _ container.LazyContainer = (*ClientContainer)(nil)
 
-func NewClientContainer(orchestrator container.Orchestrator) *ClientContainer {
+func NewClientContainer(
+	orchestrator container.Orchestrator,
+	log logger.Logger,
+) *ClientContainer {
 	return &ClientContainer{
-		BaseLazyContainer: container.NewBaseLazyContainer(ClientContainerName, orchestrator),
+		BaseLazyContainer: container.NewBaseLazyContainer(
+			container.WithLazyName(ClientContainerName),
+			container.WithLazyOrchestrator(orchestrator),
+			container.WithLazyLogger(log),
+		),
 	}
 }
 
