@@ -20,6 +20,9 @@ func NewLoginAttemptsSenderConfig(
 	writeTimeout time.Duration,
 	notifyTimeout time.Duration,
 	shutdownTimeout time.Duration,
+	publishMaxTryAttempts int,
+	publishBaseRetryDelay time.Duration,
+	publishMaxRetryDelay time.Duration,
 ) *LoginAttemptsSenderConfig {
 	return &LoginAttemptsSenderConfig{
 		AMQPSenderConfig: config.NewAMQPSenderConfig(
@@ -32,6 +35,9 @@ func NewLoginAttemptsSenderConfig(
 			writeTimeout,
 			notifyTimeout,
 			shutdownTimeout,
+			publishMaxTryAttempts,
+			publishBaseRetryDelay,
+			publishMaxRetryDelay,
 		),
 	}
 }

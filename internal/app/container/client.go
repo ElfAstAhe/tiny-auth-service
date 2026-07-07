@@ -4,16 +4,20 @@ import (
 	"context"
 	"errors"
 
+	"github.com/Azure/go-amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 )
 
 const (
-	InstanceAuthAuditClient  string = "audit-client"
-	InstanceDataAuditClient  string = "data-audit-client"
-	InstanceAMQPClientSender string = "amqp-client-sender"
+	InstanceAuthAuditClient          string = "audit-client"
+	InstanceDataAuditClient          string = "data-audit-client"
+	InstanceAMQPClientSender         string = "amqp-client-sender"
+	InstanceAMQPClientSenderConnOpts string = "amqp-client-sender-conn-opts"
+	InstanceAMQPClientSenderSessOpts string = "amqp-client-sender-sess-opts"
+	InstanceAMQPClientSenderOpts     string = "amqp-client-sender-opts"
 )
 
 type ClientContainer struct {
@@ -36,11 +40,15 @@ func NewClientContainer(
 	}
 }
 
+//goland:noinspection DuplicatedCode
 func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
 		//		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
 		cc.RegisterProvider(InstanceAMQPClientSender, cc.providerAMQPClientSender),
+		cc.RegisterProvider(InstanceAMQPClientSenderConnOpts, cc.providerAMQPClientSenderConnOpts),
+		cc.RegisterProvider(InstanceAMQPClientSenderSessOpts, cc.providerAMQPClientSenderSessOpts),
+		cc.RegisterProvider(InstanceAMQPClientSenderOpts, cc.providerAMQPClientSenderOpts),
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)
@@ -52,7 +60,7 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 func (cc *ClientContainer) Close2(ctx context.Context) error {
 	var closeErrs []error
 	// retrieve all instances to close
-	loginAttemptsSenderInst, err := container.GetInstance[amqp.ClientSender](InstanceAMQPClientSender)
+	loginAttemptsSenderInst, err := container.GetInstance[libamqp.ClientSingleSender[*amqp.SendOptions]](InstanceAMQPClientSender)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container close: retrieve instance failed", err)
 	}

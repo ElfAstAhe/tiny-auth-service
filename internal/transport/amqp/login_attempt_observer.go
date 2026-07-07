@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/Azure/go-amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
@@ -15,7 +16,8 @@ import (
 type LoginAttemptObserver struct {
 	name       string
 	targetName string
-	client     libamqp.ClientSender
+	client     libamqp.ClientSingleSender[*amqp.SendOptions]
+	sendOpts   *amqp.SendOptions
 }
 
 var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
@@ -23,12 +25,15 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 func NewLoginAttemptObserver(
 	name string,
 	targetName string,
-	client libamqp.ClientSender,
+	client libamqp.ClientSingleSender[*amqp.SendOptions],
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
 		name:       name,
 		targetName: targetName,
 		client:     client,
+		sendOpts: &amqp.SendOptions{
+			Settled: true,
+		},
 	}
 }
 
@@ -51,7 +56,7 @@ func (lao *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		Properties: make(map[string]any),
 	}
 
-	if err = lao.client.Publish(ctx, lao.targetName, msg); err != nil {
+	if err = lao.client.Publish(ctx, msg, lao.sendOpts); err != nil {
 		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target name %s", lao.GetName(), lao.targetName), err)
 	}
 
