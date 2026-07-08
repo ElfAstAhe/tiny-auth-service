@@ -148,5 +148,6 @@ func (cc *ClientContainer) providerAMQPClientSenderOpts() (any, error) {
 	return &amqp.SenderOptions{
 		Name:         confInst.App.NodeName,
 		ExpiryPolicy: amqp.ExpiryPolicyNever,
+		Durability:   amqp.DurabilityUnsettledState,
 	}, nil
 }
