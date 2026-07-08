@@ -94,6 +94,9 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
 	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
 	v.SetDefault(keyLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
+	v.SetDefault(keyLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts)
+	v.SetDefault(keyLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay)
+	v.SetDefault(keyLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay)
 }
 
 func initFLags() (res *pflag.FlagSet, err error) {
@@ -205,7 +208,10 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
 		res.Duration(FlagLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "login attempts sender write timeout")
 		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "login attempts sender notify timeout")
-		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts send shutdown timeout")
+		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender max send tries")
+		res.Duration(FlagLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender publish base retry delay")
+		res.Duration(FlagLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "login attempts sender publish max retry delay")
 	}
 
 	// Парсинг
@@ -300,6 +306,9 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyLoginAttemptsSenderWriteTimeout, flags.Lookup(FlagLoginAttemptsSenderWriteTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderNotifyTimeout, flags.Lookup(FlagLoginAttemptsSenderNotifyTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderShutdownTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderPublishMaxTryAttempts)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishBaseRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishBaseRetryDelay)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishMaxRetryDelay)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)

@@ -105,15 +105,18 @@ const EnvConfig string = "CONFIG_PATH"
 
 // amqp sender
 const (
-	FlagLoginAttemptsSenderURL                string = "login-attempts-sender-url"
-	FlagLoginAttemptsSenderTargetName         string = "login-attempts-sender-target-name"
-	FlagLoginAttemptsSenderUsername           string = "login-attempts-sender-username"
-	FlagLoginAttemptsSenderPassword           string = "login-attempts-sender-password"
-	FlagLoginAttemptsSenderInsecureSkipVerify string = "login-attempts-sender-insecure-skip-verify"
-	FlagLoginAttemptsSenderConnectTimeout     string = "login-attempts-sender-connect-timeout"
-	FlagLoginAttemptsSenderWriteTimeout       string = "login-attempts-sender-write-timeout"
-	FlagLoginAttemptsSenderNotifyTimeout      string = "login-attempts-sender-notify-timeout"
-	FlagLoginAttemptsSenderShutdownTimeout    string = "login-attempts-sender-shutdown-timeout"
+	FlagLoginAttemptsSenderURL                   string = "login-attempts-sender-url"
+	FlagLoginAttemptsSenderTargetName            string = "login-attempts-sender-target-name"
+	FlagLoginAttemptsSenderUsername              string = "login-attempts-sender-username"
+	FlagLoginAttemptsSenderPassword              string = "login-attempts-sender-password"
+	FlagLoginAttemptsSenderInsecureSkipVerify    string = "login-attempts-sender-insecure-skip-verify"
+	FlagLoginAttemptsSenderConnectTimeout        string = "login-attempts-sender-connect-timeout"
+	FlagLoginAttemptsSenderWriteTimeout          string = "login-attempts-sender-write-timeout"
+	FlagLoginAttemptsSenderNotifyTimeout         string = "login-attempts-sender-notify-timeout"
+	FlagLoginAttemptsSenderShutdownTimeout       string = "login-attempts-sender-shutdown-timeout"
+	FlagLoginAttemptsSenderPublishMaxTryAttempts string = "login-attempts-sender-publish-max-try-attempts"
+	FlagLoginAttemptsSenderPublishBaseRetryDelay string = "login-attempts-sender-publish-base-retry-delay"
+	FlagLoginAttemptsSenderPublishMaxRetryDelay  string = "login-attempts-sender-publish-max-retry-delay"
 )
 
 // app
@@ -156,13 +159,16 @@ const (
 
 // amqp sender
 const (
-	keyLoginAttemptsSenderURL                string = "login_attempts_sender.url"
-	keyLoginAttemptsSenderTargetName         string = "login_attempts_sender.target_name"
-	keyLoginAttemptsSenderUsername           string = "login_attempts_sender.username"
-	keyLoginAttemptsSenderPassword           string = "login_attempts_sender.password"
-	keyLoginAttemptsSenderInsecureSkipVerify string = "login_attempts_sender.insecure_skip_verify"
-	keyLoginAttemptsSenderConnectTimeout     string = "login_attempts_sender.connect_timeout"
-	keyLoginAttemptsSenderWriteTimeout       string = "login_attempts_sender.write_timeout"
-	keyLoginAttemptsSenderNotifyTimeout      string = "login_attempts_sender.notify_timeout"
-	keyLoginAttemptsSenderShutdownTimeout    string = "login_attempts_sender.shutdown_timeout"
+	keyLoginAttemptsSenderURL                   string = "login_attempts_sender.url"
+	keyLoginAttemptsSenderTargetName            string = "login_attempts_sender.target_name"
+	keyLoginAttemptsSenderUsername              string = "login_attempts_sender.username"
+	keyLoginAttemptsSenderPassword              string = "login_attempts_sender.password"
+	keyLoginAttemptsSenderInsecureSkipVerify    string = "login_attempts_sender.insecure_skip_verify"
+	keyLoginAttemptsSenderConnectTimeout        string = "login_attempts_sender.connect_timeout"
+	keyLoginAttemptsSenderWriteTimeout          string = "login_attempts_sender.write_timeout"
+	keyLoginAttemptsSenderNotifyTimeout         string = "login_attempts_sender.notify_timeout"
+	keyLoginAttemptsSenderShutdownTimeout       string = "login_attempts_sender.shutdown_timeout"
+	keyLoginAttemptsSenderPublishMaxTryAttempts string = "login_attempts_sender.publish_max_try_attempts"
+	keyLoginAttemptsSenderPublishBaseRetryDelay string = "login_attempts_sender.publish_base_retry_delay"
+	keyLoginAttemptsSenderPublishMaxRetryDelay  string = "login_attempts_sender.publish_max_retry_delay"
 )

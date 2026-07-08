@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Azure/go-amqp"
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/mocks"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
@@ -23,12 +24,10 @@ func TestMain(m *testing.M) {
 // 1. Тест успешного прохождения события (Happy Path) с глубокой валидацией полей DTO
 func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	// Создаем expecter-мок интерфейса ClientSender с помощью mockery
-	mockClient := mocks.NewMockClientSender(t)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
 
 	observerName := "test-login-observer"
-	targetName := "auth.events::audit.queue"
-
-	observer := NewLoginAttemptObserver(observerName, targetName, mockClient)
+	observer := NewLoginAttemptObserver(observerName, mockClient)
 
 	fixedTime := time.Now()
 	// Подготавливаем тестовые данные (Ваша полная структура DTO)
@@ -48,7 +47,6 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	mockClient.EXPECT().
 		Publish(
 			mock.Anything,
-			targetName,
 			mock.MatchedBy(func(msg *libamqp.Message) bool {
 				var parsed dto.LoginAttemptEventDTO
 				err := json.Unmarshal(msg.Payload, &parsed)
@@ -64,6 +62,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 					parsed.Success == true &&
 					parsed.Error == ""
 			}),
+			mock.Anything,
 		).
 		Return(nil).
 		Once()
@@ -77,9 +76,9 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 
 // 2. Тест обработки ошибки сетевого клиента (Publish Failure)
 func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
-	mockClient := mocks.NewMockClientSender(t)
-	targetName := "auth.events::audit.queue"
-	observer := NewLoginAttemptObserver("test-login-observer", targetName, mockClient)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
+	mockClient.On("GetTargetName").Return("test-target::test-queue")
+	observer := NewLoginAttemptObserver("test-login-observer", mockClient)
 
 	testDTO := &dto.LoginAttemptEventDTO{
 		Username: "unstable_user",
@@ -91,7 +90,7 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 	publishErr := errors.New("amqp connection closed unexpectedly by remote broker")
 
 	mockClient.EXPECT().
-		Publish(mock.Anything, targetName, mock.Anything).
+		Publish(mock.Anything, mock.Anything, mock.Anything).
 		Return(publishErr).
 		Once()
 
@@ -104,8 +103,8 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 
 // 3. Тест защиты от nil-указателя на входе (Nil Data Defense)
 func TestLoginAttemptObserver_OnNotify_NilData(t *testing.T) {
-	mockClient := mocks.NewMockClientSender(t)
-	observer := NewLoginAttemptObserver("test-login-observer", "any.target", mockClient)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
+	observer := NewLoginAttemptObserver("test-login-observer", mockClient)
 
 	// Передаем nil вместо DTO
 	err := observer.OnNotify(context.Background(), nil)

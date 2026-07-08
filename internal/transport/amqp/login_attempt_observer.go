@@ -14,23 +14,20 @@ import (
 )
 
 type LoginAttemptObserver struct {
-	name       string
-	targetName string
-	client     libamqp.ClientSingleSender[*amqp.SendOptions]
-	sendOpts   *amqp.SendOptions
+	name     string
+	client   libamqp.ClientSingleSender[*amqp.SendOptions]
+	sendOpts *amqp.SendOptions
 }
 
 var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	targetName string,
 	client libamqp.ClientSingleSender[*amqp.SendOptions],
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
-		name:       name,
-		targetName: targetName,
-		client:     client,
+		name:   name,
+		client: client,
 		sendOpts: &amqp.SendOptions{
 			Settled: true,
 		},
@@ -57,7 +54,7 @@ func (lao *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 	}
 
 	if err = lao.client.Publish(ctx, msg, lao.sendOpts); err != nil {
-		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target name %s", lao.GetName(), lao.targetName), err)
+		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target name %s", lao.GetName(), lao.client.GetTargetName()), err)
 	}
 
 	return nil
