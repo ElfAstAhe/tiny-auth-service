@@ -12,8 +12,9 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
+// Deprecated: AuthFacadeImpl оставлен как образец использования audit rest client
 type AuthFacadeImpl struct {
-	next        *facade.AuthFacadeImpl
+	next        facade.AuthFacade
 	source      string
 	auditClient client.AuthAuditClient
 	logger      logger.Logger
@@ -21,10 +22,10 @@ type AuthFacadeImpl struct {
 
 var _ facade.AuthFacade = (*AuthFacadeImpl)(nil)
 
-func NewAuthFacade(
+func NewAuthFacadeRest(
 	auditClient client.AuthAuditClient,
 	source string,
-	next *facade.AuthFacadeImpl,
+	next facade.AuthFacade,
 	log logger.Logger,
 ) *AuthFacadeImpl {
 	return &AuthFacadeImpl{

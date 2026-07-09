@@ -64,7 +64,7 @@ type MockChangePasswordUseCase_ChangePassword_Call struct {
 //   - userID string
 //   - oldPassword string
 //   - newPassword string
-func (_e *MockChangePasswordUseCase_Expecter) ChangePassword(ctx interface{}, userID interface{}, oldPassword interface{}, newPassword interface{}) *MockChangePasswordUseCase_ChangePassword_Call {
+func (_e *MockChangePasswordUseCase_Expecter) ChangePassword(ctx any, userID any, oldPassword any, newPassword any) *MockChangePasswordUseCase_ChangePassword_Call {
 	return &MockChangePasswordUseCase_ChangePassword_Call{Call: _e.mock.On("ChangePassword", ctx, userID, oldPassword, newPassword)}
 }
 

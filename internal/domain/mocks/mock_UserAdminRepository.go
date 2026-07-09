@@ -74,7 +74,7 @@ type MockUserAdminRepository_Change_Call struct {
 // Change is a helper method to define mock.On call
 //   - ctx context.Context
 //   - entity *domain.User
-func (_e *MockUserAdminRepository_Expecter) Change(ctx interface{}, entity interface{}) *MockUserAdminRepository_Change_Call {
+func (_e *MockUserAdminRepository_Expecter) Change(ctx any, entity any) *MockUserAdminRepository_Change_Call {
 	return &MockUserAdminRepository_Change_Call{Call: _e.mock.On("Change", ctx, entity)}
 }
 
@@ -142,7 +142,7 @@ type MockUserAdminRepository_Create_Call struct {
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
 //   - entity *domain.User
-func (_e *MockUserAdminRepository_Expecter) Create(ctx interface{}, entity interface{}) *MockUserAdminRepository_Create_Call {
+func (_e *MockUserAdminRepository_Expecter) Create(ctx any, entity any) *MockUserAdminRepository_Create_Call {
 	return &MockUserAdminRepository_Create_Call{Call: _e.mock.On("Create", ctx, entity)}
 }
 
@@ -199,7 +199,7 @@ type MockUserAdminRepository_Delete_Call struct {
 // Delete is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockUserAdminRepository_Expecter) Delete(ctx interface{}, id interface{}) *MockUserAdminRepository_Delete_Call {
+func (_e *MockUserAdminRepository_Expecter) Delete(ctx any, id any) *MockUserAdminRepository_Delete_Call {
 	return &MockUserAdminRepository_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
 }
 
@@ -267,7 +267,7 @@ type MockUserAdminRepository_Find_Call struct {
 // Find is a helper method to define mock.On call
 //   - ctx context.Context
 //   - id string
-func (_e *MockUserAdminRepository_Expecter) Find(ctx interface{}, id interface{}) *MockUserAdminRepository_Find_Call {
+func (_e *MockUserAdminRepository_Expecter) Find(ctx any, id any) *MockUserAdminRepository_Find_Call {
 	return &MockUserAdminRepository_Find_Call{Call: _e.mock.On("Find", ctx, id)}
 }
 
@@ -335,7 +335,7 @@ type MockUserAdminRepository_FindByName_Call struct {
 // FindByName is a helper method to define mock.On call
 //   - context1 context.Context
 //   - s string
-func (_e *MockUserAdminRepository_Expecter) FindByName(context1 interface{}, s interface{}) *MockUserAdminRepository_FindByName_Call {
+func (_e *MockUserAdminRepository_Expecter) FindByName(context1 any, s any) *MockUserAdminRepository_FindByName_Call {
 	return &MockUserAdminRepository_FindByName_Call{Call: _e.mock.On("FindByName", context1, s)}
 }
 
@@ -404,7 +404,7 @@ type MockUserAdminRepository_List_Call struct {
 //   - ctx context.Context
 //   - limit int
 //   - offset int
-func (_e *MockUserAdminRepository_Expecter) List(ctx interface{}, limit interface{}, offset interface{}) *MockUserAdminRepository_List_Call {
+func (_e *MockUserAdminRepository_Expecter) List(ctx any, limit any, offset any) *MockUserAdminRepository_List_Call {
 	return &MockUserAdminRepository_List_Call{Call: _e.mock.On("List", ctx, limit, offset)}
 }
 

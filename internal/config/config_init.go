@@ -83,6 +83,20 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(config.KeyTelemetryExporterEndpoint, config.DefaultTelemetryExporterEndpoint)
 	v.SetDefault(config.KeyTelemetrySampleRate, config.DefaultTelemetrySampleRate)
 	v.SetDefault(config.KeyTelemetryTimeout, config.DefaultTelemetryTimeout)
+
+	// amqp sender
+	v.SetDefault(keyLoginAttemptsSenderURL, config.DefaultAMQPSenderURL)
+	v.SetDefault(keyLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName)
+	v.SetDefault(keyLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername)
+	v.SetDefault(keyLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword)
+	v.SetDefault(keyLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
+	v.SetDefault(keyLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
+	v.SetDefault(keyLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
+	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
+	v.SetDefault(keyLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
+	v.SetDefault(keyLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts)
+	v.SetDefault(keyLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay)
+	v.SetDefault(keyLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay)
 }
 
 func initFLags() (res *pflag.FlagSet, err error) {
@@ -184,6 +198,20 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.String(FlagTelemetryExporterEndpoint, config.DefaultTelemetryExporterEndpoint, "telemetry exporter endpoint")
 		res.Float64(FlagTelemetrySampleRate, config.DefaultTelemetrySampleRate, "telemetry sample rate")
 		res.Duration(FlagTelemetryTimeout, config.DefaultTelemetryTimeout, "telemetry timeout")
+
+		// amqp sender
+		res.String(FlagLoginAttemptsSenderURL, config.DefaultAMQPSenderURL, "login attempts sender AMQP server URL")
+		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/tipic name")
+		res.String(FlagLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername, "login attempts sender username")
+		res.String(FlagLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword, "login attempts sender password")
+		res.Bool(FlagLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "login attempts sender insecure skip verify")
+		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
+		res.Duration(FlagLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "login attempts sender write timeout")
+		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "login attempts sender notify timeout")
+		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender max send tries")
+		res.Duration(FlagLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender publish base retry delay")
+		res.Duration(FlagLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "login attempts sender publish max retry delay")
 	}
 
 	// Парсинг
@@ -268,6 +296,19 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(config.KeyTelemetryServiceName, flags.Lookup(FlagTelemetryServiceName)),
 		v.BindPFlag(config.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
 		v.BindPFlag(config.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
+		// amqp sender
+		v.BindPFlag(keyLoginAttemptsSenderURL, flags.Lookup(FlagLoginAttemptsSenderURL)),
+		v.BindPFlag(keyLoginAttemptsSenderTargetName, flags.Lookup(FlagLoginAttemptsSenderTargetName)),
+		v.BindPFlag(keyLoginAttemptsSenderUsername, flags.Lookup(FlagLoginAttemptsSenderUsername)),
+		v.BindPFlag(keyLoginAttemptsSenderPassword, flags.Lookup(FlagLoginAttemptsSenderPassword)),
+		v.BindPFlag(keyLoginAttemptsSenderInsecureSkipVerify, flags.Lookup(FlagLoginAttemptsSenderInsecureSkipVerify)),
+		v.BindPFlag(keyLoginAttemptsSenderConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderConnectTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderWriteTimeout, flags.Lookup(FlagLoginAttemptsSenderWriteTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderNotifyTimeout, flags.Lookup(FlagLoginAttemptsSenderNotifyTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderShutdownTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderPublishMaxTryAttempts)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishBaseRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishBaseRetryDelay)),
+		v.BindPFlag(keyLoginAttemptsSenderPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishMaxRetryDelay)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)

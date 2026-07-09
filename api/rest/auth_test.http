@@ -1,4 +1,4 @@
-### POST (auth simple)
+### POST (auth simple), positive answer
 POST http://localhost:8080/api/v1/auth/simple
 Content-Type: application/json
 
@@ -7,4 +7,11 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+### POST (auth simple), negative answer
+POST http://localhost:8080/api/v1/auth/simple
+Content-Type: application/json
+
+{
+  "username": "svc_auth",
+  "password": "password2"
+}

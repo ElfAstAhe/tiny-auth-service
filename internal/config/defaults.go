@@ -30,40 +30,9 @@ const (
 	defaultAuditClientShutdownTimeout    time.Duration = 15 * time.Second
 )
 
-// app
+// amqp sender (FQQN artemis style)
 const (
-	keyAppEnv                string = "app.env"
-	keyAppNodeName           string = "app.node_name"
-	keyAppMaxListLimit       string = "app.max_list_limit"
-	keyAppTokenIssuer        string = "app.token_issuer"
-	keyAppCipherKey          string = "app.cipher_key"
-	keyAppDefShutdownTimeout string = "app.def_shutdown_timeout"
-)
-
-// service credentials
-const (
-	keySvcCredsUsername              string = "svc_creds.username"
-	keySvcCredsPassword              string = "svc_creds.password"
-	keySvcCredsScheduleInterval      string = "svc_creds.schedule_interval"
-	keySvcCredsErrorScheduleInterval string = "svc_creds.error_schedule_interval"
-)
-
-// auth audit client
-const (
-	keyAuthAuditClientBaseURL            string = "auth_audit_client.base_url"
-	keyAuthAuditClientTimeout            string = "auth_audit_client.timeout"
-	keyAuthAuditClientWorkerCount        string = "auth_audit_client.worker_count"
-	keyAuthAuditClientDataCapacity       string = "auth_audit_client.data_capacity"
-	keyAuthAuditClientCompleteProcessing string = "auth_audit_client.complete_processing"
-	keyAuthAuditClientShutdownTimeout    string = "auth_audit_client.shutdown_timeout"
-)
-
-// data audit client
-const (
-	keyDataAuditClientBaseURL            string = "data_audit_client.base_url"
-	keyDataAuditClientTimeout            string = "data_audit_client.timeout"
-	keyDataAuditClientWorkerCount        string = "data_audit_client.worker_count"
-	keyDataAuditClientDataCapacity       string = "data_audit_client.data_capacity"
-	keyDataAuditClientCompleteProcessing string = "data_audit_client.complete_processing"
-	keyDataAuditClientShutdownTimeout    string = "data_audit_client.shutdown_timeout"
+	defaultLoginAttemptsSenderTargetName string = "tiny.auth::login.attempts"
+	defaultLoginAttemptsSenderUsername   string = "svc-auth"
+	defaultLoginAttemptsSenderPassword   string = "test"
 )

@@ -73,7 +73,7 @@ type MockUserFacade_ChangeKeys_Call struct {
 
 // ChangeKeys is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockUserFacade_Expecter) ChangeKeys(ctx interface{}) *MockUserFacade_ChangeKeys_Call {
+func (_e *MockUserFacade_Expecter) ChangeKeys(ctx any) *MockUserFacade_ChangeKeys_Call {
 	return &MockUserFacade_ChangeKeys_Call{Call: _e.mock.On("ChangeKeys", ctx)}
 }
 
@@ -125,7 +125,7 @@ type MockUserFacade_ChangePassword_Call struct {
 // ChangePassword is a helper method to define mock.On call
 //   - ctx context.Context
 //   - changePassword *dto.ChangePasswordDTO
-func (_e *MockUserFacade_Expecter) ChangePassword(ctx interface{}, changePassword interface{}) *MockUserFacade_ChangePassword_Call {
+func (_e *MockUserFacade_Expecter) ChangePassword(ctx any, changePassword any) *MockUserFacade_ChangePassword_Call {
 	return &MockUserFacade_ChangePassword_Call{Call: _e.mock.On("ChangePassword", ctx, changePassword)}
 }
 
@@ -192,7 +192,7 @@ type MockUserFacade_Profile_Call struct {
 
 // Profile is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockUserFacade_Expecter) Profile(ctx interface{}) *MockUserFacade_Profile_Call {
+func (_e *MockUserFacade_Expecter) Profile(ctx any) *MockUserFacade_Profile_Call {
 	return &MockUserFacade_Profile_Call{Call: _e.mock.On("Profile", ctx)}
 }
 
@@ -255,7 +255,7 @@ type MockUserFacade_Register_Call struct {
 // Register is a helper method to define mock.On call
 //   - ctx context.Context
 //   - register *dto.RegisterDTO
-func (_e *MockUserFacade_Expecter) Register(ctx interface{}, register interface{}) *MockUserFacade_Register_Call {
+func (_e *MockUserFacade_Expecter) Register(ctx any, register any) *MockUserFacade_Register_Call {
 	return &MockUserFacade_Register_Call{Call: _e.mock.On("Register", ctx, register)}
 }
 

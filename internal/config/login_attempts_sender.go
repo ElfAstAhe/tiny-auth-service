@@ -1,0 +1,49 @@
+package config
+
+import (
+	"time"
+
+	"github.com/ElfAstAhe/go-service-template/pkg/config"
+)
+
+type LoginAttemptsSenderConfig struct {
+	*config.AMQPSenderConfig `mapstructure:",squash"`
+}
+
+func NewLoginAttemptsSenderConfig(
+	url string,
+	targetName string,
+	username string,
+	password string,
+	insecureSkipVerify bool,
+	connectTimeout time.Duration,
+	writeTimeout time.Duration,
+	notifyTimeout time.Duration,
+	shutdownTimeout time.Duration,
+	publishMaxTryAttempts int,
+	publishBaseRetryDelay time.Duration,
+	publishMaxRetryDelay time.Duration,
+) *LoginAttemptsSenderConfig {
+	return &LoginAttemptsSenderConfig{
+		AMQPSenderConfig: config.NewAMQPSenderConfig(
+			url,
+			targetName,
+			username,
+			password,
+			insecureSkipVerify,
+			connectTimeout,
+			writeTimeout,
+			notifyTimeout,
+			shutdownTimeout,
+			publishMaxTryAttempts,
+			publishBaseRetryDelay,
+			publishMaxRetryDelay,
+		),
+	}
+}
+
+func NewDefaultLoginAttemptsSenderConfig() *LoginAttemptsSenderConfig {
+	return &LoginAttemptsSenderConfig{
+		AMQPSenderConfig: config.NewDefaultAMQPSenderConfig(),
+	}
+}

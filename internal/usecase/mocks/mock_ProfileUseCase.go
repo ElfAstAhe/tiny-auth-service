@@ -74,7 +74,7 @@ type MockProfileUseCase_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
 //   - username string
-func (_e *MockProfileUseCase_Expecter) Get(ctx interface{}, username interface{}) *MockProfileUseCase_Get_Call {
+func (_e *MockProfileUseCase_Expecter) Get(ctx any, username any) *MockProfileUseCase_Get_Call {
 	return &MockProfileUseCase_Get_Call{Call: _e.mock.On("Get", ctx, username)}
 }
 

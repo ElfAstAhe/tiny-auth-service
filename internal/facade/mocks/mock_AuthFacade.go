@@ -74,7 +74,7 @@ type MockAuthFacade_Login_Call struct {
 // Login is a helper method to define mock.On call
 //   - ctx context.Context
 //   - login *dto.LoginDTO
-func (_e *MockAuthFacade_Expecter) Login(ctx interface{}, login interface{}) *MockAuthFacade_Login_Call {
+func (_e *MockAuthFacade_Expecter) Login(ctx any, login any) *MockAuthFacade_Login_Call {
 	return &MockAuthFacade_Login_Call{Call: _e.mock.On("Login", ctx, login)}
 }
 
@@ -142,7 +142,7 @@ type MockAuthFacade_LoginSimple_Call struct {
 // LoginSimple is a helper method to define mock.On call
 //   - ctx context.Context
 //   - login *dto.LoginDTO
-func (_e *MockAuthFacade_Expecter) LoginSimple(ctx interface{}, login interface{}) *MockAuthFacade_LoginSimple_Call {
+func (_e *MockAuthFacade_Expecter) LoginSimple(ctx any, login any) *MockAuthFacade_LoginSimple_Call {
 	return &MockAuthFacade_LoginSimple_Call{Call: _e.mock.On("LoginSimple", ctx, login)}
 }
 

@@ -77,7 +77,7 @@ type MockChangeKeysUseCase_ChangeKeys_Call struct {
 // ChangeKeys is a helper method to define mock.On call
 //   - ctx context.Context
 //   - userID string
-func (_e *MockChangeKeysUseCase_Expecter) ChangeKeys(ctx interface{}, userID interface{}) *MockChangeKeysUseCase_ChangeKeys_Call {
+func (_e *MockChangeKeysUseCase_Expecter) ChangeKeys(ctx any, userID any) *MockChangeKeysUseCase_ChangeKeys_Call {
 	return &MockChangeKeysUseCase_ChangeKeys_Call{Call: _e.mock.On("ChangeKeys", ctx, userID)}
 }
 

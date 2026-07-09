@@ -75,7 +75,7 @@ type MockUserAdminListUseCase_List_Call struct {
 //   - ctx context.Context
 //   - limit int
 //   - offset int
-func (_e *MockUserAdminListUseCase_Expecter) List(ctx interface{}, limit interface{}, offset interface{}) *MockUserAdminListUseCase_List_Call {
+func (_e *MockUserAdminListUseCase_Expecter) List(ctx any, limit any, offset any) *MockUserAdminListUseCase_List_Call {
 	return &MockUserAdminListUseCase_List_Call{Call: _e.mock.On("List", ctx, limit, offset)}
 }
 

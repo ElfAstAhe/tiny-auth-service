@@ -62,7 +62,7 @@ type MockRoleAdminDeleteUseCase_Delete_Call struct {
 // Delete is a helper method to define mock.On call
 //   - context1 context.Context
 //   - s string
-func (_e *MockRoleAdminDeleteUseCase_Expecter) Delete(context1 interface{}, s interface{}) *MockRoleAdminDeleteUseCase_Delete_Call {
+func (_e *MockRoleAdminDeleteUseCase_Expecter) Delete(context1 any, s any) *MockRoleAdminDeleteUseCase_Delete_Call {
 	return &MockRoleAdminDeleteUseCase_Delete_Call{Call: _e.mock.On("Delete", context1, s)}
 }
 

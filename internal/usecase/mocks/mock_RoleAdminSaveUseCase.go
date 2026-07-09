@@ -74,7 +74,7 @@ type MockRoleAdminSaveUseCase_Save_Call struct {
 // Save is a helper method to define mock.On call
 //   - ctx context.Context
 //   - model *domain.Role
-func (_e *MockRoleAdminSaveUseCase_Expecter) Save(ctx interface{}, model interface{}) *MockRoleAdminSaveUseCase_Save_Call {
+func (_e *MockRoleAdminSaveUseCase_Expecter) Save(ctx any, model any) *MockRoleAdminSaveUseCase_Save_Call {
 	return &MockRoleAdminSaveUseCase_Save_Call{Call: _e.mock.On("Save", ctx, model)}
 }
 

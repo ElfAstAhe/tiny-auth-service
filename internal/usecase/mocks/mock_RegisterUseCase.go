@@ -75,7 +75,7 @@ type MockRegisterUseCase_Register_Call struct {
 //   - ctx context.Context
 //   - username string
 //   - password string
-func (_e *MockRegisterUseCase_Expecter) Register(ctx interface{}, username interface{}, password interface{}) *MockRegisterUseCase_Register_Call {
+func (_e *MockRegisterUseCase_Expecter) Register(ctx any, username any, password any) *MockRegisterUseCase_Register_Call {
 	return &MockRegisterUseCase_Register_Call{Call: _e.mock.On("Register", ctx, username, password)}
 }
 

@@ -102,3 +102,73 @@ const (
 
 // EnvConfig - файл конфигурации
 const EnvConfig string = "CONFIG_PATH"
+
+// amqp sender
+const (
+	FlagLoginAttemptsSenderURL                   string = "login-attempts-sender-url"
+	FlagLoginAttemptsSenderTargetName            string = "login-attempts-sender-target-name"
+	FlagLoginAttemptsSenderUsername              string = "login-attempts-sender-username"
+	FlagLoginAttemptsSenderPassword              string = "login-attempts-sender-password"
+	FlagLoginAttemptsSenderInsecureSkipVerify    string = "login-attempts-sender-insecure-skip-verify"
+	FlagLoginAttemptsSenderConnectTimeout        string = "login-attempts-sender-connect-timeout"
+	FlagLoginAttemptsSenderWriteTimeout          string = "login-attempts-sender-write-timeout"
+	FlagLoginAttemptsSenderNotifyTimeout         string = "login-attempts-sender-notify-timeout"
+	FlagLoginAttemptsSenderShutdownTimeout       string = "login-attempts-sender-shutdown-timeout"
+	FlagLoginAttemptsSenderPublishMaxTryAttempts string = "login-attempts-sender-publish-max-try-attempts"
+	FlagLoginAttemptsSenderPublishBaseRetryDelay string = "login-attempts-sender-publish-base-retry-delay"
+	FlagLoginAttemptsSenderPublishMaxRetryDelay  string = "login-attempts-sender-publish-max-retry-delay"
+)
+
+// app
+const (
+	keyAppEnv                string = "app.env"
+	keyAppNodeName           string = "app.node_name"
+	keyAppMaxListLimit       string = "app.max_list_limit"
+	keyAppTokenIssuer        string = "app.token_issuer"
+	keyAppCipherKey          string = "app.cipher_key"
+	keyAppDefShutdownTimeout string = "app.def_shutdown_timeout"
+)
+
+// service credentials
+const (
+	keySvcCredsUsername              string = "svc_creds.username"
+	keySvcCredsPassword              string = "svc_creds.password"
+	keySvcCredsScheduleInterval      string = "svc_creds.schedule_interval"
+	keySvcCredsErrorScheduleInterval string = "svc_creds.error_schedule_interval"
+)
+
+// auth audit client
+const (
+	keyAuthAuditClientBaseURL            string = "auth_audit_client.base_url"
+	keyAuthAuditClientTimeout            string = "auth_audit_client.timeout"
+	keyAuthAuditClientWorkerCount        string = "auth_audit_client.worker_count"
+	keyAuthAuditClientDataCapacity       string = "auth_audit_client.data_capacity"
+	keyAuthAuditClientCompleteProcessing string = "auth_audit_client.complete_processing"
+	keyAuthAuditClientShutdownTimeout    string = "auth_audit_client.shutdown_timeout"
+)
+
+// data audit client
+const (
+	keyDataAuditClientBaseURL            string = "data_audit_client.base_url"
+	keyDataAuditClientTimeout            string = "data_audit_client.timeout"
+	keyDataAuditClientWorkerCount        string = "data_audit_client.worker_count"
+	keyDataAuditClientDataCapacity       string = "data_audit_client.data_capacity"
+	keyDataAuditClientCompleteProcessing string = "data_audit_client.complete_processing"
+	keyDataAuditClientShutdownTimeout    string = "data_audit_client.shutdown_timeout"
+)
+
+// amqp sender
+const (
+	keyLoginAttemptsSenderURL                   string = "login_attempts_sender.url"
+	keyLoginAttemptsSenderTargetName            string = "login_attempts_sender.target_name"
+	keyLoginAttemptsSenderUsername              string = "login_attempts_sender.username"
+	keyLoginAttemptsSenderPassword              string = "login_attempts_sender.password"
+	keyLoginAttemptsSenderInsecureSkipVerify    string = "login_attempts_sender.insecure_skip_verify"
+	keyLoginAttemptsSenderConnectTimeout        string = "login_attempts_sender.connect_timeout"
+	keyLoginAttemptsSenderWriteTimeout          string = "login_attempts_sender.write_timeout"
+	keyLoginAttemptsSenderNotifyTimeout         string = "login_attempts_sender.notify_timeout"
+	keyLoginAttemptsSenderShutdownTimeout       string = "login_attempts_sender.shutdown_timeout"
+	keyLoginAttemptsSenderPublishMaxTryAttempts string = "login_attempts_sender.publish_max_try_attempts"
+	keyLoginAttemptsSenderPublishBaseRetryDelay string = "login_attempts_sender.publish_base_retry_delay"
+	keyLoginAttemptsSenderPublishMaxRetryDelay  string = "login_attempts_sender.publish_max_retry_delay"
+)

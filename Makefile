@@ -81,7 +81,18 @@ run: build
 		--data-audit-client-worker-count "2" \
 		--data-audit-client-data-capacity "10000" \
 		--data-audit-client-complete-processing \
-		--data-audit-client-shutdown-timeout "15s"
+		--data-audit-client-shutdown-timeout "15s" \
+		--login-attempts-sender-url "amqp://localhost:5672" \
+		--login-attempts-sender-target-name "tiny.auth::login.attempts" \
+		--login-attempts-sender-username "svc-auth" \
+		--login-attempts-sender-password "test" \
+		--login-attempts-sender-connect-timeout "2s" \
+		--login-attempts-sender-write-timeout "2s" \
+		--login-attempts-sender-notify-timeout "2s" \
+		--login-attempts-sender-shutdown-timeout "3s" \
+		--login-attempts-sender-publish-max-try-attempts "3" \
+		--login-attempts-sender-publish-base-retry-delay "1s" \
+		--login-attempts-sender-publish-max-retry-delay "4s"
 
 # Запуск тестов
 test:

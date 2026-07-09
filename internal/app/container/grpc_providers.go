@@ -152,6 +152,7 @@ func (gc *GRPCContainer) serverProvider(conf *libconfig.GRPCConfig) (*grpc.Serve
 				interceptors.MDXTraceID,
 				interceptors.MDTraceID,
 			),
+			interceptors.NewDefaultRealIPExtractorUSInterceptor().UnaryServerInterceptor(),
 			auditlibgrpcintercept.AuditRequestIDExtractorUnaryServerInterceptor(
 				auditlibgrpcintercept.MDXRequestID,
 				auditlibgrpcintercept.MDXCorrelationID,
