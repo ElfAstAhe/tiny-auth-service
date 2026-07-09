@@ -15,7 +15,7 @@ import (
 
 type LoginAttemptObserver struct {
 	name     string
-	client   libamqp.ClientSingleSender[*amqp.SendOptions]
+	client   libamqp.ClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader]
 	sendOpts *amqp.SendOptions
 }
 
@@ -23,7 +23,7 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	client libamqp.ClientSingleSender[*amqp.SendOptions],
+	client libamqp.ClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader],
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
 		name:   name,
@@ -48,7 +48,10 @@ func (lao *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		return errs.NewCommonError("json encode failed", err)
 	}
 
-	msg := &libamqp.Message{
+	msg := &libamqp.Message[*amqp.MessageHeader]{
+		Header: &amqp.MessageHeader{
+			Durable: true,
+		},
 		Payload:    payload,
 		Properties: make(map[string]any),
 	}

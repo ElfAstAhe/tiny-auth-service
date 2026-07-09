@@ -57,10 +57,10 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	return nil
 }
 
-func (cc *ClientContainer) Close2(ctx context.Context) error {
+func (cc *ClientContainer) Close(ctx context.Context) error {
 	var closeErrs []error
 	// retrieve all instances to close
-	loginAttemptsSenderInst, err := container.GetInstance[libamqp.ClientSingleSender[*amqp.SendOptions]](InstanceAMQPClientSender)
+	loginAttemptsSenderInst, err := container.GetInstance[libamqp.ClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader]](InstanceAMQPClientSender)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container close: retrieve instance failed", err)
 	}

@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 // 1. Тест успешного прохождения события (Happy Path) с глубокой валидацией полей DTO
 func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	// Создаем expecter-мок интерфейса ClientSender с помощью mockery
-	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader](t)
 
 	observerName := "test-login-observer"
 	observer := NewLoginAttemptObserver(observerName, mockClient)
@@ -47,7 +47,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	mockClient.EXPECT().
 		Publish(
 			mock.Anything,
-			mock.MatchedBy(func(msg *libamqp.Message) bool {
+			mock.MatchedBy(func(msg *libamqp.Message[*amqp.MessageHeader]) bool {
 				var parsed dto.LoginAttemptEventDTO
 				err := json.Unmarshal(msg.Payload, &parsed)
 
@@ -76,7 +76,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 
 // 2. Тест обработки ошибки сетевого клиента (Publish Failure)
 func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
-	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader](t)
 	mockClient.On("GetTargetName").Return("test-target::test-queue")
 	observer := NewLoginAttemptObserver("test-login-observer", mockClient)
 
@@ -103,7 +103,7 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 
 // 3. Тест защиты от nil-указателя на входе (Nil Data Defense)
 func TestLoginAttemptObserver_OnNotify_NilData(t *testing.T) {
-	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions](t)
+	mockClient := mocks.NewMockClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader](t)
 	observer := NewLoginAttemptObserver("test-login-observer", mockClient)
 
 	// Передаем nil вместо DTO
