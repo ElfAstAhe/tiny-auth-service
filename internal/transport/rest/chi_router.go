@@ -124,7 +124,7 @@ func (cr *AppChiRouter) setupMiddleware(
 	// realIP (own implementation)
 	cr.router.Use(libmware.NewDefaultRealIPExtractor().Handler)
 	// realIP
-	cr.router.Use(middleware.RealIP)
+	//cr.router.Use(middleware.RealIP)
 	// recoverer
 	cr.router.Use(middleware.Recoverer)
 	// timeout
