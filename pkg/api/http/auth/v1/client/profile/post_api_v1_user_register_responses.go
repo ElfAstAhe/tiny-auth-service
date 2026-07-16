@@ -55,11 +55,9 @@ func NewPostAPIV1UserRegisterOK() *PostAPIV1UserRegisterOK {
 	return &PostAPIV1UserRegisterOK{}
 }
 
-/*
-PostAPIV1UserRegisterOK describes a response with status code 200, with default header values.
-
-OK
-*/
+// PostAPIV1UserRegisterOK describes a response with status code 200, with default header values.
+//
+// OK
 type PostAPIV1UserRegisterOK struct {
 	Payload *models.ProfileDTO
 }
@@ -125,11 +123,9 @@ func NewPostAPIV1UserRegisterBadRequest() *PostAPIV1UserRegisterBadRequest {
 	return &PostAPIV1UserRegisterBadRequest{}
 }
 
-/*
-PostAPIV1UserRegisterBadRequest describes a response with status code 400, with default header values.
-
-Кривые данные
-*/
+// PostAPIV1UserRegisterBadRequest describes a response with status code 400, with default header values.
+//
+// Кривые данные
 type PostAPIV1UserRegisterBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -195,11 +191,9 @@ func NewPostAPIV1UserRegisterConflict() *PostAPIV1UserRegisterConflict {
 	return &PostAPIV1UserRegisterConflict{}
 }
 
-/*
-PostAPIV1UserRegisterConflict describes a response with status code 409, with default header values.
-
-Уже существует
-*/
+// PostAPIV1UserRegisterConflict describes a response with status code 409, with default header values.
+//
+// Уже существует
 type PostAPIV1UserRegisterConflict struct {
 	Payload *models.ErrorDTO
 }
@@ -265,11 +259,9 @@ func NewPostAPIV1UserRegisterInternalServerError() *PostAPIV1UserRegisterInterna
 	return &PostAPIV1UserRegisterInternalServerError{}
 }
 
-/*
-PostAPIV1UserRegisterInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PostAPIV1UserRegisterInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PostAPIV1UserRegisterInternalServerError struct {
 }
 

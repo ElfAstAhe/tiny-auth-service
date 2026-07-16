@@ -63,10 +63,9 @@ PostAPIV1AdminRolesParams contains all the parameters to send to the API endpoin
 */
 type PostAPIV1AdminRolesParams struct {
 
-	/* Input.
-
-	   Роль
-	*/
+	// Input.
+	//
+	// Роль
 	Input *models.RoleDTO
 
 	HTTPClient *http.Client

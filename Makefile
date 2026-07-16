@@ -70,24 +70,21 @@ run: build
 		--svc-creds-username "svc_auth" \
 		--svc-creds-password "password" \
 		--svc-creds-schedule-interval "25s" \
-		--auth-audit-client-base-url "http://localhost:8081/" \
-		--auth-audit-client-timeout "5s" \
-		--auth-audit-client-worker-count "4" \
-		--auth-audit-client-data-capacity "10000" \
-		--auth-audit-client-complete-processing \
-		--auth-audit-client-shutdown-timeout "15s" \
 		--data-audit-client-base-url "http://localhost:8081/" \
 		--data-audit-client-timeout "5s" \
 		--data-audit-client-worker-count "2" \
 		--data-audit-client-data-capacity "10000" \
 		--data-audit-client-complete-processing \
 		--data-audit-client-shutdown-timeout "15s" \
-		--login-attempts-sender-url "amqp://localhost:5672" \
+		--amqp-connector-url "amqp://localhost:5672" \
+		--amqp-connector-username "svc-auth" \
+		--amqp-connector-password "test" \
+		--amqp-connector-connect-timeout "2s" \
+		--amqp-connector-write-timeout "2s" \
+		--amqp-connector-idle-timeout "30s" \
+		--amqp-connector-shutdown-timeout "3s" \
 		--login-attempts-sender-target-name "tiny.auth::login.attempts" \
-		--login-attempts-sender-username "svc-auth" \
-		--login-attempts-sender-password "test" \
 		--login-attempts-sender-connect-timeout "2s" \
-		--login-attempts-sender-write-timeout "2s" \
 		--login-attempts-sender-notify-timeout "2s" \
 		--login-attempts-sender-shutdown-timeout "3s" \
 		--login-attempts-sender-publish-max-try-attempts "3" \

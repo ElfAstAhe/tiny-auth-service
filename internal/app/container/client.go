@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	InstanceAuthAuditClient          string = "audit-client"
-	InstanceDataAuditClient          string = "data-audit-client"
-	InstanceAMQPClientSender         string = "amqp-client-sender"
-	InstanceAMQPClientSenderConnOpts string = "amqp-client-sender-conn-opts"
-	InstanceAMQPClientSenderSessOpts string = "amqp-client-sender-sess-opts"
-	InstanceAMQPClientSenderOpts     string = "amqp-client-sender-opts"
+	InstanceDataAuditClient                  string = "data-audit-client"
+	InstanceAMQPConnector                    string = "amqp-connector"
+	InstanceAMQPConnectorConnOpts            string = "amqp-connector-conn-opts"
+	InstanceAMQPConnectorSessOpts            string = "amqp-connector-sess-opts"
+	InstanceAMQPLoginAttemptSender           string = "amqp-login-attempt-sender"
+	InstanceAMQPLoginAttemptSenderSenderOpts string = "amqp-client-sender-sender-opts"
 )
 
 type ClientContainer struct {
@@ -45,10 +45,11 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
 		//		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
-		cc.RegisterProvider(InstanceAMQPClientSender, cc.providerAMQPClientSender),
-		cc.RegisterProvider(InstanceAMQPClientSenderConnOpts, cc.providerAMQPClientSenderConnOpts),
-		cc.RegisterProvider(InstanceAMQPClientSenderSessOpts, cc.providerAMQPClientSenderSessOpts),
-		cc.RegisterProvider(InstanceAMQPClientSenderOpts, cc.providerAMQPClientSenderOpts),
+		cc.RegisterProvider(InstanceAMQPConnector, cc.providerAMQPConnector),
+		cc.RegisterProvider(InstanceAMQPConnectorConnOpts, cc.providerAMQPConnectorConnOpts),
+		cc.RegisterProvider(InstanceAMQPConnectorSessOpts, cc.providerAMQPConnectorSessOpts),
+		cc.RegisterProvider(InstanceAMQPLoginAttemptSender, cc.providerAMQPLoginAttemptSender),
+		cc.RegisterProvider(InstanceAMQPLoginAttemptSenderSenderOpts, cc.providerAMQPLoginAttemptSenderSenderOpts),
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)
@@ -57,10 +58,10 @@ func (cc *ClientContainer) Init(ctx context.Context) error {
 	return nil
 }
 
-func (cc *ClientContainer) Close(ctx context.Context) error {
+func (cc *ClientContainer) Close2(ctx context.Context) error {
 	var closeErrs []error
 	// retrieve all instances to close
-	loginAttemptsSenderInst, err := container.GetInstance[libamqp.ClientSingleSender[*amqp.SendOptions, *amqp.MessageHeader]](InstanceAMQPClientSender)
+	loginAttemptsSenderInst, err := container.GetInstance[libamqp.Sender[*amqp.SendOptions, *amqp.MessageHeader]](InstanceAMQPLoginAttemptSender)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container close: retrieve instance failed", err)
 	}

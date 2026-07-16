@@ -61,11 +61,9 @@ func NewPutAPIV1UsersPasswordOK() *PutAPIV1UsersPasswordOK {
 	return &PutAPIV1UsersPasswordOK{}
 }
 
-/*
-PutAPIV1UsersPasswordOK describes a response with status code 200, with default header values.
-
-Успех (пустое тело)
-*/
+// PutAPIV1UsersPasswordOK describes a response with status code 200, with default header values.
+//
+// Успех (пустое тело)
 type PutAPIV1UsersPasswordOK struct {
 }
 
@@ -117,11 +115,9 @@ func NewPutAPIV1UsersPasswordBadRequest() *PutAPIV1UsersPasswordBadRequest {
 	return &PutAPIV1UsersPasswordBadRequest{}
 }
 
-/*
-PutAPIV1UsersPasswordBadRequest describes a response with status code 400, with default header values.
-
-Bad Request
-*/
+// PutAPIV1UsersPasswordBadRequest describes a response with status code 400, with default header values.
+//
+// Bad Request
 type PutAPIV1UsersPasswordBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -187,11 +183,9 @@ func NewPutAPIV1UsersPasswordNotFound() *PutAPIV1UsersPasswordNotFound {
 	return &PutAPIV1UsersPasswordNotFound{}
 }
 
-/*
-PutAPIV1UsersPasswordNotFound describes a response with status code 404, with default header values.
-
-Not Found
-*/
+// PutAPIV1UsersPasswordNotFound describes a response with status code 404, with default header values.
+//
+// Not Found
 type PutAPIV1UsersPasswordNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -257,11 +251,9 @@ func NewPutAPIV1UsersPasswordConflict() *PutAPIV1UsersPasswordConflict {
 	return &PutAPIV1UsersPasswordConflict{}
 }
 
-/*
-PutAPIV1UsersPasswordConflict describes a response with status code 409, with default header values.
-
-Conflict
-*/
+// PutAPIV1UsersPasswordConflict describes a response with status code 409, with default header values.
+//
+// Conflict
 type PutAPIV1UsersPasswordConflict struct {
 	Payload *models.ErrorDTO
 }
@@ -327,11 +319,9 @@ func NewPutAPIV1UsersPasswordInternalServerError() *PutAPIV1UsersPasswordInterna
 	return &PutAPIV1UsersPasswordInternalServerError{}
 }
 
-/*
-PutAPIV1UsersPasswordInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PutAPIV1UsersPasswordInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PutAPIV1UsersPasswordInternalServerError struct {
 }
 

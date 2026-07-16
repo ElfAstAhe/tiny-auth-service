@@ -61,11 +61,9 @@ func NewPutAPIV1AdminRolesIDOK() *PutAPIV1AdminRolesIDOK {
 	return &PutAPIV1AdminRolesIDOK{}
 }
 
-/*
-PutAPIV1AdminRolesIDOK describes a response with status code 200, with default header values.
-
-OK
-*/
+// PutAPIV1AdminRolesIDOK describes a response with status code 200, with default header values.
+//
+// OK
 type PutAPIV1AdminRolesIDOK struct {
 	Payload *models.RoleDTO
 }
@@ -131,11 +129,9 @@ func NewPutAPIV1AdminRolesIDBadRequest() *PutAPIV1AdminRolesIDBadRequest {
 	return &PutAPIV1AdminRolesIDBadRequest{}
 }
 
-/*
-PutAPIV1AdminRolesIDBadRequest describes a response with status code 400, with default header values.
-
-Bad Request
-*/
+// PutAPIV1AdminRolesIDBadRequest describes a response with status code 400, with default header values.
+//
+// Bad Request
 type PutAPIV1AdminRolesIDBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -201,11 +197,9 @@ func NewPutAPIV1AdminRolesIDNotFound() *PutAPIV1AdminRolesIDNotFound {
 	return &PutAPIV1AdminRolesIDNotFound{}
 }
 
-/*
-PutAPIV1AdminRolesIDNotFound describes a response with status code 404, with default header values.
-
-Not Found
-*/
+// PutAPIV1AdminRolesIDNotFound describes a response with status code 404, with default header values.
+//
+// Not Found
 type PutAPIV1AdminRolesIDNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -271,11 +265,9 @@ func NewPutAPIV1AdminRolesIDConflict() *PutAPIV1AdminRolesIDConflict {
 	return &PutAPIV1AdminRolesIDConflict{}
 }
 
-/*
-PutAPIV1AdminRolesIDConflict describes a response with status code 409, with default header values.
-
-Conflict
-*/
+// PutAPIV1AdminRolesIDConflict describes a response with status code 409, with default header values.
+//
+// Conflict
 type PutAPIV1AdminRolesIDConflict struct {
 	Payload *models.ErrorDTO
 }
@@ -341,11 +333,9 @@ func NewPutAPIV1AdminRolesIDInternalServerError() *PutAPIV1AdminRolesIDInternalS
 	return &PutAPIV1AdminRolesIDInternalServerError{}
 }
 
-/*
-PutAPIV1AdminRolesIDInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PutAPIV1AdminRolesIDInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PutAPIV1AdminRolesIDInternalServerError struct {
 }
 

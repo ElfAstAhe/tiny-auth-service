@@ -55,11 +55,9 @@ func NewGetAPIV1AdminRolesOK() *GetAPIV1AdminRolesOK {
 	return &GetAPIV1AdminRolesOK{}
 }
 
-/*
-GetAPIV1AdminRolesOK describes a response with status code 200, with default header values.
-
-Набор ролей
-*/
+// GetAPIV1AdminRolesOK describes a response with status code 200, with default header values.
+//
+// Набор ролей
 type GetAPIV1AdminRolesOK struct {
 	Payload []*models.RoleDTO
 }
@@ -123,11 +121,9 @@ func NewGetAPIV1AdminRolesBadRequest() *GetAPIV1AdminRolesBadRequest {
 	return &GetAPIV1AdminRolesBadRequest{}
 }
 
-/*
-GetAPIV1AdminRolesBadRequest describes a response with status code 400, with default header values.
-
-Bad Request
-*/
+// GetAPIV1AdminRolesBadRequest describes a response with status code 400, with default header values.
+//
+// Bad Request
 type GetAPIV1AdminRolesBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -193,11 +189,9 @@ func NewGetAPIV1AdminRolesForbidden() *GetAPIV1AdminRolesForbidden {
 	return &GetAPIV1AdminRolesForbidden{}
 }
 
-/*
-GetAPIV1AdminRolesForbidden describes a response with status code 403, with default header values.
-
-В доступе отказано
-*/
+// GetAPIV1AdminRolesForbidden describes a response with status code 403, with default header values.
+//
+// В доступе отказано
 type GetAPIV1AdminRolesForbidden struct {
 	Payload *models.ErrorDTO
 }
@@ -263,11 +257,9 @@ func NewGetAPIV1AdminRolesInternalServerError() *GetAPIV1AdminRolesInternalServe
 	return &GetAPIV1AdminRolesInternalServerError{}
 }
 
-/*
-GetAPIV1AdminRolesInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// GetAPIV1AdminRolesInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type GetAPIV1AdminRolesInternalServerError struct {
 }
 

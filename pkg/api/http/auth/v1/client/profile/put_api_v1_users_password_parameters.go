@@ -63,10 +63,9 @@ PutAPIV1UsersPasswordParams contains all the parameters to send to the API endpo
 */
 type PutAPIV1UsersPasswordParams struct {
 
-	/* Input.
-
-	   Смена пароля
-	*/
+	// Input.
+	//
+	// Смена пароля
 	Input *models.ChangePasswordDTO
 
 	HTTPClient *http.Client

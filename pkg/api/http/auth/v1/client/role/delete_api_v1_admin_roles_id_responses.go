@@ -55,11 +55,9 @@ func NewDeleteAPIV1AdminRolesIDNoContent() *DeleteAPIV1AdminRolesIDNoContent {
 	return &DeleteAPIV1AdminRolesIDNoContent{}
 }
 
-/*
-DeleteAPIV1AdminRolesIDNoContent describes a response with status code 204, with default header values.
-
-Запись успешно удалена, тело ответа отсутствует
-*/
+// DeleteAPIV1AdminRolesIDNoContent describes a response with status code 204, with default header values.
+//
+// Запись успешно удалена, тело ответа отсутствует
 type DeleteAPIV1AdminRolesIDNoContent struct {
 }
 
@@ -111,11 +109,9 @@ func NewDeleteAPIV1AdminRolesIDForbidden() *DeleteAPIV1AdminRolesIDForbidden {
 	return &DeleteAPIV1AdminRolesIDForbidden{}
 }
 
-/*
-DeleteAPIV1AdminRolesIDForbidden describes a response with status code 403, with default header values.
-
-В доступе отказано
-*/
+// DeleteAPIV1AdminRolesIDForbidden describes a response with status code 403, with default header values.
+//
+// В доступе отказано
 type DeleteAPIV1AdminRolesIDForbidden struct {
 	Payload *models.ErrorDTO
 }
@@ -181,11 +177,9 @@ func NewDeleteAPIV1AdminRolesIDNotFound() *DeleteAPIV1AdminRolesIDNotFound {
 	return &DeleteAPIV1AdminRolesIDNotFound{}
 }
 
-/*
-DeleteAPIV1AdminRolesIDNotFound describes a response with status code 404, with default header values.
-
-Запись не найдена
-*/
+// DeleteAPIV1AdminRolesIDNotFound describes a response with status code 404, with default header values.
+//
+// Запись не найдена
 type DeleteAPIV1AdminRolesIDNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -251,11 +245,9 @@ func NewDeleteAPIV1AdminRolesIDInternalServerError() *DeleteAPIV1AdminRolesIDInt
 	return &DeleteAPIV1AdminRolesIDInternalServerError{}
 }
 
-/*
-DeleteAPIV1AdminRolesIDInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// DeleteAPIV1AdminRolesIDInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type DeleteAPIV1AdminRolesIDInternalServerError struct {
 }
 

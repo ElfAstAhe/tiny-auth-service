@@ -63,18 +63,16 @@ PutAPIV1AdminUsersIDParams contains all the parameters to send to the API endpoi
 */
 type PutAPIV1AdminUsersIDParams struct {
 
-	/* ID.
-
-	   ID записи
-
-	   Format: string
-	*/
+	// ID.
+	//
+	// ID записи
+	//
+	// Format: string
 	ID string
 
-	/* Input.
-
-	   Роль
-	*/
+	// Input.
+	//
+	// Роль
 	Input *models.UserDTO
 
 	HTTPClient *http.Client

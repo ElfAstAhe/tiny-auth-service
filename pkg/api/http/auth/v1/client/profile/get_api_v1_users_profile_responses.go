@@ -55,11 +55,9 @@ func NewGetAPIV1UsersProfileOK() *GetAPIV1UsersProfileOK {
 	return &GetAPIV1UsersProfileOK{}
 }
 
-/*
-GetAPIV1UsersProfileOK describes a response with status code 200, with default header values.
-
-Профиль
-*/
+// GetAPIV1UsersProfileOK describes a response with status code 200, with default header values.
+//
+// Профиль
 type GetAPIV1UsersProfileOK struct {
 	Payload *models.ProfileDTO
 }
@@ -125,11 +123,9 @@ func NewGetAPIV1UsersProfileForbidden() *GetAPIV1UsersProfileForbidden {
 	return &GetAPIV1UsersProfileForbidden{}
 }
 
-/*
-GetAPIV1UsersProfileForbidden describes a response with status code 403, with default header values.
-
-В доступе отказано
-*/
+// GetAPIV1UsersProfileForbidden describes a response with status code 403, with default header values.
+//
+// В доступе отказано
 type GetAPIV1UsersProfileForbidden struct {
 	Payload *models.ErrorDTO
 }
@@ -195,11 +191,9 @@ func NewGetAPIV1UsersProfileNotFound() *GetAPIV1UsersProfileNotFound {
 	return &GetAPIV1UsersProfileNotFound{}
 }
 
-/*
-GetAPIV1UsersProfileNotFound describes a response with status code 404, with default header values.
-
-Запись не найдена
-*/
+// GetAPIV1UsersProfileNotFound describes a response with status code 404, with default header values.
+//
+// Запись не найдена
 type GetAPIV1UsersProfileNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -265,11 +259,9 @@ func NewGetAPIV1UsersProfileInternalServerError() *GetAPIV1UsersProfileInternalS
 	return &GetAPIV1UsersProfileInternalServerError{}
 }
 
-/*
-GetAPIV1UsersProfileInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// GetAPIV1UsersProfileInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type GetAPIV1UsersProfileInternalServerError struct {
 }
 

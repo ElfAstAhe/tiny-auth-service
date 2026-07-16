@@ -62,12 +62,11 @@ GetAPIV1AdminRolesSearchParams contains all the parameters to send to the API en
 */
 type GetAPIV1AdminRolesSearchParams struct {
 
-	/* Name.
-
-	   name записи
-
-	   Format: string
-	*/
+	// Name.
+	//
+	// name записи
+	//
+	// Format: string
 	Name string
 
 	HTTPClient *http.Client

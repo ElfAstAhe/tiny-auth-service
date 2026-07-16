@@ -62,12 +62,11 @@ DeleteAPIV1AdminRolesIDParams contains all the parameters to send to the API end
 */
 type DeleteAPIV1AdminRolesIDParams struct {
 
-	/* ID.
-
-	   ID записи
-
-	   Format: string
-	*/
+	// ID.
+	//
+	// ID записи
+	//
+	// Format: string
 	ID string
 
 	HTTPClient *http.Client

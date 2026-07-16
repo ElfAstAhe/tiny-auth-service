@@ -33,6 +33,11 @@ const (
 // amqp sender (FQQN artemis style)
 const (
 	defaultLoginAttemptsSenderTargetName string = "tiny.auth::login.attempts"
-	defaultLoginAttemptsSenderUsername   string = "svc-auth"
-	defaultLoginAttemptsSenderPassword   string = "test"
+	defaultAMQPConnectorUsername         string = "svc-auth"
+	defaultAMQPConnectorPassword         string = "test"
+)
+
+// login attempts
+const (
+	defaultLoginAttemptsNotifyTimeout time.Duration = 2 * time.Second
 )

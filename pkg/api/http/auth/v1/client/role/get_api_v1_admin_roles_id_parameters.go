@@ -62,12 +62,11 @@ GetAPIV1AdminRolesIDParams contains all the parameters to send to the API endpoi
 */
 type GetAPIV1AdminRolesIDParams struct {
 
-	/* ID.
-
-	   ID записи
-
-	   Format: string
-	*/
+	// ID.
+	//
+	// ID записи
+	//
+	// Format: string
 	ID string
 
 	HTTPClient *http.Client
