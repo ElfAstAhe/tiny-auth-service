@@ -63,10 +63,9 @@ PostAPIV1AuthParams contains all the parameters to send to the API endpoint
 */
 type PostAPIV1AuthParams struct {
 
-	/* Input.
-
-	   login информация
-	*/
+	// Input.
+	//
+	// login информация
 	Input *models.LoginDTO
 
 	HTTPClient *http.Client

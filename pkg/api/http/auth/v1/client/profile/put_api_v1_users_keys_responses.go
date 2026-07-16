@@ -61,11 +61,9 @@ func NewPutAPIV1UsersKeysOK() *PutAPIV1UsersKeysOK {
 	return &PutAPIV1UsersKeysOK{}
 }
 
-/*
-PutAPIV1UsersKeysOK describes a response with status code 200, with default header values.
-
-OK
-*/
+// PutAPIV1UsersKeysOK describes a response with status code 200, with default header values.
+//
+// OK
 type PutAPIV1UsersKeysOK struct {
 	Payload *models.ChangedKeysDTO
 }
@@ -131,11 +129,9 @@ func NewPutAPIV1UsersKeysBadRequest() *PutAPIV1UsersKeysBadRequest {
 	return &PutAPIV1UsersKeysBadRequest{}
 }
 
-/*
-PutAPIV1UsersKeysBadRequest describes a response with status code 400, with default header values.
-
-Bad Request
-*/
+// PutAPIV1UsersKeysBadRequest describes a response with status code 400, with default header values.
+//
+// Bad Request
 type PutAPIV1UsersKeysBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -201,11 +197,9 @@ func NewPutAPIV1UsersKeysNotFound() *PutAPIV1UsersKeysNotFound {
 	return &PutAPIV1UsersKeysNotFound{}
 }
 
-/*
-PutAPIV1UsersKeysNotFound describes a response with status code 404, with default header values.
-
-Not Found
-*/
+// PutAPIV1UsersKeysNotFound describes a response with status code 404, with default header values.
+//
+// Not Found
 type PutAPIV1UsersKeysNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -271,11 +265,9 @@ func NewPutAPIV1UsersKeysConflict() *PutAPIV1UsersKeysConflict {
 	return &PutAPIV1UsersKeysConflict{}
 }
 
-/*
-PutAPIV1UsersKeysConflict describes a response with status code 409, with default header values.
-
-Conflict
-*/
+// PutAPIV1UsersKeysConflict describes a response with status code 409, with default header values.
+//
+// Conflict
 type PutAPIV1UsersKeysConflict struct {
 	Payload *models.ErrorDTO
 }
@@ -341,11 +333,9 @@ func NewPutAPIV1UsersKeysInternalServerError() *PutAPIV1UsersKeysInternalServerE
 	return &PutAPIV1UsersKeysInternalServerError{}
 }
 
-/*
-PutAPIV1UsersKeysInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PutAPIV1UsersKeysInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PutAPIV1UsersKeysInternalServerError struct {
 }
 

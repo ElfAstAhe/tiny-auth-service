@@ -14,17 +14,17 @@ const (
 )
 
 type Config struct {
-	App                 *AppConfig                 `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
-	Credentials         *ServiceCredentialsConfig  `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
-	AuthAuditClient     *AuditClientConfig         `mapstructure:"auth_audit_client" json:"auth_audit_client,omitempty" yaml:"auth_audit_client,omitempty"`
-	DataAuditClient     *AuditClientConfig         `mapstructure:"data_audit_client" json:"data_audit_client,omitempty" yaml:"data_audit_client,omitempty"`
-	Auth                *config.AuthConfig         `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
-	HTTP                *config.HTTPConfig         `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
-	GRPC                *config.GRPCConfig         `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
-	Log                 *config.LogConfig          `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
-	DB                  *config.DBConfig           `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
-	Telemetry           *config.TelemetryConfig    `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
-	LoginAttemptsSender *LoginAttemptsSenderConfig `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
+	App                 *AppConfig                  `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
+	Credentials         *ServiceCredentialsConfig   `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
+	DataAuditClient     *AuditClientConfig          `mapstructure:"data_audit_client" json:"data_audit_client,omitempty" yaml:"data_audit_client,omitempty"`
+	Auth                *config.AuthConfig          `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
+	HTTP                *config.HTTPConfig          `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
+	GRPC                *config.GRPCConfig          `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
+	Log                 *config.LogConfig           `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
+	DB                  *config.DBConfig            `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
+	Telemetry           *config.TelemetryConfig     `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
+	AMQPConnector       *config.AMQPConnectorConfig `mapstructure:"amqp_connector" json:"amqp_connector,omitempty" yaml:"amqp_connector,omitempty"`
+	LoginAttemptsSender *LoginAttemptsConfig        `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
 }
 
 // linker params
@@ -36,7 +36,6 @@ var (
 func NewConfig(
 	app *AppConfig,
 	svcCreds *ServiceCredentialsConfig,
-	authAuditClient *AuditClientConfig,
 	dataAuditClient *AuditClientConfig,
 	auth *config.AuthConfig,
 	HTTP *config.HTTPConfig,
@@ -44,12 +43,12 @@ func NewConfig(
 	log *config.LogConfig,
 	db *config.DBConfig,
 	telemetry *config.TelemetryConfig,
-	loginAttemptsSender *LoginAttemptsSenderConfig,
+	amqpConnector *config.AMQPConnectorConfig,
+	loginAttemptsSender *LoginAttemptsConfig,
 ) *Config {
 	return &Config{
 		App:                 app,
 		Credentials:         svcCreds,
-		AuthAuditClient:     authAuditClient,
 		DataAuditClient:     dataAuditClient,
 		Auth:                auth,
 		HTTP:                HTTP,
@@ -57,6 +56,7 @@ func NewConfig(
 		Log:                 log,
 		DB:                  db,
 		Telemetry:           telemetry,
+		AMQPConnector:       amqpConnector,
 		LoginAttemptsSender: loginAttemptsSender,
 	}
 }
@@ -66,14 +66,14 @@ func NewDefaultConfig() *Config {
 		NewDefaultAppConfig(),
 		NewDefaultServiceCredentialsConfig(),
 		NewDefaultAuditClientConfig(),
-		NewDefaultAuditClientConfig(),
 		config.NewDefaultAuthConfig(),
 		config.NewDefaultHTTPConfig(),
 		config.NewDefaultGRPCConfig(),
 		config.NewDefaultLogConfig(),
 		config.NewDefaultDBConfig(),
 		config.NewDefaultTelemetryConfig(),
-		NewDefaultLoginAttemptsSenderConfig(),
+		config.NewDefaultAMQPConnectorConfig(),
+		NewDefaultLoginAttemptsConfig(),
 	)
 }
 
@@ -81,7 +81,6 @@ func NewEmptyConfig() *Config {
 	return &Config{
 		App:             &AppConfig{},
 		Credentials:     &ServiceCredentialsConfig{},
-		AuthAuditClient: &AuditClientConfig{},
 		DataAuditClient: &AuditClientConfig{},
 		Auth:            &config.AuthConfig{},
 		HTTP:            &config.HTTPConfig{},
@@ -89,7 +88,8 @@ func NewEmptyConfig() *Config {
 		Log:             &config.LogConfig{},
 		DB:              &config.DBConfig{},
 		Telemetry:       &config.TelemetryConfig{},
-		LoginAttemptsSender: &LoginAttemptsSenderConfig{
+		AMQPConnector:   &config.AMQPConnectorConfig{},
+		LoginAttemptsSender: &LoginAttemptsConfig{
 			AMQPSenderConfig: &config.AMQPSenderConfig{},
 		},
 	}
@@ -101,7 +101,6 @@ func (c *Config) Validate() error {
 	}{
 		c.App,
 		c.Credentials,
-		c.AuthAuditClient,
 		c.DataAuditClient,
 		c.Auth,
 		c.HTTP,
@@ -109,6 +108,7 @@ func (c *Config) Validate() error {
 		c.Log,
 		c.DB,
 		c.Telemetry,
+		c.AMQPConnector,
 		c.LoginAttemptsSender,
 	}
 

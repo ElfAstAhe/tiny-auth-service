@@ -62,12 +62,11 @@ GetAPIV1AdminUsersSearchParams contains all the parameters to send to the API en
 */
 type GetAPIV1AdminUsersSearchParams struct {
 
-	/* Name.
-
-	   name записи
-
-	   Format: string
-	*/
+	// Name.
+	//
+	// name записи
+	//
+	// Format: string
 	Name string
 
 	HTTPClient *http.Client

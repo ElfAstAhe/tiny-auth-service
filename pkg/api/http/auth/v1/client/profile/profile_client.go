@@ -44,9 +44,7 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 	return &Client{transport: transport, formats: strfmt.Default}
 }
 
-/*
-Client for profile API.
-*/
+// Client for profile API.
 type Client struct {
 	transport runtime.ContextualTransport
 	formats   strfmt.Registry
@@ -85,16 +83,14 @@ type ClientService interface {
 	SetTransport(transport runtime.ContextualTransport)
 }
 
-/*
-GetAPIV1UsersProfileполучитьs.
-
-Получает запись по её ID.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.GetAPIV1UsersProfileContext] instead.
-*/
+// GetAPIV1UsersProfile получитьs.
+//
+// Получает запись по её ID.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.GetAPIV1UsersProfileContext] instead.
 func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -106,13 +102,11 @@ func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts .
 	return a.GetAPIV1UsersProfileContext(ctx, params, opts...)
 }
 
-/*
-GetAPIV1UsersProfileContextполучитьs.
-
-Получает запись по её ID.
-
-Do not use the deprecated [GetAPIV1UsersProfileParams.Context] with this method: it would be ignored.
-*/
+// GetAPIV1UsersProfileContext получитьs.
+//
+// Получает запись по её ID.
+//
+// Do not use the deprecated [GetAPIV1UsersProfileParams.Context] with this method: it would be ignored.
 func (a *Client) GetAPIV1UsersProfileContext(ctx context.Context, params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -155,16 +149,14 @@ func (a *Client) GetAPIV1UsersProfileContext(ctx context.Context, params *GetAPI
 	panic(msg)
 }
 
-/*
-PostAPIV1UserRegisterрегистрацияs.
-
-Регистрация пользователя.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PostAPIV1UserRegisterContext] instead.
-*/
+// PostAPIV1UserRegister регистрацияs.
+//
+// Регистрация пользователя.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PostAPIV1UserRegisterContext] instead.
 func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -176,13 +168,11 @@ func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts
 	return a.PostAPIV1UserRegisterContext(ctx, params, opts...)
 }
 
-/*
-PostAPIV1UserRegisterContextрегистрацияs.
-
-Регистрация пользователя.
-
-Do not use the deprecated [PostAPIV1UserRegisterParams.Context] with this method: it would be ignored.
-*/
+// PostAPIV1UserRegisterContext регистрацияs.
+//
+// Регистрация пользователя.
+//
+// Do not use the deprecated [PostAPIV1UserRegisterParams.Context] with this method: it would be ignored.
 func (a *Client) PostAPIV1UserRegisterContext(ctx context.Context, params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -225,16 +215,14 @@ func (a *Client) PostAPIV1UserRegisterContext(ctx context.Context, params *PostA
 	panic(msg)
 }
 
-/*
-PutAPIV1UsersKeysизменяетs роль.
-
-Изменение атрибутов роли.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PutAPIV1UsersKeysContext] instead.
-*/
+// PutAPIV1UsersKeys изменяетs роль.
+//
+// Изменение атрибутов роли.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PutAPIV1UsersKeysContext] instead.
 func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -246,13 +234,11 @@ func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...Clie
 	return a.PutAPIV1UsersKeysContext(ctx, params, opts...)
 }
 
-/*
-PutAPIV1UsersKeysContextизменяетs роль.
-
-Изменение атрибутов роли.
-
-Do not use the deprecated [PutAPIV1UsersKeysParams.Context] with this method: it would be ignored.
-*/
+// PutAPIV1UsersKeysContext изменяетs роль.
+//
+// Изменение атрибутов роли.
+//
+// Do not use the deprecated [PutAPIV1UsersKeysParams.Context] with this method: it would be ignored.
 func (a *Client) PutAPIV1UsersKeysContext(ctx context.Context, params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -295,16 +281,14 @@ func (a *Client) PutAPIV1UsersKeysContext(ctx context.Context, params *PutAPIV1U
 	panic(msg)
 }
 
-/*
-PutAPIV1UsersPasswordсменаs пароля пользователя.
-
-Изменяет пароль пользователя.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PutAPIV1UsersPasswordContext] instead.
-*/
+// PutAPIV1UsersPassword сменаs пароля пользователя.
+//
+// Изменяет пароль пользователя.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PutAPIV1UsersPasswordContext] instead.
 func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -316,13 +300,11 @@ func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts
 	return a.PutAPIV1UsersPasswordContext(ctx, params, opts...)
 }
 
-/*
-PutAPIV1UsersPasswordContextсменаs пароля пользователя.
-
-Изменяет пароль пользователя.
-
-Do not use the deprecated [PutAPIV1UsersPasswordParams.Context] with this method: it would be ignored.
-*/
+// PutAPIV1UsersPasswordContext сменаs пароля пользователя.
+//
+// Изменяет пароль пользователя.
+//
+// Do not use the deprecated [PutAPIV1UsersPasswordParams.Context] with this method: it would be ignored.
 func (a *Client) PutAPIV1UsersPasswordContext(ctx context.Context, params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {

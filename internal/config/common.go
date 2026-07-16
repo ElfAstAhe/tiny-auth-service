@@ -20,16 +20,6 @@ const (
 	FlagCredsErrorScheduleInterval string = "svc-creds-error-schedule-interval"
 )
 
-// Auth-audit-client
-const (
-	FlagAuthAuditClientBaseURL            string = "auth-audit-client-base-url"
-	FlagAuthAuditClientTimeout            string = "auth-audit-client-timeout"
-	FlagAuthAuditClientWorkerCount        string = "auth-audit-client-worker-count"
-	FlagAuthAuditClientDataCapacity       string = "auth-audit-client-data-capacity"
-	FlagAuthAuditClientCompleteProcessing string = "auth-audit-client-complete-processing"
-	FlagAuthAuditClientShutdownTimeout    string = "auth-audit-client-shutdown-timeout"
-)
-
 // Data-audit-client
 const (
 	FlagDataAuditClientBaseURL            string = "data-audit-client-base-url"
@@ -103,15 +93,21 @@ const (
 // EnvConfig - файл конфигурации
 const EnvConfig string = "CONFIG_PATH"
 
-// amqp sender
+// amqp connector
 const (
-	FlagLoginAttemptsSenderURL                   string = "login-attempts-sender-url"
+	FlagAMQPConnectorURL             string = "amqp-connector-url"
+	FlagAMQPConnectorUsername        string = "amqp-connector-username"
+	FlagAMQPConnectorPassword        string = "amqp-connector-password"
+	FlagAMQPConnectorConnectTimeout  string = "amqp-connector-connect-timeout"
+	FlagAMQPConnectorWriteTimeout    string = "amqp-connector-write-timeout"
+	FlagAMQPConnectorIdleTimeout     string = "amqp-connector-idle-timeout"
+	FlagAMQPConnectorShutdownTimeout string = "amqp-connector-shutdown-timeout"
+)
+
+// amqp login attempts sender
+const (
 	FlagLoginAttemptsSenderTargetName            string = "login-attempts-sender-target-name"
-	FlagLoginAttemptsSenderUsername              string = "login-attempts-sender-username"
-	FlagLoginAttemptsSenderPassword              string = "login-attempts-sender-password"
-	FlagLoginAttemptsSenderInsecureSkipVerify    string = "login-attempts-sender-insecure-skip-verify"
 	FlagLoginAttemptsSenderConnectTimeout        string = "login-attempts-sender-connect-timeout"
-	FlagLoginAttemptsSenderWriteTimeout          string = "login-attempts-sender-write-timeout"
 	FlagLoginAttemptsSenderNotifyTimeout         string = "login-attempts-sender-notify-timeout"
 	FlagLoginAttemptsSenderShutdownTimeout       string = "login-attempts-sender-shutdown-timeout"
 	FlagLoginAttemptsSenderPublishMaxTryAttempts string = "login-attempts-sender-publish-max-try-attempts"
@@ -137,16 +133,6 @@ const (
 	keySvcCredsErrorScheduleInterval string = "svc_creds.error_schedule_interval"
 )
 
-// auth audit client
-const (
-	keyAuthAuditClientBaseURL            string = "auth_audit_client.base_url"
-	keyAuthAuditClientTimeout            string = "auth_audit_client.timeout"
-	keyAuthAuditClientWorkerCount        string = "auth_audit_client.worker_count"
-	keyAuthAuditClientDataCapacity       string = "auth_audit_client.data_capacity"
-	keyAuthAuditClientCompleteProcessing string = "auth_audit_client.complete_processing"
-	keyAuthAuditClientShutdownTimeout    string = "auth_audit_client.shutdown_timeout"
-)
-
 // data audit client
 const (
 	keyDataAuditClientBaseURL            string = "data_audit_client.base_url"
@@ -157,15 +143,21 @@ const (
 	keyDataAuditClientShutdownTimeout    string = "data_audit_client.shutdown_timeout"
 )
 
-// amqp sender
+// amqp connector
 const (
-	keyLoginAttemptsSenderURL                   string = "login_attempts_sender.url"
+	keyAMQPConnectorURL             string = "amqp_connector.url"
+	keyAMQPConnectorUsername        string = "amqp_connector.username"
+	keyAMQPConnectorPassword        string = "amqp_connector.password"
+	keyAMQPConnectorConnectTimeout  string = "amqp_connector.connect_timeout"
+	keyAMQPConnectorWriteTimeout    string = "amqp_connector.write_timeout"
+	keyAMQPConnectorIdleTimeout     string = "amqp_connector.idle_timeout"
+	keyAMQPConnectorShutdownTimeout string = "amqp_connector.shutdown_timeout"
+)
+
+// amqp login attempts sender
+const (
 	keyLoginAttemptsSenderTargetName            string = "login_attempts_sender.target_name"
-	keyLoginAttemptsSenderUsername              string = "login_attempts_sender.username"
-	keyLoginAttemptsSenderPassword              string = "login_attempts_sender.password"
-	keyLoginAttemptsSenderInsecureSkipVerify    string = "login_attempts_sender.insecure_skip_verify"
 	keyLoginAttemptsSenderConnectTimeout        string = "login_attempts_sender.connect_timeout"
-	keyLoginAttemptsSenderWriteTimeout          string = "login_attempts_sender.write_timeout"
 	keyLoginAttemptsSenderNotifyTimeout         string = "login_attempts_sender.notify_timeout"
 	keyLoginAttemptsSenderShutdownTimeout       string = "login_attempts_sender.shutdown_timeout"
 	keyLoginAttemptsSenderPublishMaxTryAttempts string = "login_attempts_sender.publish_max_try_attempts"

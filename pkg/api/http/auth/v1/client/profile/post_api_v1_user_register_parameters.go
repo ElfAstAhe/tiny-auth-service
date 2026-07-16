@@ -63,10 +63,9 @@ PostAPIV1UserRegisterParams contains all the parameters to send to the API endpo
 */
 type PostAPIV1UserRegisterParams struct {
 
-	/* Input.
-
-	   register информация
-	*/
+	// Input.
+	//
+	// register информация
 	Input *models.RegisterDTO
 
 	HTTPClient *http.Client

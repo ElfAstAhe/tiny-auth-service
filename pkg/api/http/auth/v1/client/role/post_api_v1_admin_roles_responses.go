@@ -61,11 +61,9 @@ func NewPostAPIV1AdminRolesCreated() *PostAPIV1AdminRolesCreated {
 	return &PostAPIV1AdminRolesCreated{}
 }
 
-/*
-PostAPIV1AdminRolesCreated describes a response with status code 201, with default header values.
-
-Created
-*/
+// PostAPIV1AdminRolesCreated describes a response with status code 201, with default header values.
+//
+// Created
 type PostAPIV1AdminRolesCreated struct {
 	Payload *models.RoleDTO
 }
@@ -131,11 +129,9 @@ func NewPostAPIV1AdminRolesBadRequest() *PostAPIV1AdminRolesBadRequest {
 	return &PostAPIV1AdminRolesBadRequest{}
 }
 
-/*
-PostAPIV1AdminRolesBadRequest describes a response with status code 400, with default header values.
-
-Кривые данные
-*/
+// PostAPIV1AdminRolesBadRequest describes a response with status code 400, with default header values.
+//
+// Кривые данные
 type PostAPIV1AdminRolesBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -201,11 +197,9 @@ func NewPostAPIV1AdminRolesForbidden() *PostAPIV1AdminRolesForbidden {
 	return &PostAPIV1AdminRolesForbidden{}
 }
 
-/*
-PostAPIV1AdminRolesForbidden describes a response with status code 403, with default header values.
-
-В доступе отказано
-*/
+// PostAPIV1AdminRolesForbidden describes a response with status code 403, with default header values.
+//
+// В доступе отказано
 type PostAPIV1AdminRolesForbidden struct {
 	Payload *models.ErrorDTO
 }
@@ -271,11 +265,9 @@ func NewPostAPIV1AdminRolesConflict() *PostAPIV1AdminRolesConflict {
 	return &PostAPIV1AdminRolesConflict{}
 }
 
-/*
-PostAPIV1AdminRolesConflict describes a response with status code 409, with default header values.
-
-Уже существует
-*/
+// PostAPIV1AdminRolesConflict describes a response with status code 409, with default header values.
+//
+// Уже существует
 type PostAPIV1AdminRolesConflict struct {
 	Payload *models.ErrorDTO
 }
@@ -341,11 +333,9 @@ func NewPostAPIV1AdminRolesInternalServerError() *PostAPIV1AdminRolesInternalSer
 	return &PostAPIV1AdminRolesInternalServerError{}
 }
 
-/*
-PostAPIV1AdminRolesInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PostAPIV1AdminRolesInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PostAPIV1AdminRolesInternalServerError struct {
 }
 

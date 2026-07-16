@@ -44,9 +44,7 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 	return &Client{transport: transport, formats: strfmt.Default}
 }
 
-/*
-Client for auth API.
-*/
+// Client for auth API.
 type Client struct {
 	transport runtime.ContextualTransport
 	formats   strfmt.Registry
@@ -73,16 +71,14 @@ type ClientService interface {
 	SetTransport(transport runtime.ContextualTransport)
 }
 
-/*
-PostAPIV1Authаутентификацияs.
-
-Аутентификация и авторизация пользователя.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PostAPIV1AuthContext] instead.
-*/
+// PostAPIV1Auth аутентификацияs.
+//
+// Аутентификация и авторизация пользователя.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PostAPIV1AuthContext] instead.
 func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -94,13 +90,11 @@ func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption
 	return a.PostAPIV1AuthContext(ctx, params, opts...)
 }
 
-/*
-PostAPIV1AuthContextаутентификацияs.
-
-Аутентификация и авторизация пользователя.
-
-Do not use the deprecated [PostAPIV1AuthParams.Context] with this method: it would be ignored.
-*/
+// PostAPIV1AuthContext аутентификацияs.
+//
+// Аутентификация и авторизация пользователя.
+//
+// Do not use the deprecated [PostAPIV1AuthParams.Context] with this method: it would be ignored.
 func (a *Client) PostAPIV1AuthContext(ctx context.Context, params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -143,16 +137,14 @@ func (a *Client) PostAPIV1AuthContext(ctx context.Context, params *PostAPIV1Auth
 	panic(msg)
 }
 
-/*
-PostAPIV1AuthSimpleаутентификацияs.
-
-Аутентификация и авторизация пользователя.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PostAPIV1AuthSimpleContext] instead.
-*/
+// PostAPIV1AuthSimple аутентификацияs.
+//
+// Аутентификация и авторизация пользователя.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PostAPIV1AuthSimpleContext] instead.
 func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -164,13 +156,11 @@ func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...
 	return a.PostAPIV1AuthSimpleContext(ctx, params, opts...)
 }
 
-/*
-PostAPIV1AuthSimpleContextаутентификацияs.
-
-Аутентификация и авторизация пользователя.
-
-Do not use the deprecated [PostAPIV1AuthSimpleParams.Context] with this method: it would be ignored.
-*/
+// PostAPIV1AuthSimpleContext аутентификацияs.
+//
+// Аутентификация и авторизация пользователя.
+//
+// Do not use the deprecated [PostAPIV1AuthSimpleParams.Context] with this method: it would be ignored.
 func (a *Client) PostAPIV1AuthSimpleContext(ctx context.Context, params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {

@@ -63,10 +63,9 @@ PostAPIV1AuthSimpleParams contains all the parameters to send to the API endpoin
 */
 type PostAPIV1AuthSimpleParams struct {
 
-	/* Input.
-
-	   login информация
-	*/
+	// Input.
+	//
+	// login информация
 	Input *models.LoginDTO
 
 	HTTPClient *http.Client

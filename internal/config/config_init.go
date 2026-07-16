@@ -28,13 +28,6 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keySvcCredsScheduleInterval, defaultCredsScheduleInterval)
 	v.SetDefault(keySvcCredsErrorScheduleInterval, defaultCredsErrorScheduleInterval)
 
-	// auth-audit-client
-	v.SetDefault(keyAuthAuditClientTimeout, defaultAuditClientTimeout)
-	v.SetDefault(keyAuthAuditClientWorkerCount, defaultAuditClientWorkerCount)
-	v.SetDefault(keyAuthAuditClientDataCapacity, defaultAuditClientDataCapacity)
-	v.SetDefault(keyAuthAuditClientCompleteProcessing, defaultAuditClientCompleteProcessing)
-	v.SetDefault(keyAuthAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout)
-
 	// data-audit-client
 	v.SetDefault(keyDataAuditClientTimeout, defaultAuditClientTimeout)
 	v.SetDefault(keyDataAuditClientWorkerCount, defaultAuditClientWorkerCount)
@@ -84,15 +77,18 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(config.KeyTelemetrySampleRate, config.DefaultTelemetrySampleRate)
 	v.SetDefault(config.KeyTelemetryTimeout, config.DefaultTelemetryTimeout)
 
+	// amqp connector
+	v.SetDefault(keyAMQPConnectorURL, config.DefaultAMQPConnectorURL)
+	v.SetDefault(keyAMQPConnectorUsername, defaultAMQPConnectorUsername)
+	v.SetDefault(keyAMQPConnectorPassword, defaultAMQPConnectorPassword)
+	v.SetDefault(keyAMQPConnectorConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
+	v.SetDefault(keyAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout)
+	v.SetDefault(keyAMQPConnectorIdleTimeout, config.DefaultAMQPConnectorIdleTimeout)
+	v.SetDefault(keyAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout)
 	// amqp sender
-	v.SetDefault(keyLoginAttemptsSenderURL, config.DefaultAMQPSenderURL)
 	v.SetDefault(keyLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName)
-	v.SetDefault(keyLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername)
-	v.SetDefault(keyLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword)
-	v.SetDefault(keyLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify)
 	v.SetDefault(keyLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
-	v.SetDefault(keyLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout)
-	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout)
+	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsNotifyTimeout)
 	v.SetDefault(keyLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
 	v.SetDefault(keyLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts)
 	v.SetDefault(keyLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay)
@@ -134,14 +130,6 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.String(FlagCredsPassword, "", "client token refresher password")
 		res.Duration(FlagCredsScheduleInterval, defaultCredsScheduleInterval, "client token refresher schedule interval")
 		res.Duration(FlagCredsErrorScheduleInterval, defaultCredsErrorScheduleInterval, "client token refresher error schedule interval")
-
-		// auth-audit-client
-		res.String(FlagAuthAuditClientBaseURL, "", "auth audit service base url")
-		res.Duration(FlagAuthAuditClientTimeout, defaultAuditClientTimeout, "auth audit client timeout")
-		res.Int(FlagAuthAuditClientWorkerCount, defaultAuditClientWorkerCount, "auth audit client worker count")
-		res.Int(FlagAuthAuditClientDataCapacity, defaultAuditClientDataCapacity, "auth audit client data capacity")
-		res.Bool(FlagAuthAuditClientCompleteProcessing, true, "auth audit client complete processing")
-		res.Duration(FlagAuthAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout, "auth audit client shutdown timeout")
 
 		// data-audit-client
 		res.String(FlagDataAuditClientBaseURL, "", "data audit service base url")
@@ -199,15 +187,19 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Float64(FlagTelemetrySampleRate, config.DefaultTelemetrySampleRate, "telemetry sample rate")
 		res.Duration(FlagTelemetryTimeout, config.DefaultTelemetryTimeout, "telemetry timeout")
 
+		// amqp connector
+		res.String(FlagAMQPConnectorURL, config.DefaultAMQPConnectorURL, "connector AMQP server URL")
+		res.String(FlagAMQPConnectorUsername, defaultAMQPConnectorUsername, "connector AMQP server username")
+		res.String(FlagAMQPConnectorPassword, defaultAMQPConnectorPassword, "connector AMQP server password")
+		res.Duration(FlagAMQPConnectorConnectTimeout, config.DefaultAMQPConnectorConnectTimeout, "connector AMQP connect timeout")
+		res.Duration(FlagAMQPConnectorIdleTimeout, config.DefaultAMQPConnectorIdleTimeout, "connector AMQP idle timeout")
+		res.Duration(FlagAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout, "connector AMQP write timeout")
+		res.Duration(FlagAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout, "connector AMQP shutdown timeout")
+
 		// amqp sender
-		res.String(FlagLoginAttemptsSenderURL, config.DefaultAMQPSenderURL, "login attempts sender AMQP server URL")
 		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/tipic name")
-		res.String(FlagLoginAttemptsSenderUsername, defaultLoginAttemptsSenderUsername, "login attempts sender username")
-		res.String(FlagLoginAttemptsSenderPassword, defaultLoginAttemptsSenderPassword, "login attempts sender password")
-		res.Bool(FlagLoginAttemptsSenderInsecureSkipVerify, config.DefaultAMQPSenderInsecureSkipVerify, "login attempts sender insecure skip verify")
 		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
-		res.Duration(FlagLoginAttemptsSenderWriteTimeout, config.DefaultAMQPSenderWriteTimeout, "login attempts sender write timeout")
-		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, config.DefaultAMQPSenderNotifyTimeout, "login attempts sender notify timeout")
+		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsNotifyTimeout, "login attempts sender notify timeout")
 		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender shutdown timeout")
 		res.Int(FlagLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender max send tries")
 		res.Duration(FlagLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender publish base retry delay")
@@ -240,13 +232,6 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keySvcCredsPassword, flags.Lookup(FlagCredsPassword)),
 		v.BindPFlag(keySvcCredsScheduleInterval, flags.Lookup(FlagCredsScheduleInterval)),
 		v.BindPFlag(keySvcCredsErrorScheduleInterval, flags.Lookup(FlagCredsErrorScheduleInterval)),
-		// auth-audit-client
-		v.BindPFlag(keyAuthAuditClientBaseURL, flags.Lookup(FlagAuthAuditClientBaseURL)),
-		v.BindPFlag(keyAuthAuditClientTimeout, flags.Lookup(FlagAuthAuditClientTimeout)),
-		v.BindPFlag(keyAuthAuditClientWorkerCount, flags.Lookup(FlagAuthAuditClientWorkerCount)),
-		v.BindPFlag(keyAuthAuditClientDataCapacity, flags.Lookup(FlagAuthAuditClientDataCapacity)),
-		v.BindPFlag(keyAuthAuditClientCompleteProcessing, flags.Lookup(FlagAuthAuditClientCompleteProcessing)),
-		v.BindPFlag(keyAuthAuditClientShutdownTimeout, flags.Lookup(FlagAuthAuditClientShutdownTimeout)),
 		// data-audit-client
 		v.BindPFlag(keyDataAuditClientBaseURL, flags.Lookup(FlagDataAuditClientBaseURL)),
 		v.BindPFlag(keyDataAuditClientTimeout, flags.Lookup(FlagDataAuditClientTimeout)),
@@ -296,14 +281,17 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(config.KeyTelemetryServiceName, flags.Lookup(FlagTelemetryServiceName)),
 		v.BindPFlag(config.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
 		v.BindPFlag(config.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
+		// amqp connector
+		v.BindPFlag(keyAMQPConnectorURL, flags.Lookup(FlagAMQPConnectorURL)),
+		v.BindPFlag(keyAMQPConnectorUsername, flags.Lookup(FlagAMQPConnectorUsername)),
+		v.BindPFlag(keyAMQPConnectorPassword, flags.Lookup(FlagAMQPConnectorPassword)),
+		v.BindPFlag(keyAMQPConnectorConnectTimeout, flags.Lookup(FlagAMQPConnectorConnectTimeout)),
+		v.BindPFlag(keyAMQPConnectorWriteTimeout, flags.Lookup(FlagAMQPConnectorWriteTimeout)),
+		v.BindPFlag(keyAMQPConnectorIdleTimeout, flags.Lookup(FlagAMQPConnectorIdleTimeout)),
+		v.BindPFlag(keyAMQPConnectorShutdownTimeout, flags.Lookup(FlagAMQPConnectorShutdownTimeout)),
 		// amqp sender
-		v.BindPFlag(keyLoginAttemptsSenderURL, flags.Lookup(FlagLoginAttemptsSenderURL)),
 		v.BindPFlag(keyLoginAttemptsSenderTargetName, flags.Lookup(FlagLoginAttemptsSenderTargetName)),
-		v.BindPFlag(keyLoginAttemptsSenderUsername, flags.Lookup(FlagLoginAttemptsSenderUsername)),
-		v.BindPFlag(keyLoginAttemptsSenderPassword, flags.Lookup(FlagLoginAttemptsSenderPassword)),
-		v.BindPFlag(keyLoginAttemptsSenderInsecureSkipVerify, flags.Lookup(FlagLoginAttemptsSenderInsecureSkipVerify)),
 		v.BindPFlag(keyLoginAttemptsSenderConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderConnectTimeout)),
-		v.BindPFlag(keyLoginAttemptsSenderWriteTimeout, flags.Lookup(FlagLoginAttemptsSenderWriteTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderNotifyTimeout, flags.Lookup(FlagLoginAttemptsSenderNotifyTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderShutdownTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderPublishMaxTryAttempts)),

@@ -55,11 +55,9 @@ func NewGetAPIV1AdminUsersSearchOK() *GetAPIV1AdminUsersSearchOK {
 	return &GetAPIV1AdminUsersSearchOK{}
 }
 
-/*
-GetAPIV1AdminUsersSearchOK describes a response with status code 200, with default header values.
-
-Пользователь
-*/
+// GetAPIV1AdminUsersSearchOK describes a response with status code 200, with default header values.
+//
+// Пользователь
 type GetAPIV1AdminUsersSearchOK struct {
 	Payload *models.UserDTO
 }
@@ -125,11 +123,9 @@ func NewGetAPIV1AdminUsersSearchForbidden() *GetAPIV1AdminUsersSearchForbidden {
 	return &GetAPIV1AdminUsersSearchForbidden{}
 }
 
-/*
-GetAPIV1AdminUsersSearchForbidden describes a response with status code 403, with default header values.
-
-В доступе отказано
-*/
+// GetAPIV1AdminUsersSearchForbidden describes a response with status code 403, with default header values.
+//
+// В доступе отказано
 type GetAPIV1AdminUsersSearchForbidden struct {
 	Payload *models.ErrorDTO
 }
@@ -195,11 +191,9 @@ func NewGetAPIV1AdminUsersSearchNotFound() *GetAPIV1AdminUsersSearchNotFound {
 	return &GetAPIV1AdminUsersSearchNotFound{}
 }
 
-/*
-GetAPIV1AdminUsersSearchNotFound describes a response with status code 404, with default header values.
-
-Запись не найдена
-*/
+// GetAPIV1AdminUsersSearchNotFound describes a response with status code 404, with default header values.
+//
+// Запись не найдена
 type GetAPIV1AdminUsersSearchNotFound struct {
 	Payload *models.ErrorDTO
 }
@@ -265,11 +259,9 @@ func NewGetAPIV1AdminUsersSearchInternalServerError() *GetAPIV1AdminUsersSearchI
 	return &GetAPIV1AdminUsersSearchInternalServerError{}
 }
 
-/*
-GetAPIV1AdminUsersSearchInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// GetAPIV1AdminUsersSearchInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type GetAPIV1AdminUsersSearchInternalServerError struct {
 }
 

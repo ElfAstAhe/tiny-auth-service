@@ -55,11 +55,9 @@ func NewPostAPIV1AuthOK() *PostAPIV1AuthOK {
 	return &PostAPIV1AuthOK{}
 }
 
-/*
-PostAPIV1AuthOK describes a response with status code 200, with default header values.
-
-OK
-*/
+// PostAPIV1AuthOK describes a response with status code 200, with default header values.
+//
+// OK
 type PostAPIV1AuthOK struct {
 	Payload *models.LoggedInDTO
 }
@@ -125,11 +123,9 @@ func NewPostAPIV1AuthBadRequest() *PostAPIV1AuthBadRequest {
 	return &PostAPIV1AuthBadRequest{}
 }
 
-/*
-PostAPIV1AuthBadRequest describes a response with status code 400, with default header values.
-
-Кривые данные
-*/
+// PostAPIV1AuthBadRequest describes a response with status code 400, with default header values.
+//
+// Кривые данные
 type PostAPIV1AuthBadRequest struct {
 	Payload *models.ErrorDTO
 }
@@ -195,11 +191,9 @@ func NewPostAPIV1AuthUnauthorized() *PostAPIV1AuthUnauthorized {
 	return &PostAPIV1AuthUnauthorized{}
 }
 
-/*
-PostAPIV1AuthUnauthorized describes a response with status code 401, with default header values.
-
-Не авторизован
-*/
+// PostAPIV1AuthUnauthorized describes a response with status code 401, with default header values.
+//
+// Не авторизован
 type PostAPIV1AuthUnauthorized struct {
 	Payload *models.ErrorDTO
 }
@@ -265,11 +259,9 @@ func NewPostAPIV1AuthInternalServerError() *PostAPIV1AuthInternalServerError {
 	return &PostAPIV1AuthInternalServerError{}
 }
 
-/*
-PostAPIV1AuthInternalServerError describes a response with status code 500, with default header values.
-
-Внутренняя ошибка сервера (пустое тело)
-*/
+// PostAPIV1AuthInternalServerError describes a response with status code 500, with default header values.
+//
+// Внутренняя ошибка сервера (пустое тело)
 type PostAPIV1AuthInternalServerError struct {
 }
 

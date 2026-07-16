@@ -44,9 +44,7 @@ func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) Client
 	return &Client{transport: transport, formats: strfmt.Default}
 }
 
-/*
-Client for role API.
-*/
+// Client for role API.
 type Client struct {
 	transport runtime.ContextualTransport
 	formats   strfmt.Registry
@@ -97,16 +95,14 @@ type ClientService interface {
 	SetTransport(transport runtime.ContextualTransport)
 }
 
-/*
-DeleteAPIV1AdminRolesIDудалениеs роли.
-
-Удаляет запись по её ID.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.DeleteAPIV1AdminRolesIDContext] instead.
-*/
+// DeleteAPIV1AdminRolesID удалениеs роли.
+//
+// Удаляет запись по её ID.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.DeleteAPIV1AdminRolesIDContext] instead.
 func (a *Client) DeleteAPIV1AdminRolesID(params *DeleteAPIV1AdminRolesIDParams, opts ...ClientOption) (*DeleteAPIV1AdminRolesIDNoContent, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -118,13 +114,11 @@ func (a *Client) DeleteAPIV1AdminRolesID(params *DeleteAPIV1AdminRolesIDParams, 
 	return a.DeleteAPIV1AdminRolesIDContext(ctx, params, opts...)
 }
 
-/*
-DeleteAPIV1AdminRolesIDContextудалениеs роли.
-
-Удаляет запись по её ID.
-
-Do not use the deprecated [DeleteAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
-*/
+// DeleteAPIV1AdminRolesIDContext удалениеs роли.
+//
+// Удаляет запись по её ID.
+//
+// Do not use the deprecated [DeleteAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
 func (a *Client) DeleteAPIV1AdminRolesIDContext(ctx context.Context, params *DeleteAPIV1AdminRolesIDParams, opts ...ClientOption) (*DeleteAPIV1AdminRolesIDNoContent, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -167,16 +161,14 @@ func (a *Client) DeleteAPIV1AdminRolesIDContext(ctx context.Context, params *Del
 	panic(msg)
 }
 
-/*
-GetAPIV1AdminRolesполучитьs.
-
-Получить список.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.GetAPIV1AdminRolesContext] instead.
-*/
+// GetAPIV1AdminRoles получитьs.
+//
+// Получить список.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.GetAPIV1AdminRolesContext] instead.
 func (a *Client) GetAPIV1AdminRoles(params *GetAPIV1AdminRolesParams, opts ...ClientOption) (*GetAPIV1AdminRolesOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -188,13 +180,11 @@ func (a *Client) GetAPIV1AdminRoles(params *GetAPIV1AdminRolesParams, opts ...Cl
 	return a.GetAPIV1AdminRolesContext(ctx, params, opts...)
 }
 
-/*
-GetAPIV1AdminRolesContextполучитьs.
-
-Получить список.
-
-Do not use the deprecated [GetAPIV1AdminRolesParams.Context] with this method: it would be ignored.
-*/
+// GetAPIV1AdminRolesContext получитьs.
+//
+// Получить список.
+//
+// Do not use the deprecated [GetAPIV1AdminRolesParams.Context] with this method: it would be ignored.
 func (a *Client) GetAPIV1AdminRolesContext(ctx context.Context, params *GetAPIV1AdminRolesParams, opts ...ClientOption) (*GetAPIV1AdminRolesOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -237,16 +227,14 @@ func (a *Client) GetAPIV1AdminRolesContext(ctx context.Context, params *GetAPIV1
 	panic(msg)
 }
 
-/*
-GetAPIV1AdminRolesIDполучитьs.
-
-Получает запись по её ID.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.GetAPIV1AdminRolesIDContext] instead.
-*/
+// GetAPIV1AdminRolesID получитьs.
+//
+// Получает запись по её ID.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.GetAPIV1AdminRolesIDContext] instead.
 func (a *Client) GetAPIV1AdminRolesID(params *GetAPIV1AdminRolesIDParams, opts ...ClientOption) (*GetAPIV1AdminRolesIDOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -258,13 +246,11 @@ func (a *Client) GetAPIV1AdminRolesID(params *GetAPIV1AdminRolesIDParams, opts .
 	return a.GetAPIV1AdminRolesIDContext(ctx, params, opts...)
 }
 
-/*
-GetAPIV1AdminRolesIDContextполучитьs.
-
-Получает запись по её ID.
-
-Do not use the deprecated [GetAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
-*/
+// GetAPIV1AdminRolesIDContext получитьs.
+//
+// Получает запись по её ID.
+//
+// Do not use the deprecated [GetAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
 func (a *Client) GetAPIV1AdminRolesIDContext(ctx context.Context, params *GetAPIV1AdminRolesIDParams, opts ...ClientOption) (*GetAPIV1AdminRolesIDOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -307,16 +293,14 @@ func (a *Client) GetAPIV1AdminRolesIDContext(ctx context.Context, params *GetAPI
 	panic(msg)
 }
 
-/*
-GetAPIV1AdminRolesSearchполучитьs.
-
-Поиск записи.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.GetAPIV1AdminRolesSearchContext] instead.
-*/
+// GetAPIV1AdminRolesSearch получитьs.
+//
+// Поиск записи.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.GetAPIV1AdminRolesSearchContext] instead.
 func (a *Client) GetAPIV1AdminRolesSearch(params *GetAPIV1AdminRolesSearchParams, opts ...ClientOption) (*GetAPIV1AdminRolesSearchOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -328,13 +312,11 @@ func (a *Client) GetAPIV1AdminRolesSearch(params *GetAPIV1AdminRolesSearchParams
 	return a.GetAPIV1AdminRolesSearchContext(ctx, params, opts...)
 }
 
-/*
-GetAPIV1AdminRolesSearchContextполучитьs.
-
-Поиск записи.
-
-Do not use the deprecated [GetAPIV1AdminRolesSearchParams.Context] with this method: it would be ignored.
-*/
+// GetAPIV1AdminRolesSearchContext получитьs.
+//
+// Поиск записи.
+//
+// Do not use the deprecated [GetAPIV1AdminRolesSearchParams.Context] with this method: it would be ignored.
 func (a *Client) GetAPIV1AdminRolesSearchContext(ctx context.Context, params *GetAPIV1AdminRolesSearchParams, opts ...ClientOption) (*GetAPIV1AdminRolesSearchOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -377,16 +359,14 @@ func (a *Client) GetAPIV1AdminRolesSearchContext(ctx context.Context, params *Ge
 	panic(msg)
 }
 
-/*
-PostAPIV1AdminRolesсозданиеs роли.
-
-Сохраняет новые тестовые данные.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PostAPIV1AdminRolesContext] instead.
-*/
+// PostAPIV1AdminRoles созданиеs роли.
+//
+// Сохраняет новые тестовые данные.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PostAPIV1AdminRolesContext] instead.
 func (a *Client) PostAPIV1AdminRoles(params *PostAPIV1AdminRolesParams, opts ...ClientOption) (*PostAPIV1AdminRolesCreated, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -398,13 +378,11 @@ func (a *Client) PostAPIV1AdminRoles(params *PostAPIV1AdminRolesParams, opts ...
 	return a.PostAPIV1AdminRolesContext(ctx, params, opts...)
 }
 
-/*
-PostAPIV1AdminRolesContextсозданиеs роли.
-
-Сохраняет новые тестовые данные.
-
-Do not use the deprecated [PostAPIV1AdminRolesParams.Context] with this method: it would be ignored.
-*/
+// PostAPIV1AdminRolesContext созданиеs роли.
+//
+// Сохраняет новые тестовые данные.
+//
+// Do not use the deprecated [PostAPIV1AdminRolesParams.Context] with this method: it would be ignored.
 func (a *Client) PostAPIV1AdminRolesContext(ctx context.Context, params *PostAPIV1AdminRolesParams, opts ...ClientOption) (*PostAPIV1AdminRolesCreated, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
@@ -447,16 +425,14 @@ func (a *Client) PostAPIV1AdminRolesContext(ctx context.Context, params *PostAPI
 	panic(msg)
 }
 
-/*
-PutAPIV1AdminRolesIDизменяетs роль.
-
-Изменение атрибутов роли.
-
-This method does not support injected context.
-However, timeout and opentracing contexts are honored whenever enabled.
-
-If you need to pass a specific context, use [Client.PutAPIV1AdminRolesIDContext] instead.
-*/
+// PutAPIV1AdminRolesID изменяетs роль.
+//
+// Изменение атрибутов роли.
+//
+// This method does not support injected context.
+// However, timeout and opentracing contexts are honored whenever enabled.
+//
+// If you need to pass a specific context, use [Client.PutAPIV1AdminRolesIDContext] instead.
 func (a *Client) PutAPIV1AdminRolesID(params *PutAPIV1AdminRolesIDParams, opts ...ClientOption) (*PutAPIV1AdminRolesIDOK, error) {
 	var ctx context.Context
 	if params.inner.ctx != nil {
@@ -468,13 +444,11 @@ func (a *Client) PutAPIV1AdminRolesID(params *PutAPIV1AdminRolesIDParams, opts .
 	return a.PutAPIV1AdminRolesIDContext(ctx, params, opts...)
 }
 
-/*
-PutAPIV1AdminRolesIDContextизменяетs роль.
-
-Изменение атрибутов роли.
-
-Do not use the deprecated [PutAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
-*/
+// PutAPIV1AdminRolesIDContext изменяетs роль.
+//
+// Изменение атрибутов роли.
+//
+// Do not use the deprecated [PutAPIV1AdminRolesIDParams.Context] with this method: it would be ignored.
 func (a *Client) PutAPIV1AdminRolesIDContext(ctx context.Context, params *PutAPIV1AdminRolesIDParams, opts ...ClientOption) (*PutAPIV1AdminRolesIDOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {

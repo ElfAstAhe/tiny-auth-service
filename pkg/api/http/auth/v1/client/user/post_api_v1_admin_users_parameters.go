@@ -63,10 +63,9 @@ PostAPIV1AdminUsersParams contains all the parameters to send to the API endpoin
 */
 type PostAPIV1AdminUsersParams struct {
 
-	/* Input.
-
-	   Пользователь
-	*/
+	// Input.
+	//
+	// Пользователь
 	Input *models.UserDTO
 
 	HTTPClient *http.Client
