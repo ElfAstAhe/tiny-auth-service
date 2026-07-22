@@ -7,7 +7,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	amqp2 "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
@@ -56,7 +56,7 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
-	connectorInst, err := container.GetInstance[amqp2.Connector[*amqp.Session]](InstanceAMQPConnector)
+	connectorInst, err := container.GetInstance[libamqp.Connector[*amqp.Session]](InstanceAMQPConnector)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
@@ -83,6 +83,7 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 	return sender, nil
 }
 
+//goland:noinspection DuplicatedCode
 func (cc *ClientContainer) providerAMQPConnector() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
