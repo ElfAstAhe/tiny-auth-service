@@ -13,7 +13,7 @@ import (
 )
 
 func (ic *InfraContainer) providerLoginAttemptsObserver() (any, error) {
-	clientSender, err := container.GetInstance[libamqp.Sender[*amqp.SendOptions, *amqp.MessageHeader]](InstanceAMQPLoginAttemptSender)
+	clientSender, err := container.GetInstance[libamqp.Sender[*amqp.SendOptions]](InstanceAMQPLoginAttemptSender)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}
