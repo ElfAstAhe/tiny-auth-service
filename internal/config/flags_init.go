@@ -112,7 +112,7 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout, "connector AMQP shutdown timeout")
 
 		// amqp sender
-		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/tipic name")
+		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/topic name")
 		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
 		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsNotifyTimeout, "login attempts sender notify timeout")
 		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender shutdown timeout")
