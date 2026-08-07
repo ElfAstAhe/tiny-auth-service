@@ -7,6 +7,7 @@ import (
 
 	pb "github.com/ElfAstAhe/tiny-auth-service/pkg/api/grpc/tiny-auth-service/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -14,6 +15,8 @@ import (
 type JWTCredentials struct {
 	Token string `json:"token"`
 }
+
+var _ credentials.PerRPCCredentials = (*JWTCredentials)(nil)
 
 func (jt *JWTCredentials) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
 	if jt.Token == "" {
