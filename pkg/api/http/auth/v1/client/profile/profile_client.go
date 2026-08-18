@@ -93,7 +93,7 @@ type ClientService interface {
 // If you need to pass a specific context, use [Client.GetAPIV1UsersProfileContext] instead.
 func (a *Client) GetAPIV1UsersProfile(params *GetAPIV1UsersProfileParams, opts ...ClientOption) (*GetAPIV1UsersProfileOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -159,7 +159,7 @@ func (a *Client) GetAPIV1UsersProfileContext(ctx context.Context, params *GetAPI
 // If you need to pass a specific context, use [Client.PostAPIV1UserRegisterContext] instead.
 func (a *Client) PostAPIV1UserRegister(params *PostAPIV1UserRegisterParams, opts ...ClientOption) (*PostAPIV1UserRegisterOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -225,7 +225,7 @@ func (a *Client) PostAPIV1UserRegisterContext(ctx context.Context, params *PostA
 // If you need to pass a specific context, use [Client.PutAPIV1UsersKeysContext] instead.
 func (a *Client) PutAPIV1UsersKeys(params *PutAPIV1UsersKeysParams, opts ...ClientOption) (*PutAPIV1UsersKeysOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -291,7 +291,7 @@ func (a *Client) PutAPIV1UsersKeysContext(ctx context.Context, params *PutAPIV1U
 // If you need to pass a specific context, use [Client.PutAPIV1UsersPasswordContext] instead.
 func (a *Client) PutAPIV1UsersPassword(params *PutAPIV1UsersPasswordParams, opts ...ClientOption) (*PutAPIV1UsersPasswordOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()

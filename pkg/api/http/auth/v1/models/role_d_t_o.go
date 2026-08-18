@@ -34,12 +34,12 @@ type RoleDTO struct {
 }
 
 // Validate validates this role d t o
-func (m *RoleDTO) Validate(formats strfmt.Registry) error {
+func (m *RoleDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this role d t o based on context it is used
-func (m *RoleDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *RoleDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 

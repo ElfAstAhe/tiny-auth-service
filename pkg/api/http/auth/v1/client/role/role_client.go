@@ -105,7 +105,7 @@ type ClientService interface {
 // If you need to pass a specific context, use [Client.DeleteAPIV1AdminRolesIDContext] instead.
 func (a *Client) DeleteAPIV1AdminRolesID(params *DeleteAPIV1AdminRolesIDParams, opts ...ClientOption) (*DeleteAPIV1AdminRolesIDNoContent, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -171,7 +171,7 @@ func (a *Client) DeleteAPIV1AdminRolesIDContext(ctx context.Context, params *Del
 // If you need to pass a specific context, use [Client.GetAPIV1AdminRolesContext] instead.
 func (a *Client) GetAPIV1AdminRoles(params *GetAPIV1AdminRolesParams, opts ...ClientOption) (*GetAPIV1AdminRolesOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -237,7 +237,7 @@ func (a *Client) GetAPIV1AdminRolesContext(ctx context.Context, params *GetAPIV1
 // If you need to pass a specific context, use [Client.GetAPIV1AdminRolesIDContext] instead.
 func (a *Client) GetAPIV1AdminRolesID(params *GetAPIV1AdminRolesIDParams, opts ...ClientOption) (*GetAPIV1AdminRolesIDOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -303,7 +303,7 @@ func (a *Client) GetAPIV1AdminRolesIDContext(ctx context.Context, params *GetAPI
 // If you need to pass a specific context, use [Client.GetAPIV1AdminRolesSearchContext] instead.
 func (a *Client) GetAPIV1AdminRolesSearch(params *GetAPIV1AdminRolesSearchParams, opts ...ClientOption) (*GetAPIV1AdminRolesSearchOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -369,7 +369,7 @@ func (a *Client) GetAPIV1AdminRolesSearchContext(ctx context.Context, params *Ge
 // If you need to pass a specific context, use [Client.PostAPIV1AdminRolesContext] instead.
 func (a *Client) PostAPIV1AdminRoles(params *PostAPIV1AdminRolesParams, opts ...ClientOption) (*PostAPIV1AdminRolesCreated, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -435,7 +435,7 @@ func (a *Client) PostAPIV1AdminRolesContext(ctx context.Context, params *PostAPI
 // If you need to pass a specific context, use [Client.PutAPIV1AdminRolesIDContext] instead.
 func (a *Client) PutAPIV1AdminRolesID(params *PutAPIV1AdminRolesIDParams, opts ...ClientOption) (*PutAPIV1AdminRolesIDOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()

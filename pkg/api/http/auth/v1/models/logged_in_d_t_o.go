@@ -22,12 +22,12 @@ type LoggedInDTO struct {
 }
 
 // Validate validates this logged in d t o
-func (m *LoggedInDTO) Validate(formats strfmt.Registry) error {
+func (m *LoggedInDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this logged in d t o based on context it is used
-func (m *LoggedInDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *LoggedInDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 

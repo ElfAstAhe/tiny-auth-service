@@ -92,7 +92,7 @@ run: build
 		--login-attempts-sender-publish-max-retry-delay "4s"
 
 # Запуск тестов
-test:
+test: gen-proto gen-mocks
 	go test -v ./...
 
 # Запуск static check

@@ -81,7 +81,7 @@ type ClientService interface {
 // If you need to pass a specific context, use [Client.PostAPIV1AuthContext] instead.
 func (a *Client) PostAPIV1Auth(params *PostAPIV1AuthParams, opts ...ClientOption) (*PostAPIV1AuthOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()
@@ -147,7 +147,7 @@ func (a *Client) PostAPIV1AuthContext(ctx context.Context, params *PostAPIV1Auth
 // If you need to pass a specific context, use [Client.PostAPIV1AuthSimpleContext] instead.
 func (a *Client) PostAPIV1AuthSimple(params *PostAPIV1AuthSimpleParams, opts ...ClientOption) (*PostAPIV1AuthSimpleOK, error) {
 	var ctx context.Context
-	if params.inner.ctx != nil {
+	if params != nil && params.inner.ctx != nil {
 		ctx = params.inner.ctx
 	} else {
 		ctx = context.Background()

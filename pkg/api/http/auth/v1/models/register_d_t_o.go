@@ -22,12 +22,12 @@ type RegisterDTO struct {
 }
 
 // Validate validates this register d t o
-func (m *RegisterDTO) Validate(formats strfmt.Registry) error {
+func (m *RegisterDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this register d t o based on context it is used
-func (m *RegisterDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *RegisterDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 
