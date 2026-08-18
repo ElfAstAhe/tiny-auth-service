@@ -22,12 +22,12 @@ type LoginDTO struct {
 }
 
 // Validate validates this login d t o
-func (m *LoginDTO) Validate(formats strfmt.Registry) error {
+func (m *LoginDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this login d t o based on context it is used
-func (m *LoginDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *LoginDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 

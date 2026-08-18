@@ -40,12 +40,12 @@ type ProfileDTO struct {
 }
 
 // Validate validates this profile d t o
-func (m *ProfileDTO) Validate(formats strfmt.Registry) error {
+func (m *ProfileDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this profile d t o based on context it is used
-func (m *ProfileDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *ProfileDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 

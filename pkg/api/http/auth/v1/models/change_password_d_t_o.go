@@ -22,12 +22,12 @@ type ChangePasswordDTO struct {
 }
 
 // Validate validates this change password d t o
-func (m *ChangePasswordDTO) Validate(formats strfmt.Registry) error {
+func (m *ChangePasswordDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this change password d t o based on context it is used
-func (m *ChangePasswordDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *ChangePasswordDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 

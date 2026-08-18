@@ -22,12 +22,12 @@ type ChangedKeysDTO struct {
 }
 
 // Validate validates this changed keys d t o
-func (m *ChangedKeysDTO) Validate(formats strfmt.Registry) error {
+func (m *ChangedKeysDTO) Validate(_ strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this changed keys d t o based on context it is used
-func (m *ChangedKeysDTO) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *ChangedKeysDTO) ContextValidate(_ context.Context, _ strfmt.Registry) error {
 	return nil
 }
 
