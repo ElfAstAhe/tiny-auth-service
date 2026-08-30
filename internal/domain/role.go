@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/domain"
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
@@ -21,8 +21,8 @@ type Role struct {
 	UpdatedAt   time.Time
 }
 
-var _ domain.Entity[string] = (*Role)(nil)
-var _ domain.SoftDeleteEntity[bool] = (*Role)(nil)
+var _ libdomain.Entity[string] = (*Role)(nil)
+var _ libdomain.SoftDeleteEntity[bool] = (*Role)(nil)
 var _ auditdomain.Auditable = (*Role)(nil)
 var _ repository.AuditableEntity[string] = (*Role)(nil)
 
@@ -66,7 +66,7 @@ func (r *Role) IsDeleted() bool {
 }
 
 func (r *Role) BeforeCreate() error {
-	if err := defaultBeforeCreate(r); err != nil {
+	if err := libdomain.AssignUUIDv7(r); err != nil {
 		return errs.NewBllError("Role.BeforeCreate", "default before create failed", err)
 	}
 
