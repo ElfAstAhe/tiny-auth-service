@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/domain"
+	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
@@ -30,8 +30,8 @@ type User struct {
 	Roles []*Role
 }
 
-var _ domain.Entity[string] = (*User)(nil)
-var _ domain.SoftDeleteEntity[bool] = (*User)(nil)
+var _ libdomain.Entity[string] = (*User)(nil)
+var _ libdomain.SoftDeleteEntity[bool] = (*User)(nil)
 var _ auditdomain.Auditable = (*User)(nil)
 var _ repository.AuditableEntity[string] = (*User)(nil)
 
@@ -82,7 +82,7 @@ func (u *User) IsDeleted() bool {
 }
 
 func (u *User) BeforeCreate() error {
-	if err := defaultBeforeCreate(u); err != nil {
+	if err := libdomain.AssignUUIDv7(u); err != nil {
 		return errs.NewBllError("User.BeforeCreate", "default before create failed", err)
 	}
 
@@ -170,7 +170,7 @@ func (u *User) HashCode() uint32 {
 	h.Write([]byte(u.CreatedAt.Format(time.RFC3339)))
 	h.Write([]byte(u.UpdatedAt.Format(time.RFC3339)))
 
-	roleIDs := domain.EntitiesToIDList(u.Roles)
+	roleIDs := libdomain.EntitiesToIDList(u.Roles)
 	slices.Sort(roleIDs)
 	for _, roleID := range roleIDs {
 		h.Write([]byte(roleID))
