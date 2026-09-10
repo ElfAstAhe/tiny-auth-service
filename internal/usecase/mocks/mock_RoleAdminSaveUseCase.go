@@ -17,10 +17,19 @@ func NewMockRoleAdminSaveUseCase(t interface {
 	mock.TestingT
 	Cleanup(func())
 }) *MockRoleAdminSaveUseCase {
+	if helper, ok := t.(interface{ Helper() }); ok {
+		helper.Helper()
+	}
+
 	mock := &MockRoleAdminSaveUseCase{}
 	mock.Mock.Test(t)
 
-	t.Cleanup(func() { mock.AssertExpectations(t) })
+	t.Cleanup(func() {
+		if helper, ok := t.(interface{ Helper() }); ok {
+			helper.Helper()
+		}
+		mock.AssertExpectations(t)
+	})
 
 	return mock
 }
