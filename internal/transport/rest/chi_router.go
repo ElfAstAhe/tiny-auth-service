@@ -122,7 +122,7 @@ func (cr *AppChiRouter) setupMiddleware(
 	// traceID (own implementation)
 	cr.router.Use(libmware.NewDefaultTraceIDExtractor().Handler)
 	// realIP (own implementation)
-	cr.router.Use(libmware.NewDefaultRealIPExtractor().Handler)
+	cr.router.Use(libmware.NewRealIPExtractor().Handler)
 	// realIP
 	//cr.router.Use(middleware.RealIP)
 	// recoverer
