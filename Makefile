@@ -101,13 +101,17 @@ test: gen-proto gen-mocks ## Запустить модульные и интег
 	go test -v ./...
 
 # Запуск бенчмарков (сюда добавляем все вызовы) или разные параметры под один пакет
-bench: gen-proto gen-mocks ## Запустить кэш-бенчмарки и утилиты с замером памяти
+bench: gen-proto gen-mocks ## Запустить утилиты с замером памяти
 #	go test -bench=BenchmarkManager_FullCycle -benchmem ./pkg/infra/cache/test/...
 	go test -bench=. -benchmem ./...
 
 # Запуск static check
 static-check: ## Запустить статический анализ кода (пропуская автогенерируемый pkg/api)
 	staticcheck $$(go list ./... | grep -vE "pkg/api|cmd/grpc-client-test")
+
+# Запуск линтера
+lint: ## Запустить линтер revive (пропуская автогенерируемый код)
+	revive $$(go list ./... | grep -vE "pkg/api|cmd/gen-tz")
 
 # Очистка бинарников
 clean: ## Очистить скомпилированные файлы из папки ./bin

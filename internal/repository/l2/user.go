@@ -12,8 +12,8 @@ import (
 
 type UserL2Repository struct {
 	*repository.BaseCRUDL2Repository[*domain.User, string]
-	next      domain.UserRepository
-	nameCache cache.Cache[string, *domain.User]
+	next domain.UserRepository
+	//	nameCache cache.Cache[string, *domain.User]
 }
 
 var _ domain.UserRepository = (*UserL2Repository)(nil)

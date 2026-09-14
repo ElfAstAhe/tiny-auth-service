@@ -1,4 +1,4 @@
-package tiny_auth_service
+package auth
 
 const (
 	sql0004001AddColumn string = `
