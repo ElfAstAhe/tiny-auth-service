@@ -1,4 +1,4 @@
-package tiny_auth_service
+package auth
 
 const (
 	sqlCreateTableUserRoles string = `
