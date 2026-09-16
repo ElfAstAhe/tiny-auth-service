@@ -10,7 +10,7 @@ VERSION=1.0.0
 BUILD_TIME=$(shell date +'%Y/%m/%d_%H:%M:%S')
 STAGE=DEV
 
-.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run test bench static-check clean update-deps
+.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run test bench static-check clean update-deps kafka-local-start kafka-local-stop kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -120,5 +120,22 @@ clean: ## Очистить скомпилированные файлы из па
 # обновление зависимостей
 update-deps: ## Принудительно обновить и скачать все Go-зависимости проекта
 	go get -u -x all
+
+kafka-local-start: ## start kafka local
+	/opt/kafka_2.13-4.3.1/bin/kafka-server-start.sh /opt/kafka_2.13-4.3.1/config/server.properties
+
+kafka-local-stop: ## stop kafka local (not implemented)
+	echo "not implemented :-)"
+# start kafka (docker compose)
+kafka-docker-start: ## start kafka docker container (docker compose)
+	docker compose -f kafka-docker-compose.yml up -d
+
+# stop kafka (docker compose)
+kafka-docker-stop: ## stop kafka docker container (docker compose)
+	docker compose -f kafka-docker-compose.yml down
+
+# watch kafka logs (docker compose)
+kafka-docker-logs: ## watch kafka logs (docker compose)
+	docker compose -f kafka-docker-compose.yml logs -f
 
 #

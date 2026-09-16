@@ -48,11 +48,11 @@ func initFLags() (res *pflag.FlagSet, err error) {
 
 		// data-audit-client
 		res.String(FlagDataAuditClientBaseURL, "", "data audit service base url")
-		res.Duration(FlagDataAuditClientTimeout, defaultAuditClientTimeout, "data audit client timeout")
-		res.Int(FlagDataAuditClientWorkerCount, defaultAuditClientWorkerCount, "data audit client worker count")
-		res.Int(FlagDataAuditClientDataCapacity, defaultAuditClientDataCapacity, "data audit client data capacity")
+		res.Duration(FlagDataAuditClientTimeout, defaultDataAuditClientTimeout, "data audit client timeout")
+		res.Int(FlagDataAuditClientWorkerCount, defaultDataAuditClientWorkerCount, "data audit client worker count")
+		res.Int(FlagDataAuditClientDataCapacity, defaultDataAuditClientDataCapacity, "data audit client data capacity")
 		res.Bool(FlagDataAuditClientCompleteProcessing, true, "data audit client complete processing")
-		res.Duration(FlagDataAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout, "data audit client shutdown timeout")
+		res.Duration(FlagDataAuditClientShutdownTimeout, defaultDataAuditClientShutdownTimeout, "data audit client shutdown timeout")
 
 		// Auth
 		res.String(FlagAuthJWTSecret, "", "JWT secret")
