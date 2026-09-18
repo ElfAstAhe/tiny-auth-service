@@ -36,11 +36,11 @@ func NewAuditClientConfig(
 func NewDefaultAuditClientConfig() *AuditClientConfig {
 	return NewAuditClientConfig(
 		"",
-		defaultAuditClientTimeout,
-		defaultAuditClientWorkerCount,
-		defaultAuditClientDataCapacity,
-		defaultAuditClientCompleteProcessing,
-		defaultAuditClientShutdownTimeout,
+		defaultDataAuditClientTimeout,
+		defaultDataAuditClientWorkerCount,
+		defaultDataAuditClientDataCapacity,
+		defaultDataAuditClientCompleteProcessing,
+		defaultDataAuditClientShutdownTimeout,
 	)
 }
 
