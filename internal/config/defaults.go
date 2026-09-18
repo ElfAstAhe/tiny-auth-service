@@ -24,11 +24,11 @@ const (
 
 // audit client
 const (
-	defaultAuditClientTimeout            time.Duration = 5 * time.Second
-	defaultAuditClientWorkerCount        int           = 4
-	defaultAuditClientDataCapacity       int           = 10000
-	defaultAuditClientCompleteProcessing bool          = true
-	defaultAuditClientShutdownTimeout    time.Duration = 15 * time.Second
+	defaultDataAuditClientTimeout            time.Duration = 5 * time.Second
+	defaultDataAuditClientWorkerCount        int           = 4
+	defaultDataAuditClientDataCapacity       int           = 10000
+	defaultDataAuditClientCompleteProcessing bool          = true
+	defaultDataAuditClientShutdownTimeout    time.Duration = 15 * time.Second
 )
 
 // amqp connector
@@ -43,6 +43,7 @@ const (
 	defaultLoginAttemptsNotifyTimeout    time.Duration = 2 * time.Second
 )
 
+//goland:noinspection DuplicatedCode
 func applyDefaults(v *viper.Viper) {
 	// App
 	v.SetDefault(config.KeyAppEnv, defaultAppEnv)
@@ -59,11 +60,11 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keySvcCredsErrorScheduleInterval, defaultCredsErrorScheduleInterval)
 
 	// data-audit-client
-	v.SetDefault(keyDataAuditClientTimeout, defaultAuditClientTimeout)
-	v.SetDefault(keyDataAuditClientWorkerCount, defaultAuditClientWorkerCount)
-	v.SetDefault(keyDataAuditClientDataCapacity, defaultAuditClientDataCapacity)
-	v.SetDefault(keyDataAuditClientCompleteProcessing, defaultAuditClientCompleteProcessing)
-	v.SetDefault(keyDataAuditClientShutdownTimeout, defaultAuditClientShutdownTimeout)
+	v.SetDefault(keyDataAuditClientTimeout, defaultDataAuditClientTimeout)
+	v.SetDefault(keyDataAuditClientWorkerCount, defaultDataAuditClientWorkerCount)
+	v.SetDefault(keyDataAuditClientDataCapacity, defaultDataAuditClientDataCapacity)
+	v.SetDefault(keyDataAuditClientCompleteProcessing, defaultDataAuditClientCompleteProcessing)
+	v.SetDefault(keyDataAuditClientShutdownTimeout, defaultDataAuditClientShutdownTimeout)
 
 	// Auth
 	v.SetDefault(config.KeyAuthJWTSigningMethod, config.DefaultAuthSigningMethod)
