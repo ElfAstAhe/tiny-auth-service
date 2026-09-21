@@ -77,6 +77,7 @@ func NewDefaultConfig() *Config {
 	)
 }
 
+//goland:noinspection GoUnusedExportedFunction
 func NewEmptyConfig() *Config {
 	return &Config{
 		App:             &AppConfig{},
@@ -90,7 +91,8 @@ func NewEmptyConfig() *Config {
 		Telemetry:       &config.TelemetryConfig{},
 		AMQPConnector:   &config.AMQPConnectorConfig{},
 		LoginAttemptsSender: &LoginAttemptsConfig{
-			AMQPSenderConfig: &config.AMQPSenderConfig{},
+			AMQPConfig:  &config.AMQPSenderConfig{},
+			KafkaConfig: &config.KafkaSenderConfig{},
 		},
 	}
 }
@@ -160,7 +162,7 @@ func Load() (*Config, error) {
 	}
 
 	// 7. Маппинг в структуру
-	var cfg = NewEmptyConfig()
+	var cfg = NewDefaultConfig()
 	if err := v.Unmarshal(cfg); err != nil {
 		return nil, errs.NewConfigError("failed to unmarshal config struct", err)
 	}

@@ -37,10 +37,22 @@ const (
 	defaultAMQPConnectorPassword string = "test"
 )
 
-// amqp login attempts sender (FQQN artemis style)
+// login attempts
 const (
-	defaultLoginAttemptsSenderTargetName string        = "tiny.auth::login.attempts"
-	defaultLoginAttemptsNotifyTimeout    time.Duration = 2 * time.Second
+	// defaultLoginAttemptsSenderKind sender kind, values: amqp, kafka
+	defaultLoginAttemptsSenderKind string = "amqp"
+	// defaultLoginAttemptsSenderNotifyTimeout
+	defaultLoginAttemptsSenderNotifyTimeout time.Duration = 2 * time.Second
+)
+
+// amqp login attempts target name (FQQN artemis style)
+const (
+	defaultLoginAttemptsSenderAMQPConfigTargetName string = "tiny.auth::login.attempts"
+)
+
+// kafka login attempts target name
+const (
+	defaultLoginAttemptsSenderKafkaConfigTargetName string = "tiny.auth.login.attempts"
 )
 
 //goland:noinspection DuplicatedCode
@@ -116,12 +128,30 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout)
 	v.SetDefault(keyAMQPConnectorIdleTimeout, config.DefaultAMQPConnectorIdleTimeout)
 	v.SetDefault(keyAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout)
-	// amqp sender
-	v.SetDefault(keyLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName)
-	v.SetDefault(keyLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
-	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsNotifyTimeout)
-	v.SetDefault(keyLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
-	v.SetDefault(keyLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts)
-	v.SetDefault(keyLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay)
-	v.SetDefault(keyLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay)
+
+	// login attempts
+	v.SetDefault(keyLoginAttemptsSenderKind, defaultLoginAttemptsSenderKind)
+	v.SetDefault(keyLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsSenderNotifyTimeout)
+
+	// amqp login attempts
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigTargetName, defaultLoginAttemptsSenderAMQPConfigTargetName)
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigConnectTimeout, config.DefaultAMQPSenderConnectTimeout)
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout)
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts)
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay)
+	v.SetDefault(keyLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay)
+
+	// kafka login attempts
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigBrokers, config.DefaultKafkaBrokers)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigTargetName, defaultLoginAttemptsSenderKafkaConfigTargetName)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigConnectTimeout, config.DefaultKafkaSenderConnectTimeout)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigBatchSize, config.DefaultKafkaSenderBatchSize)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigBatchBytes, config.DefaultKafkaSenderBatchBytes)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigBatchTimeout, config.DefaultKafkaSenderBatchTimeout)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigWriteTimeout, config.DefaultKafkaSenderWriteTimeout)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigRequiredAcks, config.DefaultKafkaSenderRequiredAcks)
 }

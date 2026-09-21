@@ -104,15 +104,37 @@ const (
 	FlagAMQPConnectorShutdownTimeout string = "amqp-connector-shutdown-timeout"
 )
 
+const (
+	FlagLoginAttemptsSenderKind          string = "login-attempts-sender-kind"
+	FlagLoginAttemptsSenderNotifyTimeout string = "login-attempts-sender-notify-timeout"
+)
+
 // amqp login attempts sender
 const (
-	FlagLoginAttemptsSenderTargetName            string = "login-attempts-sender-target-name"
-	FlagLoginAttemptsSenderConnectTimeout        string = "login-attempts-sender-connect-timeout"
-	FlagLoginAttemptsSenderNotifyTimeout         string = "login-attempts-sender-notify-timeout"
-	FlagLoginAttemptsSenderShutdownTimeout       string = "login-attempts-sender-shutdown-timeout"
-	FlagLoginAttemptsSenderPublishMaxTryAttempts string = "login-attempts-sender-publish-max-try-attempts"
-	FlagLoginAttemptsSenderPublishBaseRetryDelay string = "login-attempts-sender-publish-base-retry-delay"
-	FlagLoginAttemptsSenderPublishMaxRetryDelay  string = "login-attempts-sender-publish-max-retry-delay"
+	FlagLoginAttemptsSenderAMQPConfigTargetName            string = "login-attempts-sender-amqp-target-name"
+	FlagLoginAttemptsSenderAMQPConfigConnectTimeout        string = "login-attempts-sender-amqp-connect-timeout"
+	FlagLoginAttemptsSenderAMQPConfigShutdownTimeout       string = "login-attempts-sender-amqp-shutdown-timeout"
+	FlagLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts string = "login-attempts-sender-amqp-publish-max-try-attempts"
+	FlagLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay string = "login-attempts-sender-amqp-publish-base-retry-delay"
+	FlagLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay  string = "login-attempts-sender-amqp-publish-max-retry-delay"
+)
+
+// kafka login attempts sender
+const (
+	FlagLoginAttemptsSenderKafkaConfigBrokers               string = "login_attempts_sender-kafka-brokers"
+	FlagLoginAttemptsSenderKafkaConfigTargetName            string = "login_attempts_sender-kafka-target_name"
+	FlagLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login_attempts_sender-kafka-connect_timeout"
+	FlagLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login_attempts_sender-kafka-shutdown_timeout"
+	FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login_attempts_sender-kafka-publish_max_try_attempts"
+	FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login_attempts_sender-kafka-publish_max_retry_delay"
+	FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login_attempts_sender-kafka-publish_base_retry_delay"
+	FlagLoginAttemptsSenderKafkaConfigUsername              string = "login_attempts_sender-kafka-username"
+	FlagLoginAttemptsSenderKafkaConfigPassword              string = "login_attempts_sender-kafka-password"
+	FlagLoginAttemptsSenderKafkaConfigBatchSize             string = "login_attempts_sender-kafka-batch_size"
+	FlagLoginAttemptsSenderKafkaConfigBatchBytes            string = "login_attempts_sender-kafka-batch_bytes"
+	FlagLoginAttemptsSenderKafkaConfigBatchTimeout          string = "login_attempts_sender-kafka-batch_timeout"
+	FlagLoginAttemptsSenderKafkaConfigWriteTimeout          string = "login_attempts_sender-kafka-write_timeout"
+	FlagLoginAttemptsSenderKafkaConfigRequiredAcks          string = "login_attempts_sender-kafka-required_acks"
 )
 
 // app
@@ -154,13 +176,36 @@ const (
 	keyAMQPConnectorShutdownTimeout string = "amqp_connector.shutdown_timeout"
 )
 
+// login attempts sender
+const (
+	keyLoginAttemptsSenderKind          string = "login_attempts_sender.kind"
+	keyLoginAttemptsSenderNotifyTimeout string = "login_attempts_sender.notify_timeout"
+)
+
 // amqp login attempts sender
 const (
-	keyLoginAttemptsSenderTargetName            string = "login_attempts_sender.target_name"
-	keyLoginAttemptsSenderConnectTimeout        string = "login_attempts_sender.connect_timeout"
-	keyLoginAttemptsSenderNotifyTimeout         string = "login_attempts_sender.notify_timeout"
-	keyLoginAttemptsSenderShutdownTimeout       string = "login_attempts_sender.shutdown_timeout"
-	keyLoginAttemptsSenderPublishMaxTryAttempts string = "login_attempts_sender.publish_max_try_attempts"
-	keyLoginAttemptsSenderPublishBaseRetryDelay string = "login_attempts_sender.publish_base_retry_delay"
-	keyLoginAttemptsSenderPublishMaxRetryDelay  string = "login_attempts_sender.publish_max_retry_delay"
+	keyLoginAttemptsSenderAMQPConfigTargetName            string = "login_attempts_sender.amqp_config.target_name"
+	keyLoginAttemptsSenderAMQPConfigConnectTimeout        string = "login_attempts_sender.amqp_config.connect_timeout"
+	keyLoginAttemptsSenderAMQPConfigShutdownTimeout       string = "login_attempts_sender.amqp_config.shutdown_timeout"
+	keyLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts string = "login_attempts_sender.amqp_config.publish_max_try_attempts"
+	keyLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay string = "login_attempts_sender.amqp_config.publish_base_retry_delay"
+	keyLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay  string = "login_attempts_sender.amqp_config.publish_max_retry_delay"
+)
+
+// kafka login attempts
+const (
+	keyLoginAttemptsSenderKafkaConfigBrokers               string = "login_attempts_sender.kafka_config.brokers"
+	keyLoginAttemptsSenderKafkaConfigTargetName            string = "login_attempts_sender.kafka_config.target_name"
+	keyLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login_attempts_sender.kafka_config.connect_timeout"
+	keyLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login_attempts_sender.kafka_config.shutdown_timeout"
+	keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login_attempts_sender.kafka_config.publish_max_try_attempts"
+	keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login_attempts_sender.kafka_config.publish_max_retry_delay"
+	keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login_attempts_sender.kafka_config.publish_base_retry_delay"
+	keyLoginAttemptsSenderKafkaConfigUsername              string = "login_attempts_sender.kafka_config.username"
+	keyLoginAttemptsSenderKafkaConfigPassword              string = "login_attempts_sender.kafka_config.password"
+	keyLoginAttemptsSenderKafkaConfigBatchSize             string = "login_attempts_sender.kafka_config.batch_size"
+	keyLoginAttemptsSenderKafkaConfigBatchBytes            string = "login_attempts_sender.kafka_config.batch_bytes"
+	keyLoginAttemptsSenderKafkaConfigBatchTimeout          string = "login_attempts_sender.kafka_config.batch_timeout"
+	keyLoginAttemptsSenderKafkaConfigWriteTimeout          string = "login_attempts_sender.kafka_config.write_timeout"
+	keyLoginAttemptsSenderKafkaConfigRequiredAcks          string = "login_attempts_sender.kafka_config.required_acks"
 )

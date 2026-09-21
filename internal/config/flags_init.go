@@ -111,14 +111,33 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout, "connector AMQP write timeout")
 		res.Duration(FlagAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout, "connector AMQP shutdown timeout")
 
-		// amqp sender
-		res.String(FlagLoginAttemptsSenderTargetName, defaultLoginAttemptsSenderTargetName, "login attempts sender queue/topic name")
-		res.Duration(FlagLoginAttemptsSenderConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender connect timeout")
-		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsNotifyTimeout, "login attempts sender notify timeout")
-		res.Duration(FlagLoginAttemptsSenderShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender shutdown timeout")
-		res.Int(FlagLoginAttemptsSenderPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender max send tries")
-		res.Duration(FlagLoginAttemptsSenderPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender publish base retry delay")
-		res.Duration(FlagLoginAttemptsSenderPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "login attempts sender publish max retry delay")
+		// login attempts sender
+		res.String(FlagLoginAttemptsSenderKind, defaultLoginAttemptsSenderKind, "login attempts sender kind (accepted values: amqp, kafka)")
+		res.Duration(FlagLoginAttemptsSenderNotifyTimeout, defaultLoginAttemptsSenderNotifyTimeout, "login attempts sender notify timeout")
+
+		// amqp login attempts sender
+		res.String(FlagLoginAttemptsSenderAMQPConfigTargetName, defaultLoginAttemptsSenderAMQPConfigTargetName, "amqp login attempts sender queue/topic name")
+		res.Duration(FlagLoginAttemptsSenderAMQPConfigConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "amqp login attempts sender connect timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConfigShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "amqp login attempts sender shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "amqp login attempts sender max send tries")
+		res.Duration(FlagLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "amqp login attempts sender publish base retry delay")
+		res.Duration(FlagLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "amqp login attempts sender publish max retry delay")
+
+		// kafka login attempts sender
+		res.StringSlice(FlagLoginAttemptsSenderKafkaConfigBrokers, config.DefaultKafkaBrokers, "kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
+		res.String(FlagLoginAttemptsSenderKafkaConfigTargetName, "", "kafka login attempts sender queue/topic name")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigConnectTimeout, config.DefaultKafkaSenderConnectTimeout, "kafka login attempts sender connect timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "kafka login attempts sender shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts, "kafka login attempts sender max try attempts")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay, "kafka login attempts sender max retry delay")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay, "kafka login attempts sender publish base retry delay")
+		res.String(FlagLoginAttemptsSenderKafkaConfigUsername, "", "kafka login attempts sender username")
+		res.String(FlagLoginAttemptsSenderKafkaConfigPassword, "", "kafka login attempts sender password")
+		res.Int(FlagLoginAttemptsSenderKafkaConfigBatchSize, config.DefaultKafkaSenderBatchSize, "kafka login attempts sender batch size")
+		res.Int(FlagLoginAttemptsSenderKafkaConfigBatchBytes, config.DefaultKafkaSenderBatchBytes, "kafka login attempts sender batch bytes")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigBatchTimeout, config.DefaultKafkaSenderBatchTimeout, "kafka login attempts sender batch timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigWriteTimeout, config.DefaultKafkaSenderWriteTimeout, "kafka login attempts sender write timeout")
+		res.Int(FlagLoginAttemptsSenderKafkaConfigRequiredAcks, config.DefaultKafkaSenderRequiredAcks, "kafka login attempts sender required acks")
 	}
 
 	// Парсинг

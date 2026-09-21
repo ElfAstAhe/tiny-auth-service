@@ -18,6 +18,8 @@ const (
 	InstanceAMQPConnectorSessOpts            string = "amqp-connector-sess-opts"
 	InstanceAMQPLoginAttemptSender           string = "amqp-login-attempt-sender"
 	InstanceAMQPLoginAttemptSenderSenderOpts string = "amqp-client-sender-sender-opts"
+	InstanceKafkaLoginAttemptsSender         string = "kafka-login-attempts-sender"
+	InstanceKafkaLoginAttemptsSenderOpts     string = "kafka-login-attempts-sender-opts"
 )
 
 type ClientContainer struct {
@@ -43,13 +45,14 @@ func NewClientContainer(
 //goland:noinspection DuplicatedCode
 func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		//		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
 		cc.RegisterProvider(InstanceAMQPLoginAttemptSender, cc.providerAMQPLoginAttemptSender),
 		cc.RegisterProvider(InstanceAMQPLoginAttemptSenderSenderOpts, cc.providerAMQPLoginAttemptSenderSenderOpts),
 		cc.RegisterProvider(InstanceAMQPConnector, cc.providerAMQPConnector),
 		cc.RegisterProvider(InstanceAMQPConnectorConnOpts, cc.providerAMQPConnectorConnOpts),
 		cc.RegisterProvider(InstanceAMQPConnectorSessOpts, cc.providerAMQPConnectorSessOpts),
+		cc.RegisterProvider(InstanceKafkaLoginAttemptsSender, cc.providerKafkaLoginAttemptSender),
+		cc.RegisterProvider(InstanceKafkaLoginAttemptsSenderOpts, cc.providerKafkaLoginAttemptSenderOpts),
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)

@@ -10,6 +10,7 @@ import (
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 	libamqpazure "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
@@ -52,6 +53,9 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
+	if utils.IsNil(confInst.LoginAttemptsSender.AMQPConfig) {
+		return nil, errs.NewContainerError(cc.GetName(), "provider: AMQP config absent", nil)
+	}
 	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
@@ -67,14 +71,14 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 
 	sender, err := libamqpazure.NewSender(
 		libamqpazure.WithSenderConnector(connectorInst),
-		libamqpazure.WithSenderTargetName(confInst.LoginAttemptsSender.TargetName),
+		libamqpazure.WithSenderTargetName(confInst.LoginAttemptsSender.AMQPConfig.TargetName),
 		libamqpazure.WithSenderLogger(logInst),
 		libamqpazure.WithSenderOpts(senderOptsInst),
-		libamqpazure.WithSenderConnectTimeout(confInst.LoginAttemptsSender.ConnectTimeout),
-		libamqpazure.WithSenderShutdownTimeout(confInst.LoginAttemptsSender.ShutdownTimeout),
-		libamqpazure.WithSenderPublishMaxTryAttempts(confInst.LoginAttemptsSender.PublishMaxTryAttempts),
-		libamqpazure.WithSenderPublishBaseRetryDelay(confInst.LoginAttemptsSender.PublishBaseRetryDelay),
-		libamqpazure.WithSenderPublishMaxRetryDelay(confInst.LoginAttemptsSender.PublishMaxRetryDelay),
+		libamqpazure.WithSenderConnectTimeout(confInst.LoginAttemptsSender.AMQPConfig.ConnectTimeout),
+		libamqpazure.WithSenderShutdownTimeout(confInst.LoginAttemptsSender.AMQPConfig.ShutdownTimeout),
+		libamqpazure.WithSenderPublishMaxTryAttempts(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxTryAttempts),
+		libamqpazure.WithSenderPublishBaseRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishBaseRetryDelay),
+		libamqpazure.WithSenderPublishMaxRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxRetryDelay),
 	)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceAMQPLoginAttemptSender), err)
@@ -148,4 +152,24 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSenderSenderOpts() (any, erro
 		ExpiryPolicy: amqp.ExpiryPolicyNever,
 		Durability:   amqp.DurabilityUnsettledState,
 	}, nil
+}
+
+func (cc *ClientContainer) providerKafkaLoginAttemptSenderOpts() (any, error) {
+	//confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	//if err != nil {
+	//	return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
+	//}
+
+	// ToDo: implement
+	return nil, nil
+}
+
+func (cc *ClientContainer) providerKafkaLoginAttemptSender() (any, error) {
+	//confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	//if err != nil {
+	//	return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
+	//}
+
+	// ToDo: implement
+	return nil, nil
 }
