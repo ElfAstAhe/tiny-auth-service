@@ -84,8 +84,8 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.Duration(FlagGRPCShutdownTimeout, config.DefaultGRPCShutdownTimeout, "gRPC shutdown timeout")
 
 		// DB
-		res.String(FlagDBDSN, config.DefaultDBDSN, "database dsn")
-		res.String(FlagDBDriver, config.DefaultDBDriver, "database driver name/alias")
+		res.String(FlagDBDSN, defaultDBDSN, "database dsn")
+		res.String(FlagDBDriver, defaultDBDriver, "database driver name/alias")
 		res.Int(FlagDBMaxOpenConns, config.DefaultDBMaxOpenConns, "db max open connections")
 		res.Int(FlagDBMaxIdleConns, config.DefaultDBMaxIdleConns, "db max idle connections")
 		res.Duration(FlagDBMaxIdleLifetime, config.DefaultDBConnMaxIdleLifetime, "db max idle connection lifetime")
@@ -127,7 +127,7 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.StringSlice(FlagLoginAttemptsSenderKafkaConfigBrokers, config.DefaultKafkaBrokers, "kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
 		res.String(FlagLoginAttemptsSenderKafkaConfigTargetName, "", "kafka login attempts sender queue/topic name")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigConnectTimeout, config.DefaultKafkaSenderConnectTimeout, "kafka login attempts sender connect timeout")
-		res.Duration(FlagLoginAttemptsSenderAMQPConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "kafka login attempts sender shutdown timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "kafka login attempts sender shutdown timeout")
 		res.Int(FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts, "kafka login attempts sender max try attempts")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay, "kafka login attempts sender max retry delay")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay, "kafka login attempts sender publish base retry delay")

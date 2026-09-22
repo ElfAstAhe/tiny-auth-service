@@ -121,20 +121,20 @@ const (
 
 // kafka login attempts sender
 const (
-	FlagLoginAttemptsSenderKafkaConfigBrokers               string = "login_attempts_sender-kafka-brokers"
-	FlagLoginAttemptsSenderKafkaConfigTargetName            string = "login_attempts_sender-kafka-target_name"
-	FlagLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login_attempts_sender-kafka-connect_timeout"
-	FlagLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login_attempts_sender-kafka-shutdown_timeout"
-	FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login_attempts_sender-kafka-publish_max_try_attempts"
-	FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login_attempts_sender-kafka-publish_max_retry_delay"
-	FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login_attempts_sender-kafka-publish_base_retry_delay"
-	FlagLoginAttemptsSenderKafkaConfigUsername              string = "login_attempts_sender-kafka-username"
-	FlagLoginAttemptsSenderKafkaConfigPassword              string = "login_attempts_sender-kafka-password"
-	FlagLoginAttemptsSenderKafkaConfigBatchSize             string = "login_attempts_sender-kafka-batch_size"
-	FlagLoginAttemptsSenderKafkaConfigBatchBytes            string = "login_attempts_sender-kafka-batch_bytes"
-	FlagLoginAttemptsSenderKafkaConfigBatchTimeout          string = "login_attempts_sender-kafka-batch_timeout"
-	FlagLoginAttemptsSenderKafkaConfigWriteTimeout          string = "login_attempts_sender-kafka-write_timeout"
-	FlagLoginAttemptsSenderKafkaConfigRequiredAcks          string = "login_attempts_sender-kafka-required_acks"
+	FlagLoginAttemptsSenderKafkaConfigBrokers               string = "login-attempts-sender-kafka-brokers"
+	FlagLoginAttemptsSenderKafkaConfigTargetName            string = "login-attempts-sender-kafka-target-name"
+	FlagLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login-attempts-sender-kafka-connect-timeout"
+	FlagLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login-attempts-sender-kafka-shutdown-timeout"
+	FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login-attempts-sender-kafka-publish-max-try-attempts"
+	FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login-attempts-sender-kafka-publish-max-retry-delay"
+	FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login-attempts-sender-kafka-publish-base-retry-delay"
+	FlagLoginAttemptsSenderKafkaConfigUsername              string = "login-attempts-sender-kafka-username"
+	FlagLoginAttemptsSenderKafkaConfigPassword              string = "login-attempts-sender-kafka-password"
+	FlagLoginAttemptsSenderKafkaConfigBatchSize             string = "login-attempts-sender-kafka-batch-size"
+	FlagLoginAttemptsSenderKafkaConfigBatchBytes            string = "login-attempts-sender-kafka-batch-bytes"
+	FlagLoginAttemptsSenderKafkaConfigBatchTimeout          string = "login-attempts-sender-kafka-batch-timeout"
+	FlagLoginAttemptsSenderKafkaConfigWriteTimeout          string = "login-attempts-sender-kafka-write-timeout"
+	FlagLoginAttemptsSenderKafkaConfigRequiredAcks          string = "login-attempts-sender-kafka-required-acks"
 )
 
 // app

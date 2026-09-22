@@ -22,6 +22,12 @@ const (
 	defaultCredsErrorScheduleInterval time.Duration = 3 * time.Second
 )
 
+// db
+const (
+	defaultDBDriver string = "postgres"
+	defaultDBDSN    string = "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db"
+)
+
 // audit client
 const (
 	defaultDataAuditClientTimeout            time.Duration = 5 * time.Second
@@ -103,8 +109,8 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(config.KeyGRPCShutdownTimeout, config.DefaultGRPCShutdownTimeout)
 
 	// DB
-	v.SetDefault(config.KeyDBDriver, config.DefaultDBDriver)
-	v.SetDefault(config.KeyDBDSN, config.DefaultDBDSN)
+	v.SetDefault(config.KeyDBDriver, defaultDBDriver)
+	v.SetDefault(config.KeyDBDSN, defaultDBDSN)
 	v.SetDefault(config.KeyDBMaxOpenConns, config.DefaultDBMaxOpenConns)
 	v.SetDefault(config.KeyDBMaxIdleConns, config.DefaultDBMaxIdleConns)
 	v.SetDefault(config.KeyDBConnMaxIdleLifetime, config.DefaultDBConnMaxIdleLifetime)

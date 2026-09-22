@@ -10,7 +10,7 @@ VERSION=1.0.0
 BUILD_TIME=$(shell date +'%Y/%m/%d_%H:%M:%S')
 STAGE=DEV
 
-.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run test bench static-check clean update-deps kafka-local-start kafka-local-stop kafka-docker-start kafka-docker-stop kafka-docker-logs
+.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-kafka test bench static-check clean update-deps kafka-local-start kafka-local-stop kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -60,6 +60,10 @@ build: gen-proto gen-swagger gen-http-client gen-mocks ## Полная сбор�
 #	-X '$(MODULE_NAME)/internal/app/client/config.BuildTime=$(BUILD_TIME)'" \
 #	-o ./bin/$(CLIENT_BINARY_NAME) $(CLIENT_BUILD_DIR)/main.go
 
+# запуск проекта с выводом информации о параметрах
+run-help: build ## Собрать проект и запустить бинарник с информацией о параметрах
+	./bin/$(SERVER_BINARY_NAME) --help
+
 # Запуск проекта (сначала соберет, потом запустит)
 run: build ## Собрать проект и запустить бинарник с локальными флагами (БД, логи)
 	./bin/$(SERVER_BINARY_NAME) \
@@ -88,13 +92,50 @@ run: build ## Собрать проект и запустить бинарник
 		--amqp-connector-write-timeout "2s" \
 		--amqp-connector-idle-timeout "30s" \
 		--amqp-connector-shutdown-timeout "3s" \
-		--login-attempts-sender-target-name "tiny.auth::login.attempts" \
-		--login-attempts-sender-connect-timeout "2s" \
+		--login-attempts-sender-kind "amqp" \
 		--login-attempts-sender-notify-timeout "2s" \
-		--login-attempts-sender-shutdown-timeout "3s" \
-		--login-attempts-sender-publish-max-try-attempts "3" \
-		--login-attempts-sender-publish-base-retry-delay "1s" \
-		--login-attempts-sender-publish-max-retry-delay "4s"
+		--login-attempts-sender-amqp-target-name "tiny.auth::login.attempts" \
+		--login-attempts-sender-amqp-connect-timeout "2s" \
+		--login-attempts-sender-amqp-shutdown-timeout "3s" \
+		--login-attempts-sender-amqp-publish-max-try-attempts "3" \
+		--login-attempts-sender-amqp-publish-base-retry-delay "1s" \
+		--login-attempts-sender-amqp-publish-max-retry-delay "4s"
+
+# Запуск проекта (kafka client)(сначала соберет, потом запустит)
+run-kafka: build ## Собрать проект и запустить бинарник с локальными флагами и kafka клиентом (БД, логи)
+	./bin/$(SERVER_BINARY_NAME) \
+        --log-level "debug" \
+		--http-address "localhost:8080" \
+		--grpc-address "localhost:50051" \
+		--db-driver "postgres" \
+		--db-dsn "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db" \
+		--auth-jwt-secret "jwt-key" \
+		--app-cipher-key "12345" \
+		--app-token-issuer "tiny-auth-service" \
+		--app-max-list-limit 500 \
+		--svc-creds-username "svc_auth" \
+		--svc-creds-password "password" \
+		--svc-creds-schedule-interval "25s" \
+		--data-audit-client-base-url "http://localhost:8081/" \
+		--data-audit-client-timeout "5s" \
+		--data-audit-client-worker-count "2" \
+		--data-audit-client-data-capacity "10000" \
+		--data-audit-client-complete-processing \
+		--data-audit-client-shutdown-timeout "15s" \
+		--login-attempts-sender-kind "kafka" \
+		--login-attempts-sender-notify-timeout "2s" \
+		--login-attempts-sender-kafka-brokers "localhost:9092" \
+		--login-attempts-sender-kafka-target-name "tiny.auth.login.attempts" \
+		--login-attempts-sender-kafka-connect-timeout "2s" \
+		--login-attempts-sender-kafka-shutdown-timeout "3s" \
+		--login-attempts-sender-kafka-publish-max-try-attempts "3" \
+		--login-attempts-sender-kafka-publish-base-retry-delay "1s" \
+		--login-attempts-sender-kafka-publish-max-retry-delay "4s" \
+		--login-attempts-sender-kafka-batch-size "100" \
+		--login-attempts-sender-kafka-batch-bytes "1048576" \
+		--login-attempts-sender-kafka-batch-timeout "10ms" \
+		--login-attempts-sender-kafka-write-timeout "10s" \
+		--login-attempts-sender-kafka-required-acks "-1"
 
 # Запуск тестов
 test: gen-proto gen-mocks ## Запустить модульные и интеграционные тесты проекта
@@ -126,6 +167,7 @@ kafka-local-start: ## start kafka local
 
 kafka-local-stop: ## stop kafka local (not implemented)
 	echo "not implemented :-)"
+
 # start kafka (docker compose)
 kafka-docker-start: ## start kafka docker container (docker compose)
 	docker compose -f kafka-docker-compose.yml up -d
