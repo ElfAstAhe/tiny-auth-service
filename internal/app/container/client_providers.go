@@ -9,11 +9,13 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 	libamqpazure "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
+	libkafka "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/kafka"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
+	"github.com/segmentio/kafka-go"
 )
 
 //goland:noinspection DuplicatedCode
@@ -154,22 +156,40 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSenderSenderOpts() (any, erro
 	}, nil
 }
 
-func (cc *ClientContainer) providerKafkaLoginAttemptSenderOpts() (any, error) {
-	//confInst, err := container.GetInstance[*config.Config](InstanceConfig)
-	//if err != nil {
-	//	return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
-	//}
-
-	// ToDo: implement
-	return nil, nil
-}
-
 func (cc *ClientContainer) providerKafkaLoginAttemptSender() (any, error) {
-	//confInst, err := container.GetInstance[*config.Config](InstanceConfig)
-	//if err != nil {
-	//	return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
-	//}
+	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
+	}
+	if utils.IsNil(confInst.LoginAttemptsSender.KafkaConfig) {
+		return nil, errs.NewContainerError(cc.GetName(), "provider: kafka config absent", nil)
+	}
+	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
+	if err != nil {
+		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
+	}
 
-	// ToDo: implement
-	return nil, nil
+	return libkafka.NewSender(
+		libkafka.WithSenderBrokers(confInst.LoginAttemptsSender.KafkaConfig.Brokers),
+		libkafka.WithSenderTargetName(confInst.LoginAttemptsSender.KafkaConfig.TargetName),
+		libkafka.WithSenderConnectTimeout(confInst.LoginAttemptsSender.KafkaConfig.ConnectTimeout),
+		libkafka.WithSenderShutdownTimeout(confInst.LoginAttemptsSender.KafkaConfig.ShutdownTimeout),
+		libkafka.WithSenderPublishRetry(
+			confInst.LoginAttemptsSender.KafkaConfig.PublishMaxTryAttempts,
+			confInst.LoginAttemptsSender.KafkaConfig.PublishBaseRetryDelay,
+			confInst.LoginAttemptsSender.KafkaConfig.PublishMaxRetryDelay,
+		),
+		libkafka.WithSenderSecurity(
+			confInst.LoginAttemptsSender.KafkaConfig.Username,
+			confInst.LoginAttemptsSender.KafkaConfig.Password,
+		),
+		libkafka.WithSenderBatchOptions(
+			confInst.LoginAttemptsSender.KafkaConfig.BatchSize,
+			int64(confInst.LoginAttemptsSender.KafkaConfig.BatchBytes),
+			confInst.LoginAttemptsSender.KafkaConfig.BatchTimeout,
+			confInst.LoginAttemptsSender.KafkaConfig.WriteTimeout,
+			kafka.RequiredAcks(confInst.LoginAttemptsSender.KafkaConfig.RequiredAcks),
+		),
+		libkafka.WithSenderLogger(logInst),
+	)
 }

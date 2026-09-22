@@ -1,4 +1,4 @@
-package amqp
+package kafka
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Azure/go-amqp"
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/mocks"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
@@ -16,21 +15,21 @@ import (
 	"go.uber.org/goleak"
 )
 
-// Гарантируем, что наши тесты обсервера не плодят подвисшие горутины
+// Гарантируем, что наши тесты обсервера не плодят подвисшие горутины.
 func TestMain(m *testing.M) {
 	goleak.VerifyTestMain(m)
 }
 
-// 1. Тест успешного прохождения события (Happy Path) с глубокой валидацией полей DTO
+// 1. Тест успешного прохождения события (Happy Path) с валидацией полей DTO и заголовков Props
 func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
-	// Создаем expecter-мок интерфейса ClientSender с помощью mockery
-	mockClient := mocks.NewMockSender[*amqp.SendOptions](t)
+	// Создаем expecter-мок интерфейса ClientSender с типом any для Kafka
+	mockClient := mocks.NewMockSender[any](t)
 
 	observerName := "test-login-observer"
-	observer := NewLoginAttemptObserver(observerName, mockClient, "amqp")
+	observer := NewLoginAttemptObserver(observerName, mockClient, "kafka")
 
 	fixedTime := time.Now()
-	// Подготавливаем тестовые данные (Ваша полная структура DTO)
+	// Подготавливаем тестовые данные (Полная структура DTO)
 	testDTO := &dto.LoginAttemptEventDTO{
 		NodeName:  "auth-pod-xyz",
 		EventDate: fixedTime,
@@ -42,8 +41,10 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 		Error:     "",
 	}
 
+	// Проверяем, что обсервер возвращает топик, если это потребуется
+	mockClient.EXPECT().GetTargetName().Return("tiny.auth").Maybe()
+
 	// ИСПОЛЬЗУЕМ СТРОГИЙ СИНТАКСИС TYPE-SAFE EXPECTER (.EXPECT())
-	// Проверяем, что обсервер корректно перевел DTO в JSON и сохранил ВСЕ поля контракта обмена
 	mockClient.EXPECT().
 		Publish(
 			mock.Anything,
@@ -51,8 +52,15 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 				var parsed dto.LoginAttemptEventDTO
 				err := json.Unmarshal(msg.GetPayload(), &parsed)
 
-				// Глубокая сверка полей JSON-нагрузки
+				// Извлекаем и проверяем заголовки Kafka из мапы Props
+				props := msg.GetProperties()
+				kafkaKey, keyOk := props["kafka_message_key"].(string)
+				contentType, ctcOk := props["content-type"].(string)
+
+				// Полная проверка: JSON-тело + метаданные Kafka
 				return err == nil &&
+					keyOk && kafkaKey == "dev_user" &&
+					ctcOk && contentType == "application/json" &&
 					parsed.NodeName == "auth-pod-xyz" &&
 					parsed.EventDate.Equal(fixedTime) &&
 					parsed.RequestID == "req-111-222" &&
@@ -76,9 +84,10 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 
 // 2. Тест обработки ошибки сетевого клиента (Publish Failure)
 func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
-	mockClient := mocks.NewMockSender[*amqp.SendOptions](t)
-	mockClient.On("GetTargetName").Return("test-target::test-queue")
-	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "amqp")
+	mockClient := mocks.NewMockSender[any](t)
+	mockClient.EXPECT().GetTargetName().Return("tiny.auth").Maybe()
+
+	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "kafka")
 
 	testDTO := &dto.LoginAttemptEventDTO{
 		Username: "unstable_user",
@@ -86,8 +95,8 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 		Error:    "invalid password",
 	}
 
-	// Имитируем сетевой облом на уровне ClientSender
-	publishErr := errors.New("amqp connection closed unexpectedly by remote broker")
+	// Имитируем сетевую ошибку брокера
+	publishErr := errors.New("kafka broker connection lost")
 
 	mockClient.EXPECT().
 		Publish(mock.Anything, mock.Anything, mock.Anything).
@@ -103,8 +112,8 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 
 // 3. Тест защиты от nil-указателя на входе (Nil Data Defense)
 func TestLoginAttemptObserver_OnNotify_NilData(t *testing.T) {
-	mockClient := mocks.NewMockSender[*amqp.SendOptions](t)
-	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "amqp")
+	mockClient := mocks.NewMockSender[any](t)
+	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "kafka")
 
 	// Передаем nil вместо DTO
 	err := observer.OnNotify(context.Background(), nil)
