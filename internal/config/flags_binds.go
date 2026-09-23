@@ -97,6 +97,7 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigBrokers, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigBrokers)),
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigTargetName, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigTargetName)),
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigConnectTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigIdleTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigIdleTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigShutdownTimeout)),
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts)),
 		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay)),

@@ -151,6 +151,7 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigBrokers, config.DefaultKafkaBrokers)
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigTargetName, defaultLoginAttemptsSenderKafkaConfigTargetName)
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigConnectTimeout, config.DefaultKafkaSenderConnectTimeout)
+	v.SetDefault(keyLoginAttemptsSenderKafkaConfigIdleTimeout, config.DefaultKafkaSenderIdleTimeout)
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout)
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts)
 	v.SetDefault(keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay)

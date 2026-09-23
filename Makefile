@@ -9,8 +9,11 @@ SERVER_BUILD_DIR=./cmd/tiny-auth-service
 VERSION=1.0.0
 BUILD_TIME=$(shell date +'%Y/%m/%d_%H:%M:%S')
 STAGE=DEV
+KAFKA_DIR   = /opt/kafka_2.13-4.3.1
+ARTEMIS_RUN = /var/lib/artemis-test-cluster/bin/artemis
 
-.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-kafka test bench static-check clean update-deps kafka-local-start kafka-local-stop kafka-docker-start kafka-docker-stop kafka-docker-logs
+
+.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-kafka test bench static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -127,6 +130,7 @@ run-kafka: build ## Собрать проект и запустить бинар
 		--login-attempts-sender-kafka-brokers "localhost:9092" \
 		--login-attempts-sender-kafka-target-name "tiny.auth.login.attempts" \
 		--login-attempts-sender-kafka-connect-timeout "2s" \
+		--login-attempts-sender-kafka-idle-timeout "60s" \
 		--login-attempts-sender-kafka-shutdown-timeout "3s" \
 		--login-attempts-sender-kafka-publish-max-try-attempts "3" \
 		--login-attempts-sender-kafka-publish-base-retry-delay "1s" \
@@ -139,7 +143,7 @@ run-kafka: build ## Собрать проект и запустить бинар
 
 # Запуск тестов
 test: gen-proto gen-mocks ## Запустить модульные и интеграционные тесты проекта
-	go test -v ./...
+	go test -v $$(go list ./... | grep -vE "mocks")
 
 # Запуск бенчмарков (сюда добавляем все вызовы) или разные параметры под один пакет
 bench: gen-proto gen-mocks ## Запустить утилиты с замером памяти
@@ -162,11 +166,19 @@ clean: ## Очистить скомпилированные файлы из па
 update-deps: ## Принудительно обновить и скачать все Go-зависимости проекта
 	go get -u -x all
 
-kafka-local-start: ## start kafka local
-	/opt/kafka_2.13-4.3.1/bin/kafka-server-start.sh /opt/kafka_2.13-4.3.1/config/server.properties
+artemis-local-start: ## start artemis local (ubuntu, in separate terminal)
+	gnome-terminal -- bash -c "sudo $(ARTEMIS_RUN) run; exec bash"
+
+artemis-local-stop: ## stop artemis local (not implemented)
+	echo "not implemented :-)"
+
+kafka-local-start: ## start kafka local (ubuntu, in separate terminal)
+	gnome-terminal -- bash -c "$(KAFKA_DIR)/bin/kafka-server-start.sh $(KAFKA_DIR)/config/server.properties; exec bash"
 
 kafka-local-stop: ## stop kafka local (not implemented)
 	echo "not implemented :-)"
+
+brokers-all-start: kafka-local-start artemis-local-start ## start both brokers simultaneously in separate windows
 
 # start kafka (docker compose)
 kafka-docker-start: ## start kafka docker container (docker compose)

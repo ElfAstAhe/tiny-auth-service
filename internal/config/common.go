@@ -124,6 +124,7 @@ const (
 	FlagLoginAttemptsSenderKafkaConfigBrokers               string = "login-attempts-sender-kafka-brokers"
 	FlagLoginAttemptsSenderKafkaConfigTargetName            string = "login-attempts-sender-kafka-target-name"
 	FlagLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login-attempts-sender-kafka-connect-timeout"
+	FlagLoginAttemptsSenderKafkaConfigIdleTimeout           string = "login-attempts-sender-kafka-idle-timeout"
 	FlagLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login-attempts-sender-kafka-shutdown-timeout"
 	FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login-attempts-sender-kafka-publish-max-try-attempts"
 	FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login-attempts-sender-kafka-publish-max-retry-delay"
@@ -178,7 +179,7 @@ const (
 
 // login attempts sender
 const (
-	keyLoginAttemptsSenderKind          string = "login_attempts_sender.kind"
+	keyLoginAttemptsSenderKind          string = "login_attempts_sender.sender_kind"
 	keyLoginAttemptsSenderNotifyTimeout string = "login_attempts_sender.notify_timeout"
 )
 
@@ -197,6 +198,7 @@ const (
 	keyLoginAttemptsSenderKafkaConfigBrokers               string = "login_attempts_sender.kafka_config.brokers"
 	keyLoginAttemptsSenderKafkaConfigTargetName            string = "login_attempts_sender.kafka_config.target_name"
 	keyLoginAttemptsSenderKafkaConfigConnectTimeout        string = "login_attempts_sender.kafka_config.connect_timeout"
+	keyLoginAttemptsSenderKafkaConfigIdleTimeout           string = "login_attempts_sender.kafka_config.idle_timeout"
 	keyLoginAttemptsSenderKafkaConfigShutdownTimeout       string = "login_attempts_sender.kafka_config.shutdown_timeout"
 	keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login_attempts_sender.kafka_config.publish_max_try_attempts"
 	keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay  string = "login_attempts_sender.kafka_config.publish_max_retry_delay"

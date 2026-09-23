@@ -170,6 +170,7 @@ func (cc *ClientContainer) providerKafkaLoginAttemptSender() (any, error) {
 	}
 
 	return libkafka.NewSender(
+		libkafka.WithSenderClientID(confInst.App.NodeName),
 		libkafka.WithSenderBrokers(confInst.LoginAttemptsSender.KafkaConfig.Brokers),
 		libkafka.WithSenderTargetName(confInst.LoginAttemptsSender.KafkaConfig.TargetName),
 		libkafka.WithSenderConnectTimeout(confInst.LoginAttemptsSender.KafkaConfig.ConnectTimeout),

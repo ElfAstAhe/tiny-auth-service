@@ -127,6 +127,7 @@ func initFLags() (res *pflag.FlagSet, err error) {
 		res.StringSlice(FlagLoginAttemptsSenderKafkaConfigBrokers, config.DefaultKafkaBrokers, "kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
 		res.String(FlagLoginAttemptsSenderKafkaConfigTargetName, "", "kafka login attempts sender queue/topic name")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigConnectTimeout, config.DefaultKafkaSenderConnectTimeout, "kafka login attempts sender connect timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaConfigIdleTimeout, config.DefaultKafkaSenderIdleTimeout, "kafka login attempts sender idle timeout")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "kafka login attempts sender shutdown timeout")
 		res.Int(FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts, "kafka login attempts sender max try attempts")
 		res.Duration(FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay, "kafka login attempts sender max retry delay")
