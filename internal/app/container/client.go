@@ -4,11 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/Azure/go-amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
 )
 
 const (
@@ -18,6 +16,7 @@ const (
 	InstanceAMQPConnectorSessOpts            string = "amqp-connector-sess-opts"
 	InstanceAMQPLoginAttemptSender           string = "amqp-login-attempt-sender"
 	InstanceAMQPLoginAttemptSenderSenderOpts string = "amqp-client-sender-sender-opts"
+	InstanceKafkaLoginAttemptsSender         string = "kafka-login-attempts-sender"
 )
 
 type ClientContainer struct {
@@ -40,41 +39,19 @@ func NewClientContainer(
 	}
 }
 
-//goland:noinspection DuplicatedCode
+//goland:noinspection DuplicatedCode,GoUnusedParameter
 func (cc *ClientContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		//		cc.RegisterProvider(InstanceAuthAuditClient, cc.providerAuthAuditRestClient),
 		cc.RegisterProvider(InstanceDataAuditClient, cc.providerDataAuditRestClient),
 		cc.RegisterProvider(InstanceAMQPLoginAttemptSender, cc.providerAMQPLoginAttemptSender),
 		cc.RegisterProvider(InstanceAMQPLoginAttemptSenderSenderOpts, cc.providerAMQPLoginAttemptSenderSenderOpts),
 		cc.RegisterProvider(InstanceAMQPConnector, cc.providerAMQPConnector),
 		cc.RegisterProvider(InstanceAMQPConnectorConnOpts, cc.providerAMQPConnectorConnOpts),
 		cc.RegisterProvider(InstanceAMQPConnectorSessOpts, cc.providerAMQPConnectorSessOpts),
+		cc.RegisterProvider(InstanceKafkaLoginAttemptsSender, cc.providerKafkaLoginAttemptSender),
 	)
 	if err != nil {
 		return errs.NewContainerError(cc.GetName(), "container init: register providers failed", err)
-	}
-
-	return nil
-}
-
-func (cc *ClientContainer) Close2(ctx context.Context) error {
-	var closeErrs []error
-	// retrieve all instances to close
-	loginAttemptsSenderInst, err := container.GetInstance[libamqp.Sender[*amqp.SendOptions]](InstanceAMQPLoginAttemptSender)
-	if err != nil {
-		return errs.NewContainerError(cc.GetName(), "container close: retrieve instance failed", err)
-	}
-	// close all instances
-	err = loginAttemptsSenderInst.Close(ctx)
-	if err != nil {
-		closeErrs = append(closeErrs, err)
-	}
-
-	// checks
-	err = errors.Join(closeErrs...)
-	if err != nil {
-		return errs.NewContainerError(cc.GetName(), "container close: close fails", err)
 	}
 
 	return nil

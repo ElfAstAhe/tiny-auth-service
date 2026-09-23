@@ -15,9 +15,10 @@ import (
 )
 
 type LoginAttemptObserver struct {
-	name     string
-	sender   libamqp.Sender[*amqp.SendOptions]
-	sendOpts *amqp.SendOptions
+	name           string
+	sender         libamqp.Sender[*amqp.SendOptions]
+	sendOpts       *amqp.SendOptions
+	senderKindConf string
 }
 
 var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
@@ -25,23 +26,25 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 func NewLoginAttemptObserver(
 	name string,
 	sender libamqp.Sender[*amqp.SendOptions],
+	senderKind string,
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
-		name:   name,
-		sender: sender,
+		name:           name,
+		sender:         sender,
+		senderKindConf: senderKind,
 		sendOpts: &amqp.SendOptions{
 			Settled: true,
 		},
 	}
 }
 
-func (lao *LoginAttemptObserver) GetName() string {
-	return lao.name
+func (laa *LoginAttemptObserver) GetName() string {
+	return laa.name
 }
 
-func (lao *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAttemptEventDTO) error {
+func (laa *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAttemptEventDTO) error {
 	if utils.IsNil(data) {
-		return errs.NewCommonError(fmt.Sprintf("%s observer got nil event data", lao.GetName()), nil)
+		return errs.NewCommonError(fmt.Sprintf("%s observer got nil event data", laa.GetName()), nil)
 	}
 
 	payload, err := json.Marshal(data)
@@ -57,8 +60,8 @@ func (lao *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		Props:   make(map[string]any),
 	}
 
-	if err = lao.sender.Publish(ctx, msg, lao.sendOpts); err != nil {
-		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target %s", lao.GetName(), lao.sender.GetTargetName()), err)
+	if err = laa.sender.Publish(ctx, msg, laa.sendOpts); err != nil {
+		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target %s", laa.GetName(), laa.sender.GetTargetName()), err)
 	}
 
 	return nil

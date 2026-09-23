@@ -83,14 +83,32 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyAMQPConnectorWriteTimeout, flags.Lookup(FlagAMQPConnectorWriteTimeout)),
 		v.BindPFlag(keyAMQPConnectorIdleTimeout, flags.Lookup(FlagAMQPConnectorIdleTimeout)),
 		v.BindPFlag(keyAMQPConnectorShutdownTimeout, flags.Lookup(FlagAMQPConnectorShutdownTimeout)),
-		// amqp sender
-		v.BindPFlag(keyLoginAttemptsSenderTargetName, flags.Lookup(FlagLoginAttemptsSenderTargetName)),
-		v.BindPFlag(keyLoginAttemptsSenderConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderConnectTimeout)),
+		// login attempts
+		v.BindPFlag(keyLoginAttemptsSenderKind, flags.Lookup(FlagLoginAttemptsSenderKind)),
 		v.BindPFlag(keyLoginAttemptsSenderNotifyTimeout, flags.Lookup(FlagLoginAttemptsSenderNotifyTimeout)),
-		v.BindPFlag(keyLoginAttemptsSenderShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderShutdownTimeout)),
-		v.BindPFlag(keyLoginAttemptsSenderPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderPublishMaxTryAttempts)),
-		v.BindPFlag(keyLoginAttemptsSenderPublishBaseRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishBaseRetryDelay)),
-		v.BindPFlag(keyLoginAttemptsSenderPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderPublishMaxRetryDelay)),
+		// amqp login attempts
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigTargetName, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigTargetName)),
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigConnectTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigShutdownTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts)),
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay)),
+		v.BindPFlag(keyLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay)),
+		// kafka login attempts
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigBrokers, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigBrokers)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigTargetName, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigTargetName)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigConnectTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigConnectTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigIdleTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigIdleTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigShutdownTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigShutdownTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigUsername, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigUsername)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigPassword, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigPassword)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigBatchSize, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigBatchSize)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigBatchBytes, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigBatchBytes)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigBatchTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigBatchTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigWriteTimeout, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigWriteTimeout)),
+		v.BindPFlag(keyLoginAttemptsSenderKafkaConfigRequiredAcks, flags.Lookup(FlagLoginAttemptsSenderKafkaConfigRequiredAcks)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)

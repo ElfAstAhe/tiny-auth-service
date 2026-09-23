@@ -10,19 +10,38 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	appamqp "github.com/ElfAstAhe/tiny-auth-service/internal/transport/amqp"
+	appkafka "github.com/ElfAstAhe/tiny-auth-service/internal/transport/kafka"
 )
 
-func (ic *InfraContainer) providerLoginAttemptsObserver() (any, error) {
+func (ic *InfraContainer) providerLoginAttemptsAMQPObserver() (any, error) {
+	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
+	}
 	clientSender, err := container.GetInstance[libamqp.Sender[*amqp.SendOptions]](InstanceAMQPLoginAttemptSender)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}
-	observer := appamqp.NewLoginAttemptObserver("login-attempts-amqp-observer", clientSender)
+	observer := appamqp.NewLoginAttemptObserver("login-attempts-amqp-observer", clientSender, confInst.LoginAttemptsSender.SenderKind)
 
 	return observer, nil
 }
 
-func (ic *InfraContainer) providerLoginAttemptsPublisher() (any, error) {
+func (ic *InfraContainer) providerLoginAttemptsKafkaObserver() (any, error) {
+	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
+	if err != nil {
+		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
+	}
+	clientSender, err := container.GetInstance[libamqp.Sender[any]](InstanceKafkaLoginAttemptsSender)
+	if err != nil {
+		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
+	}
+	observer := appkafka.NewLoginAttemptObserver("login-attempts-kafka-observer", clientSender, confInst.LoginAttemptsSender.SenderKind)
+
+	return observer, nil
+}
+
+func (ic *InfraContainer) providerLoginAttemptsEventDispatcher() (any, error) {
 	confInst, err := container.GetInstance[*config.Config](InstanceConfig)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
