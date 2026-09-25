@@ -15,7 +15,7 @@ import (
 
 type LoginAttemptObserver struct {
 	name           string
-	sender         libamqp.Sender[any]
+	sender         libamqp.Sender
 	senderKindConf string
 }
 
@@ -23,7 +23,7 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	sender libamqp.Sender[any],
+	sender libamqp.Sender,
 	senderKind string,
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
@@ -55,7 +55,7 @@ func (lak *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 	msg.Props["content-type"] = "application/json"
 	msg.Props["kafka_message_key"] = data.Username
 
-	if err = lak.sender.Publish(ctx, msg, nil); err != nil {
+	if err = lak.sender.Publish(ctx, msg); err != nil {
 		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target %s", lak.GetName(), lak.sender.GetTargetName()), err)
 	}
 
