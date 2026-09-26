@@ -7,15 +7,15 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	libamqpkafka "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/kafka"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker"
+	libkafka "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/kafka"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
 type LoginAttemptObserver struct {
 	name           string
-	sender         libamqp.Sender[any]
+	sender         broker.Sender
 	senderKindConf string
 }
 
@@ -23,7 +23,7 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	sender libamqp.Sender[any],
+	sender broker.Sender,
 	senderKind string,
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
@@ -47,7 +47,7 @@ func (lak *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		return errs.NewCommonError("json encode failed", err)
 	}
 
-	msg := &libamqpkafka.Message{
+	msg := &libkafka.Message{
 		TargetName: lak.sender.GetTargetName(),
 		Payload:    payload,
 		Props:      make(map[string]any),
@@ -55,7 +55,7 @@ func (lak *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 	msg.Props["content-type"] = "application/json"
 	msg.Props["kafka_message_key"] = data.Username
 
-	if err = lak.sender.Publish(ctx, msg, nil); err != nil {
+	if err = lak.sender.Publish(ctx, msg); err != nil {
 		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target %s", lak.GetName(), lak.sender.GetTargetName()), err)
 	}
 

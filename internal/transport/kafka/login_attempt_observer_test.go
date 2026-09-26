@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	"github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/mocks"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker/mocks"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 // 1. Тест успешного прохождения события (Happy Path) с валидацией полей DTO и заголовков Props
 func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	// Создаем expecter-мок интерфейса ClientSender с типом any для Kafka
-	mockClient := mocks.NewMockSender[any](t)
+	mockClient := mocks.NewMockSender(t)
 
 	observerName := "test-login-observer"
 	observer := NewLoginAttemptObserver(observerName, mockClient, "kafka")
@@ -48,7 +48,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	mockClient.EXPECT().
 		Publish(
 			mock.Anything,
-			mock.MatchedBy(func(msg libamqp.Message) bool {
+			mock.MatchedBy(func(msg broker.Message) bool {
 				var parsed dto.LoginAttemptEventDTO
 				err := json.Unmarshal(msg.GetPayload(), &parsed)
 
@@ -70,7 +70,6 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 					parsed.Success == true &&
 					parsed.Error == ""
 			}),
-			mock.Anything,
 		).
 		Return(nil).
 		Once()
@@ -84,7 +83,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 
 // 2. Тест обработки ошибки сетевого клиента (Publish Failure)
 func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
-	mockClient := mocks.NewMockSender[any](t)
+	mockClient := mocks.NewMockSender(t)
 	mockClient.EXPECT().GetTargetName().Return("tiny.auth").Maybe()
 
 	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "kafka")
@@ -99,7 +98,7 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 	publishErr := errors.New("kafka broker connection lost")
 
 	mockClient.EXPECT().
-		Publish(mock.Anything, mock.Anything, mock.Anything).
+		Publish(mock.Anything, mock.Anything).
 		Return(publishErr).
 		Once()
 
@@ -112,7 +111,7 @@ func TestLoginAttemptObserver_OnNotify_PublishError(t *testing.T) {
 
 // 3. Тест защиты от nil-указателя на входе (Nil Data Defense)
 func TestLoginAttemptObserver_OnNotify_NilData(t *testing.T) {
-	mockClient := mocks.NewMockSender[any](t)
+	mockClient := mocks.NewMockSender(t)
 	observer := NewLoginAttemptObserver("test-login-observer", mockClient, "kafka")
 
 	// Передаем nil вместо DTO

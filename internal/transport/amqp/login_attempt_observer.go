@@ -8,15 +8,14 @@ import (
 	"github.com/Azure/go-amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	libamqpazure "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
 type LoginAttemptObserver struct {
 	name           string
-	sender         libamqp.Sender[*amqp.SendOptions]
+	sender         libamqp.AMQPSender
 	sendOpts       *amqp.SendOptions
 	senderKindConf string
 }
@@ -25,7 +24,7 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	sender libamqp.Sender[*amqp.SendOptions],
+	sender libamqp.AMQPSender,
 	senderKind string,
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
@@ -52,7 +51,7 @@ func (laa *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		return errs.NewCommonError("json encode failed", err)
 	}
 
-	msg := &libamqpazure.Message{
+	msg := &libamqp.Message{
 		Header: &amqp.MessageHeader{
 			Durable: true,
 		},
@@ -60,7 +59,7 @@ func (laa *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		Props:   make(map[string]any),
 	}
 
-	if err = laa.sender.Publish(ctx, msg, laa.sendOpts); err != nil {
+	if err = laa.sender.PublishWithOpts(ctx, msg, laa.sendOpts); err != nil {
 		return errs.NewCommonError(fmt.Sprintf("%s observer failed to publish to target %s", laa.GetName(), laa.sender.GetTargetName()), err)
 	}
 

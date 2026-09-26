@@ -28,7 +28,7 @@ bin/kafka-storage.sh random-uuid > cluster_id.txt
 
 Инициализируйте конфигурацию хранилища, подставив ID из созданного файла. Для локального запуска в Kafka 4.x обязательно используется флаг `--standalone`:
 ```bash
-bin/kafka-storage.sh format --standalone -t \$(cat cluster_id.txt) -c config/server.properties
+bin/kafka-storage.sh format --standalone -t $(cat cluster_id.txt) -c config/server.properties
 ```
 
 ## Шаг 4: Запуск сервера Kafka
@@ -48,7 +48,7 @@ bin/kafka-server-start.sh config/server.properties
 
 Откройте **новое окно или вкладку терминала**, вернитесь в рабочую директорию (`cd /opt/kafka_2.13-4.3.1`) и выполните следующие команды для проверки:
 
-### 1. Создание топика
+### 1. Создание тестового топика
 ```bash
 bin/kafka-topics.sh --create --topic my-local-topic --bootstrap-server localhost:9092
 ```
@@ -63,4 +63,9 @@ bin/kafka-console-producer.sh --topic my-local-topic --bootstrap-server localhos
 Чтобы увидеть отправленные сообщения, откройте еще одно окно терминала и запустите:
 ```bash
 bin/kafka-console-consumer.sh --topic my-local-topic --from-beginning --bootstrap-server localhost:9092
+```
+
+## Шаг 6: Создание default топика
+```bash
+bin/kafka-topics.sh --create --topic tiny.auth.login.attempts --bootstrap-server localhost:9092
 ```
