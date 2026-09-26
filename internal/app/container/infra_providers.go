@@ -5,8 +5,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	libamqpazure "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	appamqp "github.com/ElfAstAhe/tiny-auth-service/internal/transport/amqp"
@@ -18,7 +18,7 @@ func (ic *InfraContainer) providerLoginAttemptsAMQPObserver() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
 	}
-	clientSender, err := container.GetInstance[libamqpazure.AMQPSender](InstanceAMQPLoginAttemptSender)
+	clientSender, err := container.GetInstance[libamqp.AMQPSender](InstanceAMQPLoginAttemptSender)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}
@@ -32,7 +32,7 @@ func (ic *InfraContainer) providerLoginAttemptsKafkaObserver() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "provider: retrieve instance failed", err)
 	}
-	clientSender, err := container.GetInstance[libamqp.Sender](InstanceKafkaLoginAttemptsSender)
+	clientSender, err := container.GetInstance[broker.Sender](InstanceKafkaLoginAttemptsSender)
 	if err != nil {
 		return nil, errs.NewContainerError(ic.GetName(), "container init: retrieve clientSender failed", err)
 	}

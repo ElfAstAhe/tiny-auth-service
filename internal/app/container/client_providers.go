@@ -7,9 +7,9 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	libamqpazure "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure"
-	libkafka "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/kafka"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker"
+	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp"
+	libkafka "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/kafka"
 	libworker "github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-audit-service/pkg/client/rest"
@@ -62,7 +62,7 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
-	connectorInst, err := container.GetInstance[libamqp.Connector[*amqp.Session]](InstanceAMQPConnector)
+	connectorInst, err := container.GetInstance[broker.Connector[*amqp.Session]](InstanceAMQPConnector)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
@@ -71,16 +71,16 @@ func (cc *ClientContainer) providerAMQPLoginAttemptSender() (any, error) {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	sender, err := libamqpazure.NewSender(
-		libamqpazure.WithSenderConnector(connectorInst),
-		libamqpazure.WithSenderTargetName(confInst.LoginAttemptsSender.AMQPConfig.TargetName),
-		libamqpazure.WithSenderLogger(logInst),
-		libamqpazure.WithSenderOpts(senderOptsInst),
-		libamqpazure.WithSenderConnectTimeout(confInst.LoginAttemptsSender.AMQPConfig.ConnectTimeout),
-		libamqpazure.WithSenderShutdownTimeout(confInst.LoginAttemptsSender.AMQPConfig.ShutdownTimeout),
-		libamqpazure.WithSenderPublishMaxTryAttempts(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxTryAttempts),
-		libamqpazure.WithSenderPublishBaseRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishBaseRetryDelay),
-		libamqpazure.WithSenderPublishMaxRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxRetryDelay),
+	sender, err := libamqp.NewSender(
+		libamqp.WithSenderConnector(connectorInst),
+		libamqp.WithSenderTargetName(confInst.LoginAttemptsSender.AMQPConfig.TargetName),
+		libamqp.WithSenderLogger(logInst),
+		libamqp.WithSenderOpts(senderOptsInst),
+		libamqp.WithSenderConnectTimeout(confInst.LoginAttemptsSender.AMQPConfig.ConnectTimeout),
+		libamqp.WithSenderShutdownTimeout(confInst.LoginAttemptsSender.AMQPConfig.ShutdownTimeout),
+		libamqp.WithSenderPublishMaxTryAttempts(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxTryAttempts),
+		libamqp.WithSenderPublishBaseRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishBaseRetryDelay),
+		libamqp.WithSenderPublishMaxRetryDelay(confInst.LoginAttemptsSender.AMQPConfig.PublishMaxRetryDelay),
 	)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceAMQPLoginAttemptSender), err)
@@ -108,13 +108,13 @@ func (cc *ClientContainer) providerAMQPConnector() (any, error) {
 		return nil, errs.NewContainerError(cc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	connectorInst, err := libamqpazure.NewConnector(
-		libamqpazure.WithConnectorURL(confInst.AMQPConnector.URL),
-		libamqpazure.WithConnectorConnectTimeout(confInst.AMQPConnector.ConnectTimeout),
-		libamqpazure.WithConnectorShutdownTimeout(confInst.AMQPConnector.ShutdownTimeout),
-		libamqpazure.WithConnectorConnOpts(connOpts),
-		libamqpazure.WithConnectorSessionOpts(sessOpts),
-		libamqpazure.WithConnectorLogger(logInst),
+	connectorInst, err := libamqp.NewConnector(
+		libamqp.WithConnectorURL(confInst.AMQPConnector.URL),
+		libamqp.WithConnectorConnectTimeout(confInst.AMQPConnector.ConnectTimeout),
+		libamqp.WithConnectorShutdownTimeout(confInst.AMQPConnector.ShutdownTimeout),
+		libamqp.WithConnectorConnOpts(connOpts),
+		libamqp.WithConnectorSessionOpts(sessOpts),
+		libamqp.WithConnectorLogger(logInst),
 	)
 	if err != nil {
 		return nil, errs.NewContainerError(cc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceAMQPConnector), err)

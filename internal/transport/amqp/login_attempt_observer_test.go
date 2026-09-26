@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp"
-	mocks2 "github.com/ElfAstAhe/go-service-template/pkg/transport/amqp/azure/mocks"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker"
+	mocks2 "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp/mocks"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -46,7 +46,7 @@ func TestLoginAttemptObserver_OnNotify_Success(t *testing.T) {
 	mockClient.EXPECT().
 		PublishWithOpts(
 			mock.Anything,
-			mock.MatchedBy(func(msg libamqp.Message) bool {
+			mock.MatchedBy(func(msg broker.Message) bool {
 				var parsed dto.LoginAttemptEventDTO
 				err := json.Unmarshal(msg.GetPayload(), &parsed)
 
