@@ -5,14 +5,14 @@ import (
 	"fmt"
 
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/go-service-template/pkg/repository/trace"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
 
 type UserTraceRepository struct {
-	*repository.BaseCRUDTraceRepository[*domain.User, string]
+	*trace.BaseCRUDTraceRepository[*domain.User, string]
 	repo domain.UserRepository
 }
 
@@ -22,7 +22,7 @@ var _ domain.UserRepository = (*UserTraceRepository)(nil)
 func NewUserTraceRepository(repo domain.UserRepository) *UserTraceRepository {
 	return &UserTraceRepository{
 		repo:                    repo,
-		BaseCRUDTraceRepository: repository.NewBaseCRUDTraceRepository[*domain.User, string]("UserRepository", repo),
+		BaseCRUDTraceRepository: trace.NewBaseCRUDTraceRepository[*domain.User, string]("UserRepository", repo),
 	}
 }
 

@@ -5,13 +5,12 @@ import (
 	"time"
 
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
-	"github.com/ElfAstAhe/go-service-template/pkg/infra/metrics"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/go-service-template/pkg/repository/metrics"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
 type UserAdminMetricsRepository struct {
-	*repository.BaseCRUDMetricsRepository[*domain.User, string]
+	*metrics.BaseCRUDMetricsRepository[*domain.User, string]
 	repo domain.UserAdminRepository
 }
 
@@ -21,7 +20,7 @@ var _ domain.UserAdminRepository = (*UserAdminMetricsRepository)(nil)
 func NewUserAdminMetricsRepository(repo domain.UserAdminRepository) *UserAdminMetricsRepository {
 	return &UserAdminMetricsRepository{
 		repo:                      repo,
-		BaseCRUDMetricsRepository: repository.NewBaseCRUDMetricsRepository[*domain.User, string]("UserAdminRepository", repo),
+		BaseCRUDMetricsRepository: metrics.NewBaseCRUDMetricsRepository[*domain.User, string]("UserAdminRepository", repo),
 	}
 }
 

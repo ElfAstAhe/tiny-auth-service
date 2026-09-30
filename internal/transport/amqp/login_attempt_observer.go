@@ -9,13 +9,14 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/infra/pubsub"
 	libamqp "github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp"
+	"github.com/ElfAstAhe/go-service-template/pkg/transport/broker/amqp/azure"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
 type LoginAttemptObserver struct {
 	name           string
-	sender         libamqp.AMQPSender
+	sender         libamqp.Sender
 	sendOpts       *amqp.SendOptions
 	senderKindConf string
 }
@@ -24,7 +25,7 @@ var _ pubsub.Observer[*dto.LoginAttemptEventDTO] = (*LoginAttemptObserver)(nil)
 
 func NewLoginAttemptObserver(
 	name string,
-	sender libamqp.AMQPSender,
+	sender libamqp.Sender,
 	senderKind string,
 ) *LoginAttemptObserver {
 	return &LoginAttemptObserver{
@@ -51,7 +52,7 @@ func (laa *LoginAttemptObserver) OnNotify(ctx context.Context, data *dto.LoginAt
 		return errs.NewCommonError("json encode failed", err)
 	}
 
-	msg := &libamqp.Message{
+	msg := &azure.Message{
 		Header: &amqp.MessageHeader{
 			Durable: true,
 		},

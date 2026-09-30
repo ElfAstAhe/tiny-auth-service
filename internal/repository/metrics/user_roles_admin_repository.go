@@ -2,12 +2,12 @@ package metrics
 
 import (
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
-	"github.com/ElfAstAhe/go-service-template/pkg/repository"
+	"github.com/ElfAstAhe/go-service-template/pkg/repository/metrics"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
 type UserRolesAdminMetricsRepository struct {
-	*repository.BaseOwnedMetricsRepository[*domain.Role, string, string]
+	*metrics.BaseOwnedMetricsRepository[*domain.Role, string, string]
 	repo domain.UserRolesAdminRepository
 }
 
@@ -17,6 +17,6 @@ var _ domain.UserRolesAdminRepository = (*UserRolesAdminMetricsRepository)(nil)
 func NewUserRolesAdminMetricsRepository(repo domain.UserRolesAdminRepository) *UserRolesAdminMetricsRepository {
 	return &UserRolesAdminMetricsRepository{
 		repo:                       repo,
-		BaseOwnedMetricsRepository: repository.NewBaseOwnedMetricsRepository[*domain.Role, string, string]("UserRolesAdminRepository", repo),
+		BaseOwnedMetricsRepository: metrics.NewBaseOwnedMetricsRepository[*domain.Role, string, string]("UserRolesAdminRepository", repo),
 	}
 }

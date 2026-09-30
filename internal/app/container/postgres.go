@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
+	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/migration"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
 )
 
 const (
@@ -47,12 +47,12 @@ func (pc *PgContainer) Init(initCtx context.Context) error {
 		return errs.NewContainerError(pc.GetName(), "container init: register providers failed", err)
 	}
 	// init db instance
-	db, err := container.GetInstance[*postgres.PgDB](InstanceDB)
+	dbInst, err := container.GetInstance[db.DB](InstanceDB)
 	if err != nil {
 		return errs.NewContainerError(pc.GetName(), "container init: init db failed", err)
 	}
 	// check db connection
-	err = db.Ping(initCtx)
+	err = dbInst.Ping(initCtx)
 	if err != nil {
 		return errs.NewContainerError(pc.GetName(), "container init: check db failed", err)
 	}

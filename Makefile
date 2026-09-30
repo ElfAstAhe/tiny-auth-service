@@ -13,7 +13,7 @@ KAFKA_DIR   = /opt/kafka_2.13-4.3.1
 ARTEMIS_RUN = /var/lib/artemis-test-cluster/bin/artemis
 
 
-.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
+.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench lint lint-revive static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -203,8 +203,12 @@ bench: gen-proto gen-mocks ## Запустить утилиты с замеро�
 static-check: ## Запустить статический анализ кода (пропуская автогенерируемый pkg/api)
 	staticcheck $$(go list ./... | grep -vE "pkg/api|cmd/grpc-client-test|mocks")
 
+# Запуск линтера golangci-lint
+lint: ## Запустить линтер golangci-lint (пропуск internal, pkg/api, cmd/gen-tz)
+	golangci-lint run
+
 # Запуск линтера
-lint: ## Запустить линтер revive (пропуская автогенерируемый код)
+lint-revive: ## Запустить линтер revive (пропуская автогенерируемый код)
 	revive -exclude "_test\.go$$" $$(go list ./... | grep -vE "pkg/api|cmd/gen-tz|mocks")
 
 # Очистка бинарников
