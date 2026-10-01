@@ -50,7 +50,7 @@ jobs:
       # Это гарантирует, что линтеры и тесты будут видеть актуальный код
       - name: Generate Sources, Proto and Mocks
         run: |
-          make gen-sources
+#          make gen-sources
           make gen-proto
           make gen-swagger
           make gen-mocks
@@ -59,7 +59,7 @@ jobs:
       - name: Run Staticcheck
         run: make static-check
 
-      - name: Run Revive Linter
+      - name: Run golangci-lint Linter
         run: make lint
 
       # 8. Запускаем тесты (флаг -race уже можно зашить внутрь Makefile при желании)
