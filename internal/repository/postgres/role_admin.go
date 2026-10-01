@@ -7,18 +7,21 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
-	librepository "github.com/ElfAstAhe/go-service-template/pkg/repository"
+	librepo "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
+// RoleAdminPgRepository structures administrative relational mapping adapters for generic core role entity CRUD operations.
 type RoleAdminPgRepository struct {
-	*librepository.BaseCRUDRepository[*domain.Role, string]
+	*librepo.BaseCRUDRepository[*domain.Role, string] // Generic platform core structural database repository handle
 }
 
+// Compile-time interface compliance verifications
 var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleAdminPgRepository)(nil)
 var _ domain.RoleAdminRepository = (*RoleAdminPgRepository)(nil)
 
+// NewRoleAdminPgRepository acts as a factory constructor compiling query configurations, scanner mappings, and lifecycle validations criteria.
 func NewRoleAdminPgRepository(
 	executor db.Executor,
 	decipher db.ErrorDecipher,
@@ -26,7 +29,7 @@ func NewRoleAdminPgRepository(
 	// new instance
 	res := &RoleAdminPgRepository{}
 	// sql builders
-	queryBuilders := librepository.NewBaseCRUDQueryBuildersBuilder().NewInstance().
+	queryBuilders := librepo.NewBaseCRUDQueryBuildersBuilder().NewInstance().
 		WithFind(func() string {
 			return sqlRoleAdminFind
 		}).
@@ -44,7 +47,7 @@ func NewRoleAdminPgRepository(
 		}).
 		Build()
 	// callbacks
-	callbacks, _ := librepository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, _ := librepo.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithValidateCreate(res.validateCreate).
@@ -55,10 +58,10 @@ func NewRoleAdminPgRepository(
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := librepository.NewBaseCRUDRepository[*domain.Role, string](
+	base, err := librepo.NewBaseCRUDRepository[*domain.Role, string](
 		executor,
 		decipher,
-		librepository.NewEntityInfo("roles", "Role"),
+		librepo.NewEntityInfo("roles", "Role"),
 		queryBuilders,
 		callbacks,
 	)
@@ -71,6 +74,7 @@ func NewRoleAdminPgRepository(
 	return res, nil
 }
 
+// FindByName executes a fine-grained lookup operation matching the string role name utilizing low-level platform helper mechanisms.
 func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "cannot be empty")
@@ -79,10 +83,12 @@ func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (
 	return rar.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlRoleAdminFindByName, name)
 }
 
-func (rar *RoleAdminPgRepository) entityScanner(scanner librepository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
+// entityScanner maps raw relational row column values into concrete memory model pointers.
+func (rar *RoleAdminPgRepository) entityScanner(scanner librepo.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	return scanner.Scan(&dest.ID, &dest.Name, &dest.Description, &dest.Deleted, &dest.CreatedAt, &dest.UpdatedAt)
 }
 
+// validateCreate triggers domain aggregate assertions prior to executing SQL creation boundaries.
 func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
@@ -91,6 +97,7 @@ func (rar *RoleAdminPgRepository) validateCreate(entity *domain.Role, params ...
 	return entity.ValidateCreate()
 }
 
+// beforeCreate delegates execution targets to model pre-persistence hook procedures.
 func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role, params ...any) error {
 	if err := entity.BeforeCreate(); err != nil {
 		return errs.NewDalError("RoleAdminPgRepository.beforeCreate", "before create entity", err)
@@ -99,10 +106,12 @@ func (rar *RoleAdminPgRepository) beforeCreate(entity *domain.Role, params ...an
 	return nil
 }
 
+// creator triggers context selections executing statement evaluations to insert a new role record into PostgreSQL.
 func (rar *RoleAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetCreate()(), entity.ID, entity.Name, entity.Description, entity.CreatedAt, entity.UpdatedAt), nil
 }
 
+// validateChange triggers domain aggregate state verification rules prior to executing SQL modifications.
 func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role, params ...any) error {
 	if entity == nil {
 		return errs.NewInvalidArgumentError("entity", "role entity is nil")
@@ -111,10 +120,12 @@ func (rar *RoleAdminPgRepository) validateChange(entity *domain.Role, params ...
 	return entity.ValidateChange()
 }
 
+// changer executes context statements mapping changes back into administrative relational tables columns.
 func (rar *RoleAdminPgRepository) changer(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, rar.GetQueryBuilders().GetChange()(), entity.ID, entity.Name, entity.Description, entity.Deleted, entity.UpdatedAt), nil
 }
 
+// beforeChange delegates execution parameters to model pre-modification hook procedures.
 func (rar *RoleAdminPgRepository) beforeChange(entity *domain.Role, params ...any) error {
 	if err := entity.BeforeChange(); err != nil {
 		return errs.NewDalError("RoleAdminPgRepository.beforeChange", "before change entity", err)

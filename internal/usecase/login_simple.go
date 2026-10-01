@@ -12,27 +12,26 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// LoginSimpleUseCase defines the simplified application boundary contract for authentication workflows bypassing asymmetric encryption steps.
 type LoginSimpleUseCase interface {
+	// Login validates credentials directly and yields cryptographically signed JWT access token pairs.
 	Login(ctx context.Context, username string, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error)
 }
 
+// LoginSimpleInteractor implements the LoginSimpleUseCase interface, orchestrating simplified identity checking
+// and raw password hashing sequences without intermediate asymmetric private key operations.
 type LoginSimpleInteractor struct {
-	hashCipher utils.Cipher
-	authHelper auth.Helper
-	userRepo   domain.UserRepository
+	hashCipher utils.Cipher          // Utility engine to recalculate secure password hash sums
+	authHelper auth.Helper           // Framework core helper orchestrating physical token structural layout packing
+	userRepo   domain.UserRepository // DAL repository handle managing user identity search operations
 	// нотификация о логине пользователя (например аудит)
 	// ...
 }
 
+// Compile-time interface compliance verification
 var _ LoginSimpleUseCase = (*LoginSimpleInteractor)(nil)
 
-// NewLoginSimpleUseCase создаёт новый экземпляр use case для аутентификации пользователя
-//
-// Параметры:
-//   - hashCipher: помощник для работы с hash
-//   - keysHelper: помощник для работы с RSA ключами
-//   - authHelper: логика генерации токенов
-//   - userRepo: репозиторий для доступа к данным пользователя
+// NewLoginSimpleUseCase creates a new LoginSimpleUseCase instance wrapping direct hashing and storage infrastructure dependencies.
 func NewLoginSimpleUseCase(hashCipher utils.Cipher, authHelper auth.Helper, userRepo domain.UserRepository) *LoginSimpleInteractor {
 	return &LoginSimpleInteractor{
 		hashCipher: hashCipher,
@@ -41,14 +40,7 @@ func NewLoginSimpleUseCase(hashCipher utils.Cipher, authHelper auth.Helper, user
 	}
 }
 
-// Login — основная точка входа в UseCase аутентификации.
-// Выполняет валидацию входных данных, поиск пользователя, расшифровку пароля через RSA,
-// проверку хэша и генерацию пары токенов (Access и Refresh).
-//
-// Параметры:
-//   - ctx: контекст выполнения запроса.
-//   - username: имя пользователя (логин).
-//   - encryptedPassword: пароль, зашифрованный на публичном ключе пользователя (Base64 RSA).
+// Login executes fast input evaluation, repository identity matching, direct encryption hashing, and final response assembly.
 //
 // ToDo: переделать передачу пароля через []byte
 func (lsi *LoginSimpleInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
@@ -75,7 +67,7 @@ func (lsi *LoginSimpleInteractor) Login(ctx context.Context, username, encrypted
 	return lsi.buildAnswer(user)
 }
 
-// validate выполняет первичную проверку входных параметров на пустоту (Fail-Fast).
+// validate executes preliminary syntax and presence checks over raw boundaries parameters.
 //
 // ToDo: переделать передачу пароля через []byte
 func (lsi *LoginSimpleInteractor) validate(username, encryptedPassword string) error {
@@ -89,12 +81,7 @@ func (lsi *LoginSimpleInteractor) validate(username, encryptedPassword string) e
 	return nil
 }
 
-// buildPasswordHash расшифровывает полученный пароль с помощью приватного ключа пользователя
-// и вычисляет его хэш-сумму для последующего сравнения.
-//
-// Параметры:
-//   - user: объект доменной модели пользователя с данными о ключах и сохраненном хэше [domain.User].
-//   - encryptedPassword: зашифрованная строка пароля.
+// buildPasswordHash generates a secure comparative hash sum out of the inbound password string criteria.
 //
 // ToDo: переделать передачу пароля через []byte
 func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password string) (string, error) {
@@ -107,8 +94,7 @@ func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password 
 	return passwordHash, nil
 }
 
-// validateUserAndPassword проверяет состояние аккаунта [domain.User] (активен/удален)
-// и соответствие вычисленного хэша пароля эталонному значению из базы данных.
+// validateUserAndPassword reviews aggregate active status fields before confirming matching password credentials state.
 func (lsi *LoginSimpleInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
@@ -126,8 +112,7 @@ func (lsi *LoginSimpleInteractor) validateUserAndPassword(user *domain.User, pas
 	return nil
 }
 
-// buildAnswer оркестрирует создание финального ответа из [domain.User], инициируя генерацию
-// JWT и Refresh-токена.
+// buildAnswer coordinates underlying mappings converting identities into structured tokens payloads.
 func (lsi *LoginSimpleInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
 	subject := ToSubject(user, nil)
 	token, err := lsi.buildToken(subject)
@@ -142,13 +127,12 @@ func (lsi *LoginSimpleInteractor) buildAnswer(user *domain.User) (*jwt.Token, *j
 	return token, refreshToken, nil
 }
 
-// buildToken формирует стандартный JWT Access-токен с данными пользователя и списком его ролей.
+// buildToken wraps core claims into standard signed cryptographically signed access tokens.
 func (lsi *LoginSimpleInteractor) buildToken(subject *auth.Subject) (*jwt.Token, error) {
 	return lsi.authHelper.TokenFromSubject(subject)
 }
 
-// buildRefreshToken генерирует уникальный токен обновления (Session-based)
-// и сохраняет его состояние в хранилище сессий.
+// buildRefreshToken yields session tracking structures for persistent token rotation configurations.
 func (lsi *LoginSimpleInteractor) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
 	// ToDo: реализовать в будущем :-)
 	// ..

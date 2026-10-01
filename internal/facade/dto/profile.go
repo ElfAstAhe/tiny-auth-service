@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+// ProfileDTO encapsulates the structural data transfer object profile blueprint payload
+// returned to consumers requesting validated user identity information records.
 type ProfileDTO struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`

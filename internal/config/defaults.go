@@ -8,6 +8,8 @@ import (
 )
 
 // app
+//
+//nolint:gosec // G101 : app conf dev/test defaults
 const (
 	defaultAppEnv             config.AppEnv = config.AppEnvDevelopment
 	defaultAppNodeName        string        = ApplicationName
@@ -25,7 +27,8 @@ const (
 // db
 const (
 	defaultDBDriver string = "postgres"
-	defaultDBDSN    string = "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db"
+	//nolint:gosec // G101 : dev/test env default params
+	defaultDBDSN string = "postgres://svc_auth:password@localhost:5432/test?sslmode=disable&search_path=auth_db"
 )
 
 // audit client

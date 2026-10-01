@@ -17,6 +17,7 @@ type AppConfig struct {
 	DefShutdownTimeout time.Duration `mapstructure:"def_shutdown_timeout" json:"def_shutdown_timeout,omitempty" yaml:"def_shutdown_timeout,omitempty"`
 }
 
+// NewAppConfig acts as a complete constructor function allocating structural application properties.
 func NewAppConfig(
 	env config.AppEnv,
 	initTimeout time.Duration,
@@ -36,6 +37,7 @@ func NewAppConfig(
 	}
 }
 
+// NewDefaultAppConfig returns a default initialized configuration schema blueprint pre-populated with safe baseline defaults.
 func NewDefaultAppConfig() *AppConfig {
 	return NewAppConfig(
 		defaultAppEnv,
@@ -49,6 +51,7 @@ func NewDefaultAppConfig() *AppConfig {
 	)
 }
 
+// Validate executes strict fail-fast validation logic across environment environments parameters prior to app bootstrap.
 func (ac *AppConfig) Validate() error {
 	if ac.Env == "" {
 		return errs.NewConfigValidateError("app", "env", "must not be empty", nil)
@@ -66,7 +69,7 @@ func (ac *AppConfig) Validate() error {
 		return errs.NewConfigValidateError("app", "cipher-key", "must not be empty", nil)
 	}
 
-	if !(ac.DefShutdownTimeout > 0) {
+	if ac.DefShutdownTimeout <= 0 {
 		return errs.NewConfigValidateError("app", "def_shutdown_timeout", "must be positive", nil)
 	}
 

@@ -4,6 +4,8 @@ github.com/ElfAstAhe/go-service-template v0.0.109 h1:BNikix7IjbQVy8j9a5ojMHAW1CB
 github.com/ElfAstAhe/go-service-template v0.0.109/go.mod h1:/NbL975dEjwwsOjyk9pXeZHzbHXclYjorcc8Ldje9IE=
 github.com/ElfAstAhe/go-service-template v0.0.113 h1:HLRDm8DTkZT9v+5Ejrgeh3nKi9afhsWJZ2SrBXDKKQc=
 github.com/ElfAstAhe/go-service-template v0.0.113/go.mod h1:ipaHpFH/NNM9wHBilw3AOLZ1whlbKbomgdbdJG5JhmM=
+github.com/ElfAstAhe/go-service-template v0.0.114 h1:he5E/dQVgsLf3DjdVJVdo/9TyNUk0nO6O2z81INluFM=
+github.com/ElfAstAhe/go-service-template v0.0.114/go.mod h1:hWiv7Sv2bDOlYtivfGRRQZHQwYih1+3iwZWPXTVZReI=
 github.com/ElfAstAhe/tiny-audit-service v0.0.31 h1:IBEaaREYd3SDUiHYgOhUssSuUFWpbmmWKDODDlKQysQ=
 github.com/ElfAstAhe/tiny-audit-service v0.0.31/go.mod h1:J1nCIkvGhJakoVb5kr/IX4P0+zPTpqqYcrS6MCJEDvk=
 github.com/ElfAstAhe/tiny-audit-service v0.0.32 h1:EjX0s6v4KCj3G2uRt4JXJp2m199ZXg2af66ybZ5jh/Q=

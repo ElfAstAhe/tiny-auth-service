@@ -16,16 +16,20 @@ import (
 )
 
 const (
+	// InstanceHealthStatus defines the lookup token key targeted for registered liveness and readiness monitors.
 	InstanceHealthStatus string = "health-status"
 )
 
+// ServiceContainer structures a lazy-loaded lifecycle dependency injection container managing cross-cutting diagnostic probes and cross-container runtime setups.
 type ServiceContainer struct {
-	*container.BaseLazyContainer
+	*container.BaseLazyContainer // Generic framework-level baseline container orchestration handle
 }
 
+// Compile-time interface compliance verifications
 var _ container.Container = (*ServiceContainer)(nil)
 var _ container.LazyContainer = (*ServiceContainer)(nil)
 
+// NewServiceContainer acts as a factory constructor deploying structural configuration, logger, and orchestrator boundaries.
 func NewServiceContainer(
 	orchestrator container.Orchestrator,
 	log logger.Logger,
@@ -39,6 +43,7 @@ func NewServiceContainer(
 	}
 }
 
+// Init triggers synchronous registration sequences linking required lazy diagnostic callbacks and links runtime dependencies.
 func (sc *ServiceContainer) Init(initCtx context.Context) error {
 	// add providers
 	err := errors.Join(

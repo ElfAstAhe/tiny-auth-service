@@ -13,28 +13,27 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// LoginUseCase defines the high-level application boundary contract for handling identity authentication scenarios.
 type LoginUseCase interface {
+	// Login validates input parameters, decrypts securely payloads and yields cryptographically signed JWT access tokens.
 	Login(ctx context.Context, username string, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error)
 }
 
+// LoginInteractor implements the LoginUseCase interface, orchestrating full identity verification sequences,
+// cryptographic private RSA key decryption, credentials comparison, and downstream token generation mechanics.
 type LoginInteractor struct {
-	hashCipher utils.Cipher
-	keysHelper helper.RSAKeys
-	authHelper auth.Helper
-	userRepo   domain.UserRepository
+	hashCipher utils.Cipher          // Utility engine to recalculate secure password hash sums
+	keysHelper helper.RSAKeys        // Cryptographic tool managing user private key data loading and transformation
+	authHelper auth.Helper           // Framework core helper orchestrating physical token structural layout packing
+	userRepo   domain.UserRepository // DAL repository handle managing user identity search operations
 	// нотификация о логине пользователя (например аудит)
 	// ...
 }
 
+// Compile-time interface compliance verification
 var _ LoginUseCase = (*LoginInteractor)(nil)
 
-// NewLoginUseCase создаёт новый экземпляр use case для аутентификации пользователя
-//
-// Параметры:
-//   - hashCipher: помощник для работы с hash
-//   - keysHelper: помощник для работы с RSA ключами
-//   - authHelper: логика генерации токенов
-//   - userRepo: репозиторий для доступа к данным пользователя
+// NewLoginUseCase creates a new LoginUseCase instance mounting required cryptographic and repository dependencies.
 func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHelper auth.Helper, userRepo domain.UserRepository) *LoginInteractor {
 	return &LoginInteractor{
 		hashCipher: hashCipher,
@@ -44,14 +43,7 @@ func NewLoginUseCase(hashCipher utils.Cipher, keysHelper helper.RSAKeys, authHel
 	}
 }
 
-// Login — основная точка входа в UseCase аутентификации.
-// Выполняет валидацию входных данных, поиск пользователя, расшифровку пароля через RSA,
-// проверку хэша и генерацию пары токенов (Access и Refresh).
-//
-// Параметры:
-//   - ctx: контекст выполнения запроса.
-//   - username: имя пользователя (логин).
-//   - encryptedPassword: пароль, зашифрованный на публичном ключе пользователя (Base64 RSA).
+// Login executes primary entry criteria checking, entity lookup, RSA decryption, hash verification, and final token response assembly.
 //
 // ToDo: переделать передачу пароля через []byte
 func (luc *LoginInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
@@ -78,7 +70,7 @@ func (luc *LoginInteractor) Login(ctx context.Context, username, encryptedPasswo
 	return luc.buildAnswer(user)
 }
 
-// validate выполняет первичную проверку входных параметров на пустоту (Fail-Fast).
+// validate executes initial semantic text syntax assertions over parameters to ensure strict input fail-fast enforcement.
 //
 // ToDo: переделать передачу пароля через []byte
 func (luc *LoginInteractor) validate(username, encryptedPassword string) error {
@@ -92,12 +84,7 @@ func (luc *LoginInteractor) validate(username, encryptedPassword string) error {
 	return nil
 }
 
-// buildPasswordHash расшифровывает полученный пароль с помощью приватного ключа пользователя
-// и вычисляет его хэш-сумму для последующего сравнения.
-//
-// Параметры:
-//   - user: объект доменной модели пользователя с данными о ключах и сохраненном хэше [domain.User].
-//   - encryptedPassword: зашифрованная строка пароля.
+// buildPasswordHash parses user private key structures, decodes asymmetric RSA payloads, and yields a comparative hash string.
 //
 // ToDo: переделать передачу пароля через []byte
 func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPassword string) (string, error) {
@@ -120,8 +107,7 @@ func (luc *LoginInteractor) buildPasswordHash(user *domain.User, encryptedPasswo
 	return passwordHash, nil
 }
 
-// validateUserAndPassword проверяет состояние аккаунта [domain.User] (активен/удален)
-// и соответствие вычисленного хэша пароля эталонному значению из базы данных.
+// validateUserAndPassword checks active and deleted account status properties before matching cryptographic comparative keys.
 func (luc *LoginInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
@@ -139,8 +125,7 @@ func (luc *LoginInteractor) validateUserAndPassword(user *domain.User, passwordH
 	return nil
 }
 
-// buildAnswer оркестрирует создание финального ответа из [domain.User], инициируя генерацию
-// JWT и Refresh-токена.
+// buildAnswer coordinates the final data transformations mapping user identities into signed token structures.
 func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
 	subject := ToSubject(user, nil)
 	token, err := luc.buildToken(subject)
@@ -155,13 +140,12 @@ func (luc *LoginInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Tok
 	return token, refreshToken, nil
 }
 
-// buildToken формирует стандартный JWT Access-токен с данными пользователя и списком его ролей.
+// buildToken maps identity claims structures directly into standard signed JWT access identifiers.
 func (luc *LoginInteractor) buildToken(subject *auth.Subject) (*jwt.Token, error) {
 	return luc.authHelper.TokenFromSubject(subject)
 }
 
-// buildRefreshToken генерирует уникальный токен обновления (Session-based)
-// и сохраняет его состояние в хранилище сессий.
+// buildRefreshToken initializes session structures to assemble a secure, long-lived token rotation key.
 func (luc *LoginInteractor) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
 	// ToDo: реализовать в будущем :-)
 	// ..

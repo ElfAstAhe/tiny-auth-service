@@ -44,7 +44,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
-	defer conn.Close()
+	defer func() {
+		_ = conn.Close()
+	}()
 	// auth
 	authClient := pb.NewAuthServiceClient(conn)
 	// context

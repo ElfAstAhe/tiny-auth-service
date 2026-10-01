@@ -54,7 +54,7 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	//		loginSimpleUCInst,
 	//	),
 	//	logInst), nil
-	return audit.NewAuthFacadeAMQP(
+	return audit.NewAuthFacadeBroker(
 		confInst.App.NodeName,
 		publisherInst,
 		facade.NewAuthFacade(

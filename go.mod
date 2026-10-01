@@ -4,9 +4,8 @@ go 1.26.0
 
 require (
 	github.com/Azure/go-amqp v1.7.0
-	github.com/ElfAstAhe/go-service-template v0.0.113
+	github.com/ElfAstAhe/go-service-template v0.0.114
 	github.com/ElfAstAhe/tiny-audit-service v0.0.33
-	github.com/XSAM/otelsql v0.44.0
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-openapi/errors v0.22.9
 	github.com/go-openapi/runtime v0.33.2
@@ -29,7 +28,6 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.6
-	github.com/xo/dburl v0.39.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.71.0
 	go.opentelemetry.io/otel v1.46.0
 	go.opentelemetry.io/otel/trace v1.46.0
@@ -41,6 +39,7 @@ require (
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/XSAM/otelsql v0.44.0 // indirect
 	github.com/andybalholm/brotli v1.2.6 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
@@ -84,6 +83,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
 	github.com/teserakt-io/golang-ed25519 v0.0.0-20210104091850-3888c087a4c8 // indirect
+	github.com/xo/dburl v0.39.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.46.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.46.0 // indirect

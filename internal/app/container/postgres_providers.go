@@ -47,3 +47,13 @@ func (pc *PgContainer) providerDBMigrator() (any, error) {
 
 	return res, nil
 }
+
+//goland:noinspection DuplicatedCode
+func (pc *PgContainer) providerTM() (any, error) {
+	dbInst, err := container.GetInstance[db.DB](InstanceDB)
+	if err != nil {
+		return nil, errs.NewContainerError(pc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return db.NewTxManager(dbInst), nil
+}

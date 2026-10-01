@@ -20,6 +20,8 @@ import (
 	swagh "github.com/swaggo/http-swagger"
 )
 
+// AppChiRouter orchestrates the HTTP delivery layer, encapsulating the chi.Mux multiplexer matrix.
+// It wires cross-cutting middleware pipelines, diagnostics endpoints, and handles structural domain route matching.
 type AppChiRouter struct {
 	router          *chi.Mux
 	log             logger.Logger
@@ -33,8 +35,10 @@ type AppChiRouter struct {
 	roleAdminFacade facade.RoleAdminFacade
 }
 
+// Compile-time interface compliance verification
 var _ libhttp.Router = (*AppChiRouter)(nil)
 
+// NewAppRouter instantiates a new AppChiRouter, processing incoming functional Options parameters and executing strict lifecycle evaluations.
 func NewAppRouter(opts ...Option) (*AppChiRouter, error) {
 	options := &AppRouterOptions{}
 
@@ -60,6 +64,7 @@ func NewAppRouter(opts ...Option) (*AppChiRouter, error) {
 		options.RoleAdminFacade), nil
 }
 
+// newAppChiRouter executes the logical internal assembly sequence allocating routers, profiling hooks, metrics handles, and structural routing groups.
 func newAppChiRouter(
 	config *config.Config,
 	logger logger.Logger,
@@ -103,40 +108,46 @@ func newAppChiRouter(
 	return res
 }
 
+// GetRouter yields the underlying compiled chi.Mux handler instance serving the web network connection loops.
 func (cr *AppChiRouter) GetRouter() http.Handler {
 	return cr.router
 }
 
+// setupMiddleware builds the global cascaded interceptor pipeline, applying telemetry, compression limits, and security boundaries.
 func (cr *AppChiRouter) setupMiddleware(
 	authHelper auth.Helper,
 	logger logger.Logger,
 ) {
-	// tracing
+	// 1. CRITICAL: Recoverer must be placed at the absolute top of the stack to intercept panics from all downstream handlers.
+	cr.router.Use(middleware.Recoverer)
+
+	// 2. LOGGING: HTTPRequestLogger records every single inbound request, including those that panic or fail auth validation.
+	cr.router.Use(libmware.NewHTTPRequestLogger(logger).Handle)
+
+	// 3. TELEMETRY & OBSERVABILITY: OpenTelemetry and Prometheus catch the final HTTP execution states and write precise metrics.
 	cr.router.Use(otelchi.Middleware(cr.config.Telemetry.ServiceName, otelchi.WithChiRoutes(cr.router)))
-	// metrics
 	cr.router.Use(libmware.MetricsMiddleware)
-	// requestID
+
+	// 4. REQUEST IDENTIFICATION: Correlation tokens propagation for end-to-end distributed tracking.
 	cr.router.Use(middleware.RequestID)
-	// requestID (own implementation)
 	cr.router.Use(libmware.NewDefaultRequestIDExtractor().Handler)
-	// traceID (own implementation)
 	cr.router.Use(libmware.NewDefaultTraceIDExtractor().Handler)
-	// realIP (own implementation)
+
+	// 5. NETWORKING CORE: Real IP extraction boundaries.
 	cr.router.Use(libmware.NewRealIPExtractor().Handler)
 	// realIP
 	//cr.router.Use(middleware.RealIP)
-	// recoverer
-	cr.router.Use(middleware.Recoverer)
-	// timeout
+
+	// 6. RESOURCE BUDGETING & PROTECTION: Network stream limits and defensive runtime constraints.
 	cr.router.Use(middleware.Timeout(cr.config.HTTP.ReadTimeout))
-	// compress (add any content-types)
 	cr.router.Use(libmware.NewCompress(logger,
 		libhttp.MediaTypeApplicationJSON,
 		libhttp.MediaTypeTextPlain,
 	).Handle)
-	// decompress
 	cr.router.Use(libmware.NewDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
-	// jwt auth extractor - extract user info from token
+
+	// 7. SECURITY BOUNDARY: Authentication extraction executes right before routing to core application aggregates.
+	// ROUTING OPTIMIZATION NOTICE: PathMatchers match regex rules against raw endpoint patterns securely.
 	cr.router.Use(appmware.NewAuthExtractor(
 		libhttp.NewHTTPPathMatchers([]*libhttp.PathMatcher{
 			libhttp.NewPathMatcher(http.MethodGet, "/metrics", "^/metrics.*$"),
@@ -153,10 +164,9 @@ func (cr *AppChiRouter) setupMiddleware(
 		authHelper,
 		logger,
 	).Handle)
-	// income/outcome logger
-	cr.router.Use(libmware.NewHTTPRequestLogger(logger).Handle)
 }
 
+// setupRoutes registers operational routing endpoints, guarding administrative sub-routers and environments conditional blocks.
 func (cr *AppChiRouter) setupRoutes() {
 	// health check
 	cr.router.Get("/healthz", cr.getHealthz)

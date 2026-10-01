@@ -5,6 +5,8 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
+// IsSubjectAdmin evaluates the validity of an inbound auth.Subject identity contract,
+// executing a rapid role boundary check to confirm administrative RBAC privileges.
 func IsSubjectAdmin(subject *auth.Subject) bool {
 	if subject == nil {
 		return false

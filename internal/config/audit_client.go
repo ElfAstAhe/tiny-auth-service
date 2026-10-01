@@ -6,6 +6,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 )
 
+// AuditClientConfig encapsulates configuration parameters required to initialize
+// the background asynchronous REST data audit client loop and manage worker pools.
 type AuditClientConfig struct {
 	BaseURL            string        `mapstructure:"base_url" json:"base_url,omitempty" yaml:"base_url,omitempty"`
 	Timeout            time.Duration `mapstructure:"timeout" json:"timeout,omitempty" yaml:"timeout,omitempty"`
@@ -15,6 +17,7 @@ type AuditClientConfig struct {
 	ShutdownTimeout    time.Duration `mapstructure:"shutdown_timeout" json:"shutdown_timeout,omitempty" yaml:"shutdown_timeout,omitempty"`
 }
 
+// NewAuditClientConfig acts as a factory constructor allocating structural parameters blueprint properties.
 func NewAuditClientConfig(
 	baseURL string,
 	timeout time.Duration,
@@ -33,6 +36,7 @@ func NewAuditClientConfig(
 	}
 }
 
+// NewDefaultAuditClientConfig returns a default initialized configuration schema blueprint.
 func NewDefaultAuditClientConfig() *AuditClientConfig {
 	return NewAuditClientConfig(
 		"",
@@ -44,6 +48,7 @@ func NewDefaultAuditClientConfig() *AuditClientConfig {
 	)
 }
 
+// Validate executes strict fail-fast validation logic across structural parameters prior to application startup bounds.
 func (acc *AuditClientConfig) Validate() error {
 	if acc.BaseURL == "" {
 		return errs.NewConfigValidateError("audit_client", "base_url", "must not be empty", nil)

@@ -8,13 +8,17 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// UserGRPCService implements the pb.UserServiceServer gRPC interface network delivery boundary.
+// It translates incoming high-performance binary Protobuf streams into structured Facade DTO objects.
 type UserGRPCService struct {
-	pb.UnimplementedUserServiceServer
-	userFacade facade.UserFacade
+	pb.UnimplementedUserServiceServer                   // Embedded fallback forward-compatibility enforcement handle
+	userFacade                        facade.UserFacade // Application boundary facade router executing coordinated business scenarios
 }
 
+// Compile-time interface compliance verification
 var _ pb.UserServiceServer = (*UserGRPCService)(nil)
 
+// NewUserGRPCService acts as a factory constructor mounting required facade layer dependencies.
 func NewUserGRPCService(userFacade facade.UserFacade) *UserGRPCService {
 	return &UserGRPCService{
 		userFacade: userFacade,
@@ -33,6 +37,8 @@ func (us *UserGRPCService) Profile(ctx context.Context, req *emptypb.Empty) (*pb
 
 // ChangePassword changes user password
 func (us *UserGRPCService) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*emptypb.Empty, error) {
+	// PROTO PAYLOAD NOTICE: The inbound request 'req' is passed directly into the transformer mapper.
+	// Ensure that 'MapChangePasswordGRPCToDTO' executes a strict nil-pointer check to defend the runtime from potential panic states under malicious grpc payloads.
 	err := us.userFacade.ChangePassword(ctx, MapChangePasswordGRPCToDTO(req))
 	if err != nil {
 		return nil, MapToGrpcError(err)

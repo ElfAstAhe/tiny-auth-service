@@ -6,6 +6,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// MapToGrpcError inspects global enterprise error taxonomies and maps internal error states
+// into standard strongly-typed gRPC wire communication status codes (google.golang.org/grpc/status).
 func MapToGrpcError(err error) error {
 	if err == nil {
 		return nil

@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// MapRoleDTOToGRPC transforms a facade RoleDTO layer structure into a strongly-typed wire-ready gRPC pb.Role message payload.
 func MapRoleDTOToGRPC(instance *dto.RoleDTO) *pb.Role {
 	if instance == nil {
 		return nil
@@ -21,6 +22,7 @@ func MapRoleDTOToGRPC(instance *dto.RoleDTO) *pb.Role {
 	}.Build()
 }
 
+// MapRoleGRPCToDTO converts an inbound administrative gRPC pb.Role network criteria payload into a decoupled internal facade.RoleDTO.
 func MapRoleGRPCToDTO(instance *pb.Role) *dto.RoleDTO {
 	if instance == nil {
 		return nil
@@ -36,6 +38,7 @@ func MapRoleGRPCToDTO(instance *pb.Role) *dto.RoleDTO {
 	}
 }
 
+// MapRoleDTOsToGRPC converts a slice array of facade RoleDTO pointers into a decoupled slice collection array of gRPC pb.Role entities.
 func MapRoleDTOsToGRPC(roles []*dto.RoleDTO) []*pb.Role {
 	if len(roles) == 0 {
 		return make([]*pb.Role, 0)
@@ -49,6 +52,7 @@ func MapRoleDTOsToGRPC(roles []*dto.RoleDTO) []*pb.Role {
 	return res
 }
 
+// MapRoleGRPCsToDTO reverses a collection array of gRPC pb.Role payloads back into internal facade RoleDTO component structures.
 func MapRoleGRPCsToDTO(roles []*pb.Role) []*dto.RoleDTO {
 	if len(roles) == 0 {
 		return make([]*dto.RoleDTO, 0)

@@ -10,35 +10,55 @@ import (
 )
 
 const (
-	InstanceTM string = "TransactionManager"
+	// InstanceUnitOfWork defines the lookup token key for the global database atomic transaction manager boundary boundary.
+	InstanceUnitOfWork string = "unit-of-work"
 
-	InstanceChangeKeysUC     string = "change-keys-uc"
+	// InstanceChangeKeysUC tracks the registration identifier for asymmetric key pair rotation business interactor.
+	InstanceChangeKeysUC string = "change-keys-uc"
+	// InstanceChangePasswordUC maps the configuration identifier for secure profile password modification workflow interactor.
 	InstanceChangePasswordUC string = "change-password-uc"
-	InstanceLoginUC          string = "login-uc"
-	InstanceLoginSimpleUC    string = "login-simple-uc"
-	InstanceProfileUC        string = "profile-uc"
-	InstanceRegisterUC       string = "register-uc"
+	// InstanceLoginUC sets the lookup token mapping full cryptographic security validation login usecases boundaries.
+	InstanceLoginUC string = "login-uc"
+	// InstanceLoginSimpleUC tracks identifiers servicing lightweight machine credentials verification procedures workflows.
+	InstanceLoginSimpleUC string = "login-simple-uc"
+	// InstanceProfileUC links targets resolving structural non-administrative profile properties queries scripts.
+	InstanceProfileUC string = "profile-uc"
+	// InstanceRegisterUC sets unique system keys identifying registration and asset provisioning workflows.
+	InstanceRegisterUC string = "register-uc"
 
-	InstanceRoleAdminDeleteUC    string = "role-admin-delete-uc"
-	InstanceRoleAdminGetUC       string = "role-admin-get-uc"
+	// InstanceRoleAdminDeleteUC maps identifiers running administrative role eviction operations commands down.
+	InstanceRoleAdminDeleteUC string = "role-admin-delete-uc"
+	// InstanceRoleAdminGetUC defines unique lookup tags for specific identifier roles retrieval requests execution.
+	InstanceRoleAdminGetUC string = "role-admin-get-uc"
+	// InstanceRoleAdminGetByNameUC maps token handles matching specific target role name text lookup parameters queries.
 	InstanceRoleAdminGetByNameUC string = "role-admin-get-by-name-uc"
-	InstanceRoleAdminListUC      string = "role-admin-list-uc"
-	InstanceRoleAdminSaveUC      string = "role-admin-save-uc"
+	// InstanceRoleAdminListUC structures identifier boundaries allocated to paginated role collection aggregate arrays extractions.
+	InstanceRoleAdminListUC string = "role-admin-list-uc"
+	// InstanceRoleAdminSaveUC links targets running administrative role modification and creation persistence workflows.
+	InstanceRoleAdminSaveUC string = "role-admin-save-uc"
 
-	InstanceUserAdminDeleteUC    string = "user-admin-delete-uc"
-	InstanceUserAdminGetUC       string = "user-admin-get-uc"
+	// InstanceUserAdminDeleteUC structures specific keys mapping destructive user moderator eviction parameters boundaries.
+	InstanceUserAdminDeleteUC string = "user-admin-delete-uc"
+	// InstanceUserAdminGetUC pins unique registry passport descriptors dedicated to single user metadata lookups.
+	InstanceUserAdminGetUC string = "user-admin-get-uc"
+	// InstanceUserAdminGetByNameUC sets string keys managing administrative user profile name exact phrase queries search options.
 	InstanceUserAdminGetByNameUC string = "user-admin-get-by-name-uc"
-	InstanceUserAdminListUC      string = "user-admin-list-uc"
-	InstanceUserAdminSaveUC      string = "user-admin-save-uc"
+	// InstanceUserAdminListUC tracks boundaries allocated for paginated collection arrays extraction targeting registered user profiles.
+	InstanceUserAdminListUC string = "user-admin-list-uc"
+	// InstanceUserAdminSaveUC orchestrates required target identifiers execution routes balancing user profiles updates and insertion commands.
+	InstanceUserAdminSaveUC string = "user-admin-save-uc"
 )
 
+// UseCaseContainer structures a lazy-loaded lifecycle dependency injection container managing application business logic interactors.
 type UseCaseContainer struct {
-	*container.BaseLazyContainer
+	*container.BaseLazyContainer // Generic framework-level baseline container orchestration handle
 }
 
+// Compile-time interface compliance verifications
 var _ container.Container = (*UseCaseContainer)(nil)
 var _ container.LazyContainer = (*UseCaseContainer)(nil)
 
+// NewUseCaseContainer acts as a factory constructor deploying structural configuration, logger, and orchestrator boundaries.
 func NewUseCaseContainer(
 	orchestrator container.Orchestrator,
 	log logger.Logger,
@@ -52,9 +72,10 @@ func NewUseCaseContainer(
 	}
 }
 
+// Init triggers synchronous registration sequences linking required lazy interactor provider callbacks inside the dependency map graph.
 func (ucc *UseCaseContainer) Init(ctx context.Context) error {
 	err := errors.Join(
-		ucc.RegisterProvider(InstanceTM, ucc.providerTM),
+		ucc.RegisterProvider(InstanceUnitOfWork, ucc.providerUnitOfWork),
 
 		ucc.RegisterProvider(InstanceChangeKeysUC, ucc.providerChangeKeysUC),
 		ucc.RegisterProvider(InstanceChangePasswordUC, ucc.providerChangePasswordUC),
