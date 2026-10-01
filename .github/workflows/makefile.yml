@@ -50,7 +50,7 @@ jobs:
       # Это гарантирует, что линтеры и тесты будут видеть актуальный код
       - name: Generate Sources, Proto and Mocks
         run: |
-          make gen-sources
+#          make gen-sources
           make gen-proto
           make gen-swagger
           make gen-mocks
