@@ -13,7 +13,7 @@ KAFKA_DIR   = /opt/kafka_2.13-4.3.1
 ARTEMIS_RUN = /var/lib/artemis-test-cluster/bin/artemis
 
 
-.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench lint lint-revive static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
+.PHONY: gen-proto gen-proto2 gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench lint lint-revive static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -23,6 +23,16 @@ help:
 
 # Генерация gRPC кода
 gen-proto: ## Сгенерировать gRPC код (Go & gRPC) из Protobuf файлов
+	mkdir -p $(PROTO_OUT)
+	protoc \
+		-I $(PROTO_ROOT) \
+		--go_out=$(PROTO_OUT) --go_opt=paths=source_relative \
+		--go-grpc_out=$(PROTO_OUT) --go-grpc_opt=paths=source_relative \
+		--go_opt=default_api_level=API_OPAQUE \
+		$(PROTO_PATH)/*.proto
+
+# Генерация gRPC кода (back compatibility)
+gen-proto2: ## Сгенерировать gRPC код (Go & gRPC) из Protobuf файлов (back compatibility, do not use)
 	mkdir -p $(PROTO_OUT)
 	protoc \
         -I $(PROTO_ROOT) \
