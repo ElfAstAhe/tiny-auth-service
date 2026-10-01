@@ -12,7 +12,7 @@ STAGE=DEV
 KAFKA_DIR   = /opt/kafka_2.13-4.3.1
 ARTEMIS_RUN = /var/lib/artemis-test-cluster/bin/artemis
 
-.PHONY: gen-proto gen-proto2 gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench lint lint-revive static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
+.PHONY: gen-proto gen-swagger gen-http-client gen-mocks build build-only github-build run run-amqp run-kafka test github-test bench lint lint-revive static-check clean update-deps artemis-start artemis-stop kafka-start kafka-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
 	@echo "Доступные команды для сборки и тестирования:"
@@ -69,6 +69,13 @@ build: gen-proto gen-swagger gen-http-client gen-mocks ## Полная сбор�
 
 # Сборка проекта с прокидыванием переменных
 build-only: ## Быстрая сборка: компиляция бинарника (без перегенерации моков)
+	go build -ldflags \
+	"-X '$(MODULE_NAME)/internal/config.AppVersion=$(VERSION)' \
+	-X '$(MODULE_NAME)/internal/config.AppBuildTime=$(BUILD_TIME)'" \
+	-o ./bin/$(SERVER_BINARY_NAME) $(SERVER_BUILD_DIR)/main.go
+
+# Сборка проекта с прокидыванием переменных
+github-build: ## Быстрая сборка: компиляция бинарника (github actions)
 	go build -ldflags \
 	"-X '$(MODULE_NAME)/internal/config.AppVersion=$(VERSION)' \
 	-X '$(MODULE_NAME)/internal/config.AppBuildTime=$(BUILD_TIME)'" \
@@ -202,7 +209,11 @@ run-amqp: build ## Собрать проект и запустить бинар�
 		--login-attempts-sender-kafka-required-acks "-1"
 
 # Запуск тестов
-test: gen-mocks ## Запустить модульные и интеграционные тесты проекта
+test: gen-proto gen-swagger gen-http-client gen-mocks ## Запустить модульные и интеграционные тесты проекта
+	go test -v $$(go list ./... | grep -vE "mocks")
+
+# Запуск тестов (github actions)
+github-test: gen-mocks ## Запустить модульные и интеграционные тесты проекта (github actions)
 	go test -v $$(go list ./... | grep -vE "mocks")
 
 # Запуск бенчмарков (сюда добавляем все вызовы) или разные параметры под один пакет
@@ -230,16 +241,16 @@ clean: ## Очистить скомпилированные файлы из па
 update-deps: ## Принудительно обновить и скачать все Go-зависимости проекта
 	go get -u -x all
 
-artemis-local-start: ## start artemis local (ubuntu, in separate terminal)
+artemis-start: ## start artemis local (ubuntu, in separate terminal)
 	gnome-terminal -- bash -c "sudo $(ARTEMIS_RUN) run; exec bash"
 
-artemis-local-stop: ## stop artemis local (not implemented)
+artemis-stop: ## stop artemis local (not implemented)
 	echo "not implemented :-)"
 
-kafka-local-start: ## start kafka local (ubuntu, in separate terminal)
+kafka-start: ## start kafka local (ubuntu, in separate terminal)
 	gnome-terminal -- bash -c "$(KAFKA_DIR)/bin/kafka-server-start.sh $(KAFKA_DIR)/config/server.properties; exec bash"
 
-kafka-local-stop: ## stop kafka local (not implemented)
+kafka-stop: ## stop kafka local (not implemented)
 	echo "not implemented :-)"
 
 brokers-all-start: kafka-local-start artemis-local-start ## start both brokers simultaneously in separate windows
