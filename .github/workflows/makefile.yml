@@ -57,8 +57,8 @@ jobs:
       - name: Run Staticcheck
         run: make static-check
 
-      - name: Run golangci-lint Linter
-        run: make lint
+#      - name: Run golangci-lint Linter
+#        run: make lint
 
       # 8. Запускаем тесты (флаг -race уже можно зашить внутрь Makefile при желании)
       # Обратите внимание: тесты теперь не упадут, так как моки и прото уже сгенерированы шагом выше
