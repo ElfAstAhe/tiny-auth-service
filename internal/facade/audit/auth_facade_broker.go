@@ -11,16 +11,20 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
+// AuthFacade extends the core facade.AuthFacade, acting as a non-invasive asynchronous broker-based auditing decorator.
+// It intercepts authentication requests, structures event footprints, and broadcasts them via registered pubsub notification channels.
 type AuthFacade struct {
-	source    string
-	publisher pubsub.Publisher[*dto.LoginAttemptEventDTO]
-	next      facade.AuthFacade
-	logger    logger.Logger
+	source    string                                      // Identifier string pinning the current microservice node instance name
+	publisher pubsub.Publisher[*dto.LoginAttemptEventDTO] // Framework pubsub engine routing formatted audit events to brokers pipelines
+	next      facade.AuthFacade                           // Downstream concrete authentication facade implementation handling core session logic
+	logger    logger.Logger                               // Dedicated structured logging handle managing local diagnostic data
 }
 
+// Compile-time interface compliance verification
 var _ facade.AuthFacade = (*AuthFacade)(nil)
 
-func NewAuthFacadeAMQP(source string, publisher pubsub.Publisher[*dto.LoginAttemptEventDTO], next facade.AuthFacade, log logger.Logger) *AuthFacade {
+// NewAuthFacadeBroker acts as a factory constructor mounting non-blocking pubsub event publishers over authentication boundaries.
+func NewAuthFacadeBroker(source string, publisher pubsub.Publisher[*dto.LoginAttemptEventDTO], next facade.AuthFacade, log logger.Logger) *AuthFacade {
 	return &AuthFacade{
 		source:    source,
 		publisher: publisher,
@@ -29,6 +33,7 @@ func NewAuthFacadeAMQP(source string, publisher pubsub.Publisher[*dto.LoginAttem
 	}
 }
 
+// Login triggers the core session scenario, aggregates runtime trace indices, and passes non-blocking audit events downstream.
 func (af *AuthFacade) Login(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error) {
 	// call
 	res, err := af.next.Login(ctx, login)
@@ -42,6 +47,7 @@ func (af *AuthFacade) Login(ctx context.Context, login *dto.LoginDTO) (*dto.Logg
 	return res, err
 }
 
+// LoginSimple tracks lightweight machine sessions and non-blocking broadcasts credential validation records via notification engines.
 func (af *AuthFacade) LoginSimple(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error) {
 	// call
 	res, err := af.next.LoginSimple(ctx, login)
@@ -55,6 +61,7 @@ func (af *AuthFacade) LoginSimple(ctx context.Context, login *dto.LoginDTO) (*dt
 	return res, err
 }
 
+// buildEvent populates the structural DTO payload tracking request sequences, client real IPs, and transaction execution errors flags.
 func (af *AuthFacade) buildEvent(
 	ctx context.Context,
 	req *dto.LoginDTO,

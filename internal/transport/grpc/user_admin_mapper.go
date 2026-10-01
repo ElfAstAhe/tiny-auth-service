@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// MapUserDTOToGRPC transforms a facade UserDTO entity directly into a strongly-typed wire-ready gRPC pb.User message payload.
 func MapUserDTOToGRPC(instance *dto.UserDTO) *pb.User {
 	if instance == nil {
 		return nil
@@ -25,6 +26,7 @@ func MapUserDTOToGRPC(instance *dto.UserDTO) *pb.User {
 	}.Build()
 }
 
+// MapUserGRPCToDTO converts an inbound administrative gRPC pb.User network criteria payload into a decoupled internal facade.UserDTO.
 func MapUserGRPCToDTO(instance *pb.User) *dto.UserDTO {
 	if instance == nil {
 		return nil
@@ -42,6 +44,7 @@ func MapUserGRPCToDTO(instance *pb.User) *dto.UserDTO {
 	}
 }
 
+// MapUserDTOsToGRPC converts a slice array of facade UserDTO pointers into a decoupled slice collection array of gRPC pb.User entities.
 func MapUserDTOsToGRPC(instances []*dto.UserDTO) []*pb.User {
 	if len(instances) == 0 {
 		return make([]*pb.User, 0)

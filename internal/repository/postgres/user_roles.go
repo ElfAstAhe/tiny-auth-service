@@ -10,13 +10,16 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
+// UserRolesPgRepository structures public relational mapping adapters for many-to-many user roles associations.
 type UserRolesPgRepository struct {
-	*repository.BaseOwnedRepository[*domain.Role, string, string]
+	*repository.BaseOwnedRepository[*domain.Role, string, string] // Generic platform core structural owned database repository handle
 }
 
+// Compile-time interface compliance verifications
 var _ libdomain.OwnedRepository[*domain.Role, string, string] = (*UserRolesPgRepository)(nil)
 var _ domain.UserRolesRepository = (*UserRolesPgRepository)(nil)
 
+// NewUserRolesPgRepository acts as a factory constructor compiling query configurations, list lifecycles, and relational database footprints.
 func NewUserRolesPgRepository(
 	executor db.Executor,
 	errDecipher db.ErrorDecipher,
@@ -66,6 +69,7 @@ func NewUserRolesPgRepository(
 	return res, nil
 }
 
+// entityScanner maps raw relational row column values into concrete memory model pointers based on scanning label criteria.
 func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	switch sourceLabel {
 	case repository.SourceLabelListAll:
@@ -77,6 +81,7 @@ func (urr *UserRolesPgRepository) entityScanner(scanner repository.Scannable, so
 	return errs.NewDalError("UserRolesPgRepository.entityScanner", fmt.Sprintf("unknown source label [%v]", sourceLabel), nil)
 }
 
+// afterListYield runs a post-retrieval pipeline check to seamlessly isolate and drop softly-deleted entities from active collection streams.
 func (urr *UserRolesPgRepository) afterListYield(entity *domain.Role, params ...any) (*domain.Role, bool, error) {
 	if entity.IsDeleted() {
 		return nil, false, errs.NewDalSoftDeletedError(urr.GetHelper().GetInfo().Entity, entity.GetID())

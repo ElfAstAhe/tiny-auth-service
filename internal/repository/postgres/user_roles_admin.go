@@ -7,19 +7,22 @@ import (
 	"strings"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
-	libdomain "github.com/ElfAstAhe/go-service-template/pkg/domain"
+	libdom "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
+// UserRolesAdminPgRepository structures administrative relational mapping adapters for many-to-many user roles associations.
 type UserRolesAdminPgRepository struct {
-	*repository.BaseOwnedRepository[*domain.Role, string, string]
+	*repository.BaseOwnedRepository[*domain.Role, string, string] // Generic platform core structural owned database repository handle
 }
 
-var _ libdomain.OwnedRepository[*domain.Role, string, string] = (*UserRolesPgRepository)(nil)
+// Compile-time interface compliance verifications
+var _ libdom.OwnedRepository[*domain.Role, string, string] = (*UserRolesAdminPgRepository)(nil)
 var _ domain.UserRolesRepository = (*UserRolesAdminPgRepository)(nil)
 
+// NewUserRolesAdminPgRepository acts as a factory constructor compiling query configurations, scanner mappings, and validation credentials blueprints.
 func NewUserRolesAdminPgRepository(
 	exec db.Executor,
 	errDecipher db.ErrorDecipher,
@@ -75,6 +78,7 @@ func NewUserRolesAdminPgRepository(
 	return res, nil
 }
 
+// entityScanner maps raw relational row column values into concrete memory model pointers.
 func (ura *UserRolesAdminPgRepository) entityScanner(scanner repository.Scannable, sourceLabel string, dest *domain.Role, params ...any) error {
 	switch sourceLabel {
 	case repository.SourceLabelCreate:
@@ -91,6 +95,7 @@ func (ura *UserRolesAdminPgRepository) entityScanner(scanner repository.Scannabl
 	return errs.NewDalError("UserRolesAdminPgRepository.entityScanner", fmt.Sprintf("unknown source label [%v]", sourceLabel), nil)
 }
 
+// validateCreate evaluates model structural assertions and argument parameters criteria before committing persistence operations.
 func (ura *UserRolesAdminPgRepository) validateCreate(role *domain.Role, params ...any) error {
 	if role == nil {
 		return errs.NewInvalidArgumentError("role", "role is nil")
@@ -112,10 +117,12 @@ func (ura *UserRolesAdminPgRepository) validateCreate(role *domain.Role, params 
 	return nil
 }
 
+// creator triggers low-level execution context row selections targeting automated many-to-many bridge table injections.
 func (ura *UserRolesAdminPgRepository) creator(ctx context.Context, querier db.Querier, entity *domain.Role, params ...any) (*sql.Row, error) {
 	return querier.QueryRowContext(ctx, ura.GetQueryBuilders().GetCreate()(), params[0], entity.ID), nil
 }
 
+// ValidateDeleteAll reviews criteria syntax safety bounds before erasing cascade record groups.
 func (ura *UserRolesAdminPgRepository) ValidateDeleteAll(ownerID string) error {
 	if strings.TrimSpace(ownerID) == "" {
 		return errs.NewInvalidArgumentError("ownerID", "must not be empty")
@@ -124,6 +131,7 @@ func (ura *UserRolesAdminPgRepository) ValidateDeleteAll(ownerID string) error {
 	return nil
 }
 
+// ValidateDelete reviews structural assertions before clearing fine-grained relation associations records.
 func (ura *UserRolesAdminPgRepository) ValidateDelete(ownerID string) error {
 	if strings.TrimSpace(ownerID) == "" {
 		return errs.NewInvalidArgumentError("ownerID", "must not be empty")

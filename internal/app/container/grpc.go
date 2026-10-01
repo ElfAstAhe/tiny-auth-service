@@ -10,20 +10,28 @@ import (
 )
 
 const (
-	InstanceAuthGRPCService      string = "auth-gRPC-service"
-	InstanceUserGRPCService      string = "user-gRPC-service"
+	// InstanceAuthGRPCService tracks the registry descriptor key for the baseline authentication gRPC transport handler.
+	InstanceAuthGRPCService string = "auth-gRPC-service"
+	// InstanceUserGRPCService maps the unique lookup token for the core user profiles query gRPC endpoint.
+	InstanceUserGRPCService string = "user-gRPC-service"
+	// InstanceUserAdminGRPCService pins the administrative identity moderation gRPC delivery interactor wrapper.
 	InstanceUserAdminGRPCService string = "user-admin-gRPC-service"
+	// InstanceRoleAdminGRPCService setups lookup tags routing role access matrices modifiers commands to gRPC listeners.
 	InstanceRoleAdminGRPCService string = "role-admin-gRPC-service"
-	InstanceGRPCRunner           string = "grpc-runner"
+	// InstanceGRPCRunner structures the core library server pipeline manager running networking listening threads loops.
+	InstanceGRPCRunner string = "grpc-runner"
 )
 
+// GRPCContainer structures a lazy-loaded lifecycle dependency injection container managing high-performance binary Protobuf transport components.
 type GRPCContainer struct {
-	*container.BaseLazyContainer
+	*container.BaseLazyContainer // Generic framework-level baseline container orchestration handle
 }
 
+// Compile-time interface compliance verifications
 var _ container.Container = (*GRPCContainer)(nil)
 var _ container.LazyContainer = (*GRPCContainer)(nil)
 
+// NewGRPCContainer acts as a factory constructor deploying structural configuration, logger, and orchestrator boundaries.
 func NewGRPCContainer(
 	orchestrator container.Orchestrator,
 	log logger.Logger,
@@ -37,6 +45,7 @@ func NewGRPCContainer(
 	}
 }
 
+// Init triggers synchronous registration sequences linking binary protobuf services and server runners callbacks inside the dependency graph.
 func (gc *GRPCContainer) Init(ctx context.Context) error {
 	err := errors.Join(
 		gc.RegisterProvider(InstanceAuthGRPCService, gc.providerAuthService),

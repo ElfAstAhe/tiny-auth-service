@@ -12,6 +12,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 )
 
+// RoleAdminFacade defines the administrative orchestration contract managing role records mapping and RBAC safety checkpoints.
 type RoleAdminFacade interface {
 	Get(ctx context.Context, ID string) (*dto.RoleDTO, error)
 	GetByName(ctx context.Context, name string) (*dto.RoleDTO, error)
@@ -21,22 +22,25 @@ type RoleAdminFacade interface {
 	Delete(ctx context.Context, ID string) error
 }
 
+// RoleAdminFacadeImpl structures administrative boundary routers, conducting data transformations and permission assertions.
 type RoleAdminFacadeImpl struct {
-	authHelper   auth.Helper
-	getUC        usecase.RoleAdminGetUseCase
-	getByNameUC  usecase.RoleAdminGetUseCase
-	listUC       usecase.RoleAdminListUseCase
-	saveUC       usecase.RoleAdminSaveUseCase
-	deleteUC     usecase.RoleAdminDeleteUseCase
-	maxListLimit int
+	authHelper   auth.Helper                     // Framework core token management tool verifying structural context identity claims
+	getUC        usecase.RoleAdminGetUseCase     // Downstream application usecase handling administrative specific identifier lookup
+	getByNameUC  usecase.RoleAdminGetNameUseCase // Downstream application usecase managing criteria name string lookup routines
+	listUC       usecase.RoleAdminListUseCase    // Downstream application usecase managing array paginated aggregate lookup queries
+	saveUC       usecase.RoleAdminSaveUseCase    // Downstream application usecase coordinating persistence operations across creation and update workflows
+	deleteUC     usecase.RoleAdminDeleteUseCase  // Downstream application usecase executing single identity entity eviction bounds
+	maxListLimit int                             // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
 }
 
+// Compile-time interface compliance verification
 var _ RoleAdminFacade = (*RoleAdminFacadeImpl)(nil)
 
+// NewRoleAdminFacade acts as a factory constructor embedding granular administrative role usecase components and framework helpers.
 func NewRoleAdminFacade(
 	authHelper auth.Helper,
 	getUC usecase.RoleAdminGetUseCase,
-	getByNameUC usecase.RoleAdminGetUseCase,
+	getByNameUC usecase.RoleAdminGetNameUseCase,
 	listUC usecase.RoleAdminListUseCase,
 	saveUC usecase.RoleAdminSaveUseCase,
 	deleteUC usecase.RoleAdminDeleteUseCase,
@@ -53,6 +57,7 @@ func NewRoleAdminFacade(
 	}
 }
 
+// Get executes security credential checks and translates internal role domain model data payloads back into external transfer objects by ID keys.
 func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDTO, error) {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)
@@ -76,6 +81,7 @@ func (raf *RoleAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.RoleDT
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
+// GetByName evaluates identity roles before requesting the target entity array matching specific name query sequences.
 func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.RoleDTO, error) {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)
@@ -99,6 +105,7 @@ func (raf *RoleAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
+// List reviews paginated range boundaries and returns a transformed decoupled collection array target.
 func (raf *RoleAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.RoleDTO, error) {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)
@@ -122,8 +129,9 @@ func (raf *RoleAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]
 	return mapper.MapRolesModelToDTO(models), nil
 }
 
+// validateList asserts structural integrity of input pagination indices prior to executing resource operations.
 func (raf *RoleAdminFacadeImpl) validateList(limit, offset int) error {
-	if !(limit > 0) {
+	if limit <= 0 {
 		return errs.NewInvalidArgumentError("limit", "must be greater than 0")
 	}
 	if offset < 0 {
@@ -136,6 +144,7 @@ func (raf *RoleAdminFacadeImpl) validateList(limit, offset int) error {
 	return nil
 }
 
+// Create enforces admin restrictions, maps external data payloads onto domain schemas, and delegates atomic insertion routines.
 func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (*dto.RoleDTO, error) {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)
@@ -162,6 +171,7 @@ func (raf *RoleAdminFacadeImpl) Create(ctx context.Context, role *dto.RoleDTO) (
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
+// Change ensures strict authorization mappings, updates domain models with context identifier keys, and commits changes downstream.
 func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto.RoleDTO) (*dto.RoleDTO, error) {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)
@@ -188,6 +198,7 @@ func (raf *RoleAdminFacadeImpl) Change(ctx context.Context, ID string, role *dto
 	return mapper.MapRoleModelToDTO(model), nil
 }
 
+// Delete acts as a destructive gateway validation checkpoint before passing eviction criteria commands down the line.
 func (raf *RoleAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
 	// subject
 	subj, err := raf.authHelper.SubjectFromContext(ctx)

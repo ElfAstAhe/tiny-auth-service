@@ -7,40 +7,51 @@ import (
 	"strings"
 	"time"
 
-	usecase "github.com/ElfAstAhe/go-service-template/pkg/db"
+	libdom "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
+// ChangePasswordUseCase defines the business contract for validating and updating account security credentials.
 type ChangePasswordUseCase interface {
+	// ChangePassword modifies the password hash for the specified user identity after verifying current ownership.
 	ChangePassword(ctx context.Context, userID, oldPassword, newPassword string) error
 }
 
+// ChangePasswordInteractor implements the ChangePasswordUseCase interface, orchestrating security verification workflows
+// and user state modifications within an atomic transaction boundary.
 type ChangePasswordInteractor struct {
-	hashCipher utils.Cipher
-	tm         usecase.TransactionManager
-	userRepo   domain.UserRepository
+	hashCipher utils.Cipher          // Cryptographic utility for secure text hashing and encryption
+	uw         libdom.UnitOfWork     // BLL-level unit of work boundary abstraction manager
+	userRepo   domain.UserRepository // DAL repository handle for user state persistence
 }
 
+// Compile-time interface compliance verification
 var _ ChangePasswordUseCase = (*ChangePasswordInteractor)(nil)
 
-func NewChangePasswordUseCase(hashCipher utils.Cipher, tm usecase.TransactionManager, userRepo domain.UserRepository) *ChangePasswordInteractor {
+// NewChangePasswordUseCase acts as a factory constructor mounting interactor dependencies.
+func NewChangePasswordUseCase(
+	hashCipher utils.Cipher,
+	uw libdom.UnitOfWork,
+	userRepo domain.UserRepository,
+) *ChangePasswordInteractor {
 	return &ChangePasswordInteractor{
 		hashCipher: hashCipher,
-		tm:         tm,
+		uw:         uw,
 		userRepo:   userRepo,
 	}
 }
 
+// ChangePassword validates basic constraints, verifies current credentials, hashes the new password payload, and updates user state inside an atomic transaction.
 func (cp *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, oldPassword, newPassword string) error {
 	if err := cp.validate(userID, oldPassword, newPassword); err != nil {
 		return errs.NewBllValidateError("ChangePasswordInteractor.ChangePassword", "validate income data failed", err)
 	}
 
-	err := cp.tm.WithinTransaction(ctx, nil, func(ctx context.Context) error {
+	err := cp.uw.Execute(ctx, func(txCtx context.Context) error {
 		// пользователь
-		user, err := cp.userRepo.Find(ctx, userID)
+		user, err := cp.userRepo.Find(txCtx, userID)
 		if err != nil {
 			return err
 		}
@@ -64,7 +75,7 @@ func (cp *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, 
 		user.PasswordHash = newPasswordHash
 		user.UpdatedAt = time.Now()
 
-		_, err = cp.userRepo.Change(ctx, user)
+		_, err = cp.userRepo.Change(txCtx, user)
 		if err != nil {
 			return err
 		}
@@ -82,6 +93,7 @@ func (cp *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, 
 	return nil
 }
 
+// validate executes initial syntax and sanity checks on boundary parameters before opening a transaction.
 func (cp *ChangePasswordInteractor) validate(userID, oldPassword, newPassword string) error {
 	if strings.TrimSpace(userID) == "" {
 		return errs.NewInvalidArgumentError("userID", "user id required")
@@ -98,18 +110,7 @@ func (cp *ChangePasswordInteractor) validate(userID, oldPassword, newPassword st
 	return nil
 }
 
-// validatePassword
-// сюда можно добавить бизнес логику на проверку пароля
-//   - strong password
-//   - same password
-//   - history password
-//   - min length
-//   - etc
-//
-// реализовываем простые проверки
-//   - empty
-//   - same password
-//   - old and current password match
+// validatePassword evaluates business domain invariants regarding password history, compatibility, and credentials verification.
 func (cp *ChangePasswordInteractor) validatePassword(oldPasswordHash, newPasswordHash string, user *domain.User) error {
 	// * same password
 	if newPasswordHash == user.PasswordHash {

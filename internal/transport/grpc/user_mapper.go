@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// MapProfileDTOToGRPC transforms a facade ProfileDTO layer structure into a strongly-typed wire-ready gRPC pb.ProfileResponse package payload.
 func MapProfileDTOToGRPC(profile *dto.ProfileDTO) *pb.ProfileResponse {
 	if profile == nil {
 		return nil
@@ -23,6 +24,7 @@ func MapProfileDTOToGRPC(profile *dto.ProfileDTO) *pb.ProfileResponse {
 	}.Build()
 }
 
+// MapChangePasswordGRPCToDTO converts an inbound gRPC pb.ChangePasswordRequest network criteria payload into a decoupled internal facade.ChangePasswordDTO.
 func MapChangePasswordGRPCToDTO(req *pb.ChangePasswordRequest) *dto.ChangePasswordDTO {
 	if req == nil {
 		return nil
@@ -34,6 +36,7 @@ func MapChangePasswordGRPCToDTO(req *pb.ChangePasswordRequest) *dto.ChangePasswo
 	}
 }
 
+// MapChangedKeysDTOToGRPC translates internal facade ChangedKeysDTO records back into public cryptographically signed gRPC pb.ChangeKeysResponse payloads.
 func MapChangedKeysDTOToGRPC(resp *dto.ChangedKeysDTO) *pb.ChangeKeysResponse {
 	if resp == nil {
 		return nil

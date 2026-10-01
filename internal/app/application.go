@@ -11,14 +11,18 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 )
 
+// Application structures the root execution supervisor for the microservice bootstrap lifecycle,
+// anchoring core infrastructure setups, networking transports, and atomic runtime components.
 type Application struct {
-	*app.BaseApplication
-	conf *config.Config
-	log  logger.Logger
+	*app.BaseApplication                // Generic framework-level root foundation architecture handle
+	conf                 *config.Config // Comprehensive multi-layered configuration profile node instance
+	log                  logger.Logger  // Central platform structured diagnostic logger utility handle
 }
 
+// Compile-time interface compliance verification
 var _ app.Application = (*Application)(nil)
 
+// NewApplication acts as an enterprise factory constructor evaluating configuration options and compiling the global containers topology.
 func NewApplication(opts ...Option) (*Application, error) {
 	// create instance
 	res := &Application{}
@@ -70,6 +74,7 @@ func NewApplication(opts ...Option) (*Application, error) {
 	return res, nil
 }
 
+// Init handles early bootstrap sequences, mapping system instance indicators and routing initialization calls across core modules.
 func (app *Application) Init() error {
 	appCnt, err := app.GetOrchestrator().GetContainer(container.AppContainerName)
 	if err != nil {

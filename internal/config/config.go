@@ -10,9 +10,12 @@ import (
 )
 
 const (
+	// ApplicationName defines the global system identification token for the microservice node.
 	ApplicationName string = "tiny-auth-service"
 )
 
+// Config aggregates multi-layered environment settings blocks, infrastructure configurations blueprints,
+// cross-cutting telemetry parameters, and credentials profiles required to spin up application services.
 type Config struct {
 	App                 *AppConfig                  `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
 	Credentials         *ServiceCredentialsConfig   `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
@@ -27,12 +30,13 @@ type Config struct {
 	LoginAttemptsSender *LoginAttemptsConfig        `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
 }
 
-// linker params
+// Linker params injected via compiler build automation pipelines (-ldflags).
 var (
 	AppVersion   string
 	AppBuildTime string
 )
 
+// NewConfig acts as a complete constructor function mapping parameters across individual configuration scopes.
 func NewConfig(
 	app *AppConfig,
 	svcCreds *ServiceCredentialsConfig,
@@ -61,6 +65,7 @@ func NewConfig(
 	}
 }
 
+// NewDefaultConfig initializes the application settings schema pre-populating safe fallbacks from frameworks defaults.
 func NewDefaultConfig() *Config {
 	return NewConfig(
 		NewDefaultAppConfig(),
@@ -77,6 +82,8 @@ func NewDefaultConfig() *Config {
 	)
 }
 
+// NewEmptyConfig builds a zero-allocated nested reference tree mapping empty configurations stubs.
+//
 //goland:noinspection GoUnusedExportedFunction
 func NewEmptyConfig() *Config {
 	return &Config{
@@ -97,6 +104,7 @@ func NewEmptyConfig() *Config {
 	}
 }
 
+// Validate dynamically maps fields onto an anonymous validation contract array loop to execute fast composite assertions.
 func (c *Config) Validate() error {
 	validators := []interface {
 		Validate() error

@@ -10,6 +10,8 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 )
 
+// LoginAttemptsConfig encapsulates the configuration parameters required to initialize
+// and validate outbound infrastructure event streaming publishers for user authentication tracking.
 type LoginAttemptsConfig struct {
 	SenderKind    string                    `mapstructure:"sender_kind" json:"sender_kind,omitempty" yaml:"sender_kind,omitempty"`
 	NotifyTimeout time.Duration             `mapstructure:"notify_timeout" json:"notify_timeout,omitempty" yaml:"notify_timeout,omitempty"`
@@ -17,6 +19,7 @@ type LoginAttemptsConfig struct {
 	KafkaConfig   *config.KafkaSenderConfig `mapstructure:"kafka_config" json:"kafka_config,omitempty" yaml:"kafka_config"`
 }
 
+// NewLoginAttemptsConfig acts as a factory constructor allocating login attempts streaming properties.
 func NewLoginAttemptsConfig(
 	senderKind string,
 	notifyTimeout time.Duration,
@@ -31,6 +34,7 @@ func NewLoginAttemptsConfig(
 	}
 }
 
+// NewDefaultLoginAttemptsConfig returns a default initialized configuration schema blueprint.
 func NewDefaultLoginAttemptsConfig() *LoginAttemptsConfig {
 	return NewLoginAttemptsConfig(
 		defaultLoginAttemptsSenderKind,
@@ -40,11 +44,12 @@ func NewDefaultLoginAttemptsConfig() *LoginAttemptsConfig {
 	)
 }
 
+// Validate executes strict fail-fast conditional routing validation logic across target broker properties before boot constraints.
 func (lac *LoginAttemptsConfig) Validate() error {
 	if !slices.Contains([]string{"amqp", "kafka"}, lac.SenderKind) {
 		return errs.NewConfigValidateError("login_attempts_sender", "SenderKind", fmt.Sprintf("unknown sender kind: %s", lac.SenderKind), nil)
 	}
-	if !(lac.NotifyTimeout > 0) {
+	if lac.NotifyTimeout <= 0 {
 		return errs.NewConfigValidateError("login_attempts_sender", "NotifyTimeout", "must be more than zero", nil)
 	}
 

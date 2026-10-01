@@ -5,6 +5,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
+// MapRoleModelToDTO transforms a domain Role aggregate entity directly into a flattened, data-transfer-safe dto.RoleDTO blueprint structure.
 func MapRoleModelToDTO(model *domain.Role) *dto.RoleDTO {
 	if model == nil {
 		return nil
@@ -20,6 +21,7 @@ func MapRoleModelToDTO(model *domain.Role) *dto.RoleDTO {
 	}
 }
 
+// MapRolesModelToDTO converts a slice array of domain Role pointers into a decoupled slice collection array of dto.RoleDTO entities.
 func MapRolesModelToDTO(models []*domain.Role) []*dto.RoleDTO {
 	if len(models) == 0 {
 		return make([]*dto.RoleDTO, 0)
@@ -33,6 +35,7 @@ func MapRolesModelToDTO(models []*domain.Role) []*dto.RoleDTO {
 	return res
 }
 
+// MapRoleDTOToModel reverses a data-transfer object payload schema, re-assembling a structured domain.Role core execution aggregate entity.
 func MapRoleDTOToModel(role *dto.RoleDTO) *domain.Role {
 	if role == nil {
 		return nil
@@ -48,6 +51,7 @@ func MapRoleDTOToModel(role *dto.RoleDTO) *domain.Role {
 	}
 }
 
+// MapRolesDTOToModel reverses a collection array of data-transfer objects payloads back into a slice of structured domain.Role core execution aggregate entities.
 func MapRolesDTOToModel(roles []*dto.RoleDTO) []*domain.Role {
 	if len(roles) == 0 {
 		return make([]*domain.Role, 0)

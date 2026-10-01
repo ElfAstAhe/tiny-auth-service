@@ -12,16 +12,21 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
+// AuthFacadeImpl extends the core facade.AuthFacade, acting as a non-invasive synchronous REST-based auditing decorator.
+// It intercepts authentication requests, extracts boundary execution metadata, and forwards event logs to the external audit microservice.
+//
 // Deprecated: AuthFacadeImpl оставлен как образец использования audit rest client
 type AuthFacadeImpl struct {
-	next        facade.AuthFacade
-	source      string
-	auditClient client.AuthAuditClient
-	logger      logger.Logger
+	next        facade.AuthFacade      // Downstream concrete authentication facade implementation handling core session logic
+	source      string                 // Context configuration metric defining the identifier string for the origin microservice node
+	auditClient client.AuthAuditClient // REST-compatible client manager pushing marshaled audit schemas to targets
+	logger      logger.Logger          // Dedicated structured logging handle managing local tracking records
 }
 
+// Compile-time interface compliance verification
 var _ facade.AuthFacade = (*AuthFacadeImpl)(nil)
 
+// NewAuthFacadeRest acts as a factory constructor mounting required synchronous HTTP auditing decorators over an execution chain.
 func NewAuthFacadeRest(
 	auditClient client.AuthAuditClient,
 	source string,
@@ -36,6 +41,7 @@ func NewAuthFacadeRest(
 	}
 }
 
+// Login triggers the core session scenario, extracts execution properties, and synchronously pushes authorization statistics into storage logs.
 func (aaf *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error) {
 	// вызов
 	res, err := aaf.next.Login(ctx, login)
@@ -44,6 +50,7 @@ func (aaf *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto
 	data := aaf.buildAudit(ctx, login, res, err)
 
 	// отправка
+	// AUDIT FAULT NOTICE: Network transport degradations inside auditClient do not block downstream user sessions execution.
 	err = aaf.auditClient.Audit(data)
 	if err != nil {
 		aaf.logger.Errorf("error audit: %v", err)
@@ -52,6 +59,7 @@ func (aaf *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto
 	return res, err
 }
 
+// LoginSimple triggers simplified session matches and aggregates diagnostic context schemas transmitting logs straight to audit collectors.
 func (aaf *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO) (*dto.LoggedInDTO, error) {
 	// вызов
 	res, err := aaf.next.LoginSimple(ctx, login)
@@ -68,6 +76,7 @@ func (aaf *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO)
 	return res, err
 }
 
+// buildAudit utilizes abstract structural builders to parse identity contextual indicators, runtime trace spans, and credentials metadata.
 func (aaf *AuthFacadeImpl) buildAudit(ctx context.Context, req *dto.LoginDTO, res *dto.LoggedInDTO, err error) *auditdto.AuthAuditDTO {
 	// common
 	builder := utils.NewAuthAuditBuilder().
@@ -90,6 +99,7 @@ func (aaf *AuthFacadeImpl) buildAudit(ctx context.Context, req *dto.LoginDTO, re
 		Build()
 }
 
+// toAuditStatus inspects native error boundaries and translates execution states into unified structural telemetry indicators.
 func (aaf *AuthFacadeImpl) toAuditStatus(err error) string {
 	switch err == nil {
 	case true:

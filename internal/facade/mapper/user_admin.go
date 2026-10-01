@@ -5,6 +5,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/facade/dto"
 )
 
+// MapUserModelToDTO transforms a domain User aggregate entity directly into a flattened, data-transfer-safe dto.UserDTO blueprint structure.
 func MapUserModelToDTO(model *domain.User) *dto.UserDTO {
 	if model == nil {
 		return nil
@@ -25,6 +26,7 @@ func MapUserModelToDTO(model *domain.User) *dto.UserDTO {
 	}
 }
 
+// MapUserModelsToDTO converts a slice array of domain User pointers into a decoupled slice collection array of dto.UserDTO entities.
 func MapUserModelsToDTO(models []*domain.User) []*dto.UserDTO {
 	if len(models) == 0 {
 		return make([]*dto.UserDTO, 0)
@@ -38,6 +40,7 @@ func MapUserModelsToDTO(models []*domain.User) []*dto.UserDTO {
 	return res
 }
 
+// MapUserDTOToModel reverses a data-transfer object payload schema, re-assembling a structured domain.User core execution aggregate entity.
 func MapUserDTOToModel(user *dto.UserDTO) *domain.User {
 	if user == nil {
 		return nil

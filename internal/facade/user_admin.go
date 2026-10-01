@@ -12,6 +12,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 )
 
+// UserAdminFacade defines the administrative orchestration contract managing user records mapping and RBAC safety checkpoints.
 type UserAdminFacade interface {
 	Get(ctx context.Context, ID string) (*dto.UserDTO, error)
 	GetByName(ctx context.Context, name string) (*dto.UserDTO, error)
@@ -21,18 +22,21 @@ type UserAdminFacade interface {
 	Delete(ctx context.Context, ID string) error
 }
 
+// UserAdminFacadeImpl structures administrative boundary routers, conducting data transformations and permission assertions.
 type UserAdminFacadeImpl struct {
-	authHelper   auth.Helper
-	getUC        usecase.UserAdminGetUseCase
-	getByNameUC  usecase.UserAdminGetNameUseCase
-	listUC       usecase.UserAdminListUseCase
-	saveUC       usecase.UserAdminSaveUseCase
-	deleteUC     usecase.UserAdminDeleteUseCase
-	maxListLimit int
+	authHelper   auth.Helper                     // Framework core token management tool verifying structural context identity claims
+	getUC        usecase.UserAdminGetUseCase     // Downstream application usecase handling administrative specific identifier lookup
+	getByNameUC  usecase.UserAdminGetNameUseCase // Downstream application usecase managing criteria name string lookup routines
+	listUC       usecase.UserAdminListUseCase    // Downstream application usecase managing array paginated aggregate lookup queries
+	saveUC       usecase.UserAdminSaveUseCase    // Downstream application usecase coordinating persistence operations across creation and update workflows
+	deleteUC     usecase.UserAdminDeleteUseCase  // Downstream application usecase executing single identity entity eviction bounds
+	maxListLimit int                             // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
 }
 
+// Compile-time interface compliance verification
 var _ UserAdminFacade = (*UserAdminFacadeImpl)(nil)
 
+// NewUserAdminFacade acts as a factory constructor embedding granular administrative usecase components and framework helpers.
 func NewUserAdminFacade(
 	authHelper auth.Helper,
 	getUC usecase.UserAdminGetUseCase,
@@ -53,6 +57,7 @@ func NewUserAdminFacade(
 	}
 }
 
+// Get executes security credential checks and translates internal user domain model data payloads back into external transfer objects by ID keys.
 func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDTO, error) {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
@@ -76,6 +81,7 @@ func (uaf *UserAdminFacadeImpl) Get(ctx context.Context, ID string) (*dto.UserDT
 	return mapper.MapUserModelToDTO(model), nil
 }
 
+// GetByName evaluates identity roles before requesting the target entity array matching specific name query sequences.
 func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dto.UserDTO, error) {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
@@ -99,6 +105,7 @@ func (uaf *UserAdminFacadeImpl) GetByName(ctx context.Context, name string) (*dt
 	return mapper.MapUserModelToDTO(model), nil
 }
 
+// List reviews paginated range boundaries and returns a transformed decoupled collection array target.
 func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]*dto.UserDTO, error) {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
@@ -122,8 +129,9 @@ func (uaf *UserAdminFacadeImpl) List(ctx context.Context, limit, offset int) ([]
 	return mapper.MapUserModelsToDTO(models), nil
 }
 
+// validateList asserts structural integrity of input pagination indices prior to executing resource operations.
 func (uaf *UserAdminFacadeImpl) validateList(limit, offset int) error {
-	if !(limit > 0) {
+	if limit <= 0 {
 		return errs.NewInvalidArgumentError("limit", "must be greater than 0")
 	}
 	if offset < 0 {
@@ -136,6 +144,7 @@ func (uaf *UserAdminFacadeImpl) validateList(limit, offset int) error {
 	return nil
 }
 
+// Create enforces admin restrictions, maps external data payloads onto domain schemas, and delegates atomic insertion routines.
 func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (*dto.UserDTO, error) {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
@@ -162,6 +171,7 @@ func (uaf *UserAdminFacadeImpl) Create(ctx context.Context, user *dto.UserDTO) (
 	return mapper.MapUserModelToDTO(model), nil
 }
 
+// Change ensures strict authorization mappings, updates domain models with context identifier keys, and commits changes downstream.
 func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto.UserDTO) (*dto.UserDTO, error) {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
@@ -188,6 +198,7 @@ func (uaf *UserAdminFacadeImpl) Change(ctx context.Context, ID string, user *dto
 	return mapper.MapUserModelToDTO(model), nil
 }
 
+// Delete acts as a destructive gateway validation checkpoint before passing eviction criteria commands down the line.
 func (uaf *UserAdminFacadeImpl) Delete(ctx context.Context, ID string) error {
 	// subject
 	subj, err := uaf.authHelper.SubjectFromContext(ctx)
