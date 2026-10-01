@@ -12,7 +12,6 @@ STAGE=DEV
 KAFKA_DIR   = /opt/kafka_2.13-4.3.1
 ARTEMIS_RUN = /var/lib/artemis-test-cluster/bin/artemis
 
-
 .PHONY: gen-proto gen-proto2 gen-swagger gen-http-client gen-mocks build run run-amqp run-kafka test bench lint lint-revive static-check clean update-deps artemis-local-start artemis-local-stop kafka-local-start kafka-local-stop brokers-all-start kafka-docker-start kafka-docker-stop kafka-docker-logs
 
 help:
@@ -68,10 +67,12 @@ build: gen-proto gen-swagger gen-http-client gen-mocks ## Полная сбор�
 	-X '$(MODULE_NAME)/internal/config.AppBuildTime=$(BUILD_TIME)'" \
 	-o ./bin/$(SERVER_BINARY_NAME) $(SERVER_BUILD_DIR)/main.go
 
-#	go build -ldflags "-X '$(MODULE_NAME)/internal/app/client/config.Version=$(VERSION)' \
-#    -X '$(MODULE_NAME)/internal/app/client/config.Stage=$(STAGE)' \
-#	-X '$(MODULE_NAME)/internal/app/client/config.BuildTime=$(BUILD_TIME)'" \
-#	-o ./bin/$(CLIENT_BINARY_NAME) $(CLIENT_BUILD_DIR)/main.go
+# Сборка проекта с прокидыванием переменных
+build-only: ## Быстрая сборка: компиляция бинарника (без перегенерации моков)
+	go build -ldflags \
+	"-X '$(MODULE_NAME)/internal/config.AppVersion=$(VERSION)' \
+	-X '$(MODULE_NAME)/internal/config.AppBuildTime=$(BUILD_TIME)'" \
+	-o ./bin/$(SERVER_BINARY_NAME) $(SERVER_BUILD_DIR)/main.go
 
 # запуск проекта с выводом информации о параметрах
 run-help: build ## Собрать проект и запустить бинарник с информацией о параметрах
@@ -201,11 +202,11 @@ run-amqp: build ## Собрать проект и запустить бинар�
 		--login-attempts-sender-kafka-required-acks "-1"
 
 # Запуск тестов
-test: gen-proto gen-mocks ## Запустить модульные и интеграционные тесты проекта
+test: gen-mocks ## Запустить модульные и интеграционные тесты проекта
 	go test -v $$(go list ./... | grep -vE "mocks")
 
 # Запуск бенчмарков (сюда добавляем все вызовы) или разные параметры под один пакет
-bench: gen-proto gen-mocks ## Запустить утилиты с замером памяти
+bench: gen-mocks ## Запустить утилиты с замером памяти
 #	go test -bench=BenchmarkManager_FullCycle -benchmem ./pkg/infra/cache/test/...
 	go test -bench=. -benchmem ./...
 
