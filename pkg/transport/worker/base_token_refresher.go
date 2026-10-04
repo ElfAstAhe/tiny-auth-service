@@ -13,36 +13,18 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/pkg/transport/auth"
 )
 
-// TokenRefreshAction defines a strongly-typed signature for the application lifecycle callback
-// responsible for executing the physical remote network exchange or crypto signature generation to acquire a new token.
-type TokenRefreshAction func(ctx context.Context, eventTime time.Time) (string, error)
-
-// BaseTokenRefresherConfig encapsulates configuration credentials for the scheduling mechanics
-// alongside adaptive fallback intervals applied dynamically if authentication failures happen.
-type BaseTokenRefresherConfig struct {
-	*worker.BaseSchedulerConfig
-	ErrorScheduleInterval time.Duration // Adaptive fallback delay used sequentially if an exchange round drops an error
-}
-
-// NewBaseTokenRefresherConfig acts as a factory constructor setting up interval footprints for the refresher lifecycle.
-func NewBaseTokenRefresherConfig(
-	conf *worker.BaseSchedulerConfig,
-	errorScheduleInterval time.Duration,
-) *BaseTokenRefresherConfig {
-	return &BaseTokenRefresherConfig{
-		BaseSchedulerConfig:   conf,
-		ErrorScheduleInterval: errorScheduleInterval,
-	}
-}
+const baseTokenRefresherNameTemplate = "token-refresher-%s"
 
 // BaseTokenRefresher implements auth.TokenProvider and worker.Scheduler interfaces,
 // orchestrating atomic background thread-safe rotations of expired authentication identities.
 type BaseTokenRefresher struct {
 	*worker.BaseScheduler
+	name               string
 	mutex              sync.RWMutex
-	token              string
-	conf               *BaseTokenRefresherConfig
+	token              *utils.AtomicString
+	opts               *BaseTokenRefresherOptions
 	tokenRefreshAction TokenRefreshAction
+	logger             logger.Logger
 }
 
 // Compile-time interface compliance verifications
@@ -50,23 +32,39 @@ var _ auth.TokenProvider = (*BaseTokenRefresher)(nil)
 var _ worker.Scheduler = (*BaseTokenRefresher)(nil)
 
 // NewBaseTokenRefresher constructs an isolated, standalone refresher unit and mounts internal abstract time.Timer event listeners.
-func NewBaseTokenRefresher(
-	conf *BaseTokenRefresherConfig,
-	tokenRefreshAction TokenRefreshAction,
-	log logger.Logger,
-) *BaseTokenRefresher {
-	res := &BaseTokenRefresher{
-		conf:               conf,
-		tokenRefreshAction: tokenRefreshAction,
+func NewBaseTokenRefresher(options ...BaseTokenRefresherOption) (*BaseTokenRefresher, error) {
+	opts := NewBaseTokenRefresherOptions()
+	for _, option := range options {
+		option(opts)
 	}
-	res.BaseScheduler = worker.NewBaseScheduler(
-		"tokenRefresher",
-		res.timerDispatcher,
-		worker.NewBaseSchedulerConfig(conf.StartInterval, conf.ScheduleInterval, conf.StopTimeout),
-		log,
-	)
+	if err := opts.Validate(); err != nil {
+		return nil, errs.NewTlCommonError("NewBaseTokenRefresher", "base token refresher options validation failed", err)
+	}
 
-	return res
+	// instance
+	res := &BaseTokenRefresher{
+		name:               fmt.Sprintf(baseTokenRefresherNameTemplate, opts.Name),
+		opts:               opts,
+		token:              utils.NewAtomicString(""),
+		tokenRefreshAction: opts.TokenRefreshAction,
+		logger:             opts.Logger.GetLogger(fmt.Sprintf(baseTokenRefresherNameTemplate, opts.Name)),
+	}
+	// scheduler
+	scheduler, err := worker.NewBaseScheduler(
+		worker.WithSchedulerName(opts.Name),
+		worker.WithSchedulerStartInterval(opts.StartInterval),
+		worker.WithSchedulerScheduleInterval(opts.ScheduleInterval),
+		worker.WithSchedulerStopTimeout(opts.StopTimeout),
+		worker.WithSchedulerLogger(opts.Logger),
+		worker.WithSchedulerTimerDispatcher(res.timerDispatcher),
+	)
+	if err != nil {
+		return nil, errs.NewTlCommonError("NewBaseTokenRefresher", "base token refresher scheduler create failed", err)
+	}
+	// setup
+	res.BaseScheduler = scheduler
+
+	return res, nil
 }
 
 // timerDispatcher bridges the base underlying time tick fired from kernel tickers to the actual token renewal procedure.
@@ -78,11 +76,12 @@ func (btr *BaseTokenRefresher) timerDispatcher(ctx context.Context, eventTime ti
 		return errs.NewCommonError(fmt.Sprintf("token refresher %s timer event %s refresh action not applied", btr.GetName(), eventTime.Format(time.DateTime)), nil)
 	}
 
-	// Important: passing down the underlying base app context state instead of ephemeral execution context
-	token, err := btr.tokenRefreshAction(btr.GetContext(), eventTime)
+	btr.token.Store("")
+
+	token, err := btr.tokenRefreshAction(ctx, eventTime)
 	if err != nil {
 		// Dynamically downgrade scheduler pace to prevent spamming upstream OIDC providers under networking outage
-		btr.BaseScheduler.GetConfig().ScheduleInterval = btr.GetConfig().ErrorScheduleInterval
+		btr.BaseScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ErrorScheduleInterval
 
 		return errs.NewCommonError(fmt.Sprintf("token refresher %s timer event %s token refresh action failed", btr.GetName(), eventTime.Format(time.DateTime)), err)
 	}
@@ -91,29 +90,38 @@ func (btr *BaseTokenRefresher) timerDispatcher(ctx context.Context, eventTime ti
 	defer btr.mutex.Unlock()
 
 	// Persist the newly acquired signed payload safely
-	btr.token = token
+	btr.token.Store(token)
 
-	// BUG WATCH: This self-assignment statement will fail to restore the base worker configuration interval.
-	// Since btr.GetConfig() references the exact same embedded pointer, the original schedule duration is permanently lost after the first error.
-	btr.BaseScheduler.GetConfig().ScheduleInterval = btr.GetConfig().ScheduleInterval
+	// Since btr.GetOpts() references the exact same embedded pointer, the original schedule duration is permanently lost after the first error.
+	btr.BaseScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ScheduleInterval
 
 	return nil
 }
 
-// GetAccessToken yields the currently cached, unexpired valid authorization token token sequence.
+// GetAccessToken yields the currently cached, unexpired valid authorization token sequence.
 // Leverages efficient sync.RWMutex shared read paths to guarantee zero contention under extreme high-throughput traffic.
 func (btr *BaseTokenRefresher) GetAccessToken() (string, error) {
 	btr.mutex.RLock()
 	defer btr.mutex.RUnlock()
 
-	if btr.token == "" {
-		return btr.token, errs.NewCommonError("no actual access token", nil)
+	if btr.token.Load() == "" {
+		return "", errs.NewCommonError("no actual access token", nil)
 	}
 
-	return btr.token, nil
+	return btr.token.Load(), nil
 }
 
-// GetConfig extracts a direct reference to the complete configured BaseTokenRefresherConfig passport parameters blueprint.
-func (btr *BaseTokenRefresher) GetConfig() *BaseTokenRefresherConfig {
-	return btr.conf
+// GetName extracts component name
+func (btr *BaseTokenRefresher) GetName() string {
+	return btr.name
+}
+
+// GetOpts extracts a direct reference to the complete configured BaseTokenRefresherOptions passport parameters blueprint.
+func (btr *BaseTokenRefresher) GetOpts() *BaseTokenRefresherOptions {
+	return btr.opts
+}
+
+// GetLogger extracts the isolated, granular structural reporting handles mapped directly onto this module instance boundary.
+func (btr *BaseTokenRefresher) GetLogger() logger.Logger {
+	return btr.logger
 }
