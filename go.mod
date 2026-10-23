@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/Azure/go-amqp v1.7.0
-	github.com/ElfAstAhe/go-service-template v0.0.120
+	github.com/ElfAstAhe/go-service-template v0.0.121
 	github.com/ElfAstAhe/tiny-audit-service v0.0.35
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-openapi/errors v0.22.9
