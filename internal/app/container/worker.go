@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	// InstanceTokenRefresher defines the global framework registration lookup token key targeted for active credentials refresh worker.
-	InstanceTokenRefresher string = "InstanceTokenRefresher"
+	InstanceDataAuditTailCutter string = "instance-data-audit-tail-cutter"
 )
 
 // WorkerContainer structures a lazy-loaded lifecycle dependency injection container managing background schedule components.
@@ -40,7 +39,7 @@ func NewWorkerContainer(
 // Init triggers synchronous registration sequences linking required lazy provider callbacks inside the framework instance map graph.
 func (wc *WorkerContainer) Init(initCtx context.Context) error {
 	err := errors.Join(
-		wc.RegisterProvider(InstanceTokenRefresher, wc.providerTokenRefresher),
+		wc.RegisterInstance(InstanceDataAuditTailCutter, wc.providerDataAuditTailCutter),
 	)
 	if err != nil {
 		return errs.NewContainerError(wc.GetName(), "container init: register providers failed", err)

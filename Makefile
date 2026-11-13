@@ -97,9 +97,12 @@ run: build ## Собрать проект и запустить бинарник
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--svc-creds-username "svc_auth" \
-		--svc-creds-password "password" \
-		--svc-creds-schedule-interval "25s" \
+		--token-refresher-username "svc_auth" \
+		--token-refresher-password "password" \
+		--token-refresher-start-interval "3s" \
+		--token-refresher-schedule-interval "25s" \
+		--token-refresher-error-schedule-interval "10s" \
+		--token-refresher-stop-timeout "5s" \
 		--data-audit-client-base-url "http://localhost:8081/" \
 		--data-audit-client-timeout "5s" \
 		--data-audit-client-worker-count "2" \
@@ -146,9 +149,12 @@ run-kafka: build ## Собрать проект и запустить бинар
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--svc-creds-username "svc_auth" \
-		--svc-creds-password "password" \
-		--svc-creds-schedule-interval "25s" \
+		--token-refresher-username "svc_auth" \
+		--token-refresher-password "password" \
+		--token-refresher-start-interval "3s" \
+		--token-refresher-schedule-interval "25s" \
+		--token-refresher-error-schedule-interval "10s" \
+		--token-refresher-stop-timeout "5s" \
 		--data-audit-client-base-url "http://localhost:8081/" \
 		--data-audit-client-timeout "5s" \
 		--data-audit-client-worker-count "2" \
@@ -183,9 +189,12 @@ run-amqp: build ## Собрать проект и запустить бинар�
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--svc-creds-username "svc_auth" \
-		--svc-creds-password "password" \
-		--svc-creds-schedule-interval "25s" \
+		--token-refresher-username "svc_auth" \
+		--token-refresher-password "password" \
+		--token-refresher-start-interval "3s" \
+		--token-refresher-schedule-interval "25s" \
+		--token-refresher-error-schedule-interval "10s" \
+		--token-refresher-stop-timeout "5s" \
 		--data-audit-client-base-url "http://localhost:8081/" \
 		--data-audit-client-timeout "5s" \
 		--data-audit-client-worker-count "2" \

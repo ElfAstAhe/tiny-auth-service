@@ -9,7 +9,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	libauditdom "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
 )
 
 // Role encapsulates the core enterprise domain RBAC aggregate role entity state,
@@ -27,7 +26,7 @@ type Role struct {
 var _ libdom.Entity[string] = (*Role)(nil)
 var _ libdom.SoftDeleteEntity[bool] = (*Role)(nil)
 var _ libauditdom.Auditable = (*Role)(nil)
-var _ repository.AuditableEntity[string] = (*Role)(nil)
+var _ libauditdom.AuditableEntity[string] = (*Role)(nil)
 
 // NewEmptyRole allocates a baseline empty Role structure blueprint handle.
 func NewEmptyRole() *Role {

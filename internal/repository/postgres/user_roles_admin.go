@@ -50,7 +50,7 @@ func NewUserRolesAdminPgRepository(
 		}).
 		Build()
 
-	callbacks, err := repository.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, err := repository.NewCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithValidateCreate(res.validateCreate).

@@ -11,28 +11,30 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleTraceRepository implements libdomain.CRUDRepository and domain.RoleRepository interfaces,
+// RoleRepository implements libdomain.CRUDRepository and domain.RoleRepository interfaces,
 // acting as a non-invasive distributed tracing decorator on top of the concrete role storage adapter.
 // It manages OpenTelemetry span lifecycles for high-throughput role name-based lookups.
-type RoleTraceRepository struct {
-	*trace.BaseCRUDTraceRepository[*domain.Role, string]                       // Generic framework-level trace base decorator structure
-	repo                                                 domain.RoleRepository // Downstream core role database persistence adapter layer
+type RoleRepository struct {
+	*trace.CRUD[*domain.Role, string]                       // Generic framework-level trace base decorator structure
+	repo                              domain.RoleRepository // Downstream core role database persistence adapter layer
 }
 
 // Compile-time interface compliance verifications
-var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleTraceRepository)(nil)
-var _ domain.RoleRepository = (*RoleTraceRepository)(nil)
+var _ libdomain.CRUDRepository[*domain.Role, string] = (*RoleRepository)(nil)
+var _ domain.RoleRepository = (*RoleRepository)(nil)
 
-// NewRoleTraceRepository acts as a factory constructor mounting tracing middleware primitives over a core role data adapter.
-func NewRoleTraceRepository(repo domain.RoleRepository) *RoleTraceRepository {
-	return &RoleTraceRepository{
-		repo:                    repo,
-		BaseCRUDTraceRepository: trace.NewBaseCRUDTraceRepository[*domain.Role, string]("RoleRepository", repo),
+// NewRoleRepository acts as a factory constructor mounting tracing middleware primitives over a core role data adapter.
+func NewRoleRepository(repo domain.RoleRepository) *RoleRepository {
+	return &RoleRepository{
+		repo: repo,
+		CRUD: trace.NewCRUD[*domain.Role, string]("RoleRepository", repo),
 	}
 }
 
 // FindByName intercepts lookup sequences by role name parameters to execute data retrieval wrapped inside an OTel trace span boundary.
-func (rtr *RoleTraceRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
+//
+//goland:noinspection DuplicatedCode
+func (rtr *RoleRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
 	ctx, span := rtr.StartSpan(ctx, fmt.Sprintf("%s.FindByName", rtr.GetRepositoryName()))
 	defer span.End()
 

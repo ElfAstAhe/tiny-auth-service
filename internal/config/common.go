@@ -3,6 +3,9 @@ package config
 // FlagConfig - файл конфигурации
 const FlagConfig = "config-path"
 
+// EnvConfig - файл конфигурации
+const EnvConfig string = "CONFIG_PATH"
+
 // App config flags
 //
 //nolint:gosec // G101 : app params
@@ -17,36 +20,6 @@ const (
 	FlagAppCipherKey string = "app-cipher-key"
 	// FlagAppDefShutdownTimeout defines the baseline context graceful timeout bounds applied before a hard OS signal exit.
 	FlagAppDefShutdownTimeout string = "app-def-shutdown-timeout"
-)
-
-// Creds
-//
-//nolint:gosec // G101 : app params constants
-const (
-	// FlagCredsUsername details system service-to-machine background worker username parameters keys.
-	FlagCredsUsername string = "svc-creds-username"
-	// FlagCredsPassword establishes system background credentials verification passwords tokens.
-	FlagCredsPassword string = "svc-creds-password"
-	// FlagCredsScheduleInterval sets standard interval duration bounds guiding active service token rotation checks.
-	FlagCredsScheduleInterval string = "svc-creds-schedule-interval"
-	// FlagCredsErrorScheduleInterval triggers fallback sleep delays managed by background tickers upon operational errors loops.
-	FlagCredsErrorScheduleInterval string = "svc-creds-error-schedule-interval"
-)
-
-// Data-audit-client
-const (
-	// FlagDataAuditClientBaseURL maps the upstream destination REST target endpoint servicing audit record streams.
-	FlagDataAuditClientBaseURL string = "data-audit-client-base-url"
-	// FlagDataAuditClientTimeout dictates execution budget limits assigned to individual remote logging REST calls.
-	FlagDataAuditClientTimeout string = "data-audit-client-timeout"
-	// FlagDataAuditClientWorkerCount manages internal concurrent processor pools allocating data-streaming workers.
-	FlagDataAuditClientWorkerCount string = "data-audit-client-worker-count"
-	// FlagDataAuditClientDataCapacity sets buffer constraint dimensions sizing target channels storage thresholds.
-	FlagDataAuditClientDataCapacity string = "data-audit-client-data-capacity"
-	// FlagDataAuditClientCompleteProcessing ensures current queue pipelines drain down fully upon active lifecycle shutdown events.
-	FlagDataAuditClientCompleteProcessing string = "data-audit-client-complete-processing"
-	// FlagDataAuditClientShutdownTimeout bounds block intervals dedicated to flushing remaining audit logs records to networks.
-	FlagDataAuditClientShutdownTimeout string = "data-audit-client-shutdown-timeout"
 )
 
 // Auth config flags
@@ -149,29 +122,27 @@ const (
 	FlagTelemetryTimeout string = "telemetry-timeout"
 )
 
-// EnvConfig - файл конфигурации
-const EnvConfig string = "CONFIG_PATH"
-
-// amqp connector
+// login attempts sender amqp connector
 //
 //nolint:gosec // G101 : app params
 const (
-	// FlagAMQPConnectorURL maps the baseline AMQP network address for the target cluster endpoint.
-	FlagAMQPConnectorURL string = "amqp-connector-url"
-	// FlagAMQPConnectorUsername defines user parameters for authenticating structural broker sessions.
-	FlagAMQPConnectorUsername string = "amqp-connector-username"
-	// FlagAMQPConnectorPassword establishes cryptographic secret tokens identifying connection channels.
-	FlagAMQPConnectorPassword string = "amqp-connector-password"
-	// FlagAMQPConnectorConnectTimeout sets network allocation block limits establishing connections.
-	FlagAMQPConnectorConnectTimeout string = "amqp-connector-connect-timeout"
-	// FlagAMQPConnectorWriteTimeout caps maximum block durations pushing byte messages onto sockets.
-	FlagAMQPConnectorWriteTimeout string = "amqp-connector-write-timeout"
-	// FlagAMQPConnectorIdleTimeout specifies durability boundaries for resting unassigned broker channels.
-	FlagAMQPConnectorIdleTimeout string = "amqp-connector-idle-timeout"
-	// FlagAMQPConnectorShutdownTimeout handles block intervals dedicated to closing server connection context maps gracefully.
-	FlagAMQPConnectorShutdownTimeout string = "amqp-connector-shutdown-timeout"
+	// FlagLoginAttemptsSenderAMQPConnectorURL maps the baseline AMQP network address for the target cluster endpoint.
+	FlagLoginAttemptsSenderAMQPConnectorURL string = "logom-attempts-sender-amqp-connector-url"
+	// FlagLoginAttemptsSenderAMQPConnectorUsername defines user parameters for authenticating structural broker sessions.
+	FlagLoginAttemptsSenderAMQPConnectorUsername string = "login-attempts-sender-amqp-connector-username"
+	// FlagLoginAttemptsSenderAMQPConnectorPassword establishes cryptographic secret tokens identifying connection channels.
+	FlagLoginAttemptsSenderAMQPConnectorPassword string = "login-attempts-sender-amqp-connector-password"
+	// FlagLoginAttemptsSenderAMQPConnectorConnectTimeout sets network allocation block limits establishing connections.
+	FlagLoginAttemptsSenderAMQPConnectorConnectTimeout string = "login-attempts-sender-amqp-connector-connect-timeout"
+	// FlagLoginAttemptsSenderAMQPConnectorWriteTimeout caps maximum block durations pushing byte messages onto sockets.
+	FlagLoginAttemptsSenderAMQPConnectorWriteTimeout string = "login-attempts-sender-amqp-connector-write-timeout"
+	// FlagLoginAttemptsSenderAMQPConnectorIdleTimeout specifies durability boundaries for resting unassigned broker channels.
+	FlagLoginAttemptsSenderAMQPConnectorIdleTimeout string = "login-attempts-sender-amqp-connector-idle-timeout"
+	// FlagLoginAttemptsSenderAMQPConnectorShutdownTimeout handles block intervals dedicated to closing server connection context maps gracefully.
+	FlagLoginAttemptsSenderAMQPConnectorShutdownTimeout string = "login-attempts-sender-amqp-connector-shutdown-timeout"
 )
 
+// login attempts sender
 const (
 	// FlagLoginAttemptsSenderKind chooses specific broker types driving events tracking workflows (e.g. amqp, kafka).
 	FlagLoginAttemptsSenderKind string = "login-attempts-sender-kind"
@@ -179,54 +150,132 @@ const (
 	FlagLoginAttemptsSenderNotifyTimeout string = "login-attempts-sender-notify-timeout"
 )
 
-// amqp login attempts sender
+// login attempts sender amqp
 const (
-	// FlagLoginAttemptsSenderAMQPConfigTargetName defines the routing exchange or queue target parameter name inside AMQP broker layouts.
-	FlagLoginAttemptsSenderAMQPConfigTargetName string = "login-attempts-sender-amqp-target-name"
-	// FlagLoginAttemptsSenderAMQPConfigConnectTimeout limits socket allocation budgets for publishing streams.
-	FlagLoginAttemptsSenderAMQPConfigConnectTimeout string = "login-attempts-sender-amqp-connect-timeout"
-	// FlagLoginAttemptsSenderAMQPConfigShutdownTimeout establishes safe timeout boundaries during event streaming closures.
-	FlagLoginAttemptsSenderAMQPConfigShutdownTimeout string = "login-attempts-sender-amqp-shutdown-timeout"
-	// FlagLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts caps total retries loops executed upon network publishing degradations.
-	FlagLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts string = "login-attempts-sender-amqp-publish-max-try-attempts"
-	// FlagLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay defines initial backoff durations before retrying failed message publish routines.
-	FlagLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay string = "login-attempts-sender-amqp-publish-base-retry-delay"
-	// FlagLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay sets a strict cap bounding maximum potential backoff delays.
-	FlagLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay string = "login-attempts-sender-amqp-publish-max-retry-delay"
+	// FlagLoginAttemptsSenderAMQPTargetName defines the routing exchange or queue target parameter name inside AMQP broker layouts.
+	FlagLoginAttemptsSenderAMQPTargetName string = "login-attempts-sender-amqp-target-name"
+	// FlagLoginAttemptsSenderAMQPConnectTimeout limits socket allocation budgets for publishing streams.
+	FlagLoginAttemptsSenderAMQPConnectTimeout string = "login-attempts-sender-amqp-connect-timeout"
+	// FlagLoginAttemptsSenderAMQPShutdownTimeout establishes safe timeout boundaries during event streaming closures.
+	FlagLoginAttemptsSenderAMQPShutdownTimeout string = "login-attempts-sender-amqp-shutdown-timeout"
+	// FlagLoginAttemptsSenderAMQPPublishMaxTryAttempts caps total retries loops executed upon network publishing degradations.
+	FlagLoginAttemptsSenderAMQPPublishMaxTryAttempts string = "login-attempts-sender-amqp-publish-max-try-attempts"
+	// FlagLoginAttemptsSenderAMQPPublishBaseRetryDelay defines initial backoff durations before retrying failed message publish routines.
+	FlagLoginAttemptsSenderAMQPPublishBaseRetryDelay string = "login-attempts-sender-amqp-publish-base-retry-delay"
+	// FlagLoginAttemptsSenderAMQPPublishMaxRetryDelay sets a strict cap bounding maximum potential backoff delays.
+	FlagLoginAttemptsSenderAMQPPublishMaxRetryDelay string = "login-attempts-sender-amqp-publish-max-retry-delay"
 )
 
-// kafka login attempts sender
+// login attempts sender kafka
 const (
-	// FlagLoginAttemptsSenderKafkaConfigBrokers identifies network cluster addresses servicing Kafka streaming nodes.
-	FlagLoginAttemptsSenderKafkaConfigBrokers string = "login-attempts-sender-kafka-brokers"
-	// FlagLoginAttemptsSenderKafkaConfigTargetName defines destination topic patterns routing login tracking payloads.
-	FlagLoginAttemptsSenderKafkaConfigTargetName string = "login-attempts-sender-kafka-target-name"
-	// FlagLoginAttemptsSenderKafkaConfigConnectTimeout limits socket initialization budgets under active Kafka dialers.
-	FlagLoginAttemptsSenderKafkaConfigConnectTimeout string = "login-attempts-sender-kafka-connect-timeout"
-	// FlagLoginAttemptsSenderKafkaConfigIdleTimeout bounds durability metrics for resting broker pipeline connections.
-	FlagLoginAttemptsSenderKafkaConfigIdleTimeout string = "login-attempts-sender-kafka-idle-timeout"
-	// FlagLoginAttemptsSenderKafkaConfigShutdownTimeout restricts termination block intervals allowed for internal producer cleanup.
-	FlagLoginAttemptsSenderKafkaConfigShutdownTimeout string = "login-attempts-sender-kafka-shutdown-timeout"
-	// FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts manages retry policy limitations under producer transport faults.
-	FlagLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login-attempts-sender-kafka-publish-max-try-attempts"
-	// FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay enforces upper thresholds bounding maximum retry intervals under cluster degradation.
-	FlagLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay string = "login-attempts-sender-kafka-publish-max-retry-delay"
-	// FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay sets initial fallback intervals for backoff routing rules.
-	FlagLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login-attempts-sender-kafka-publish-base-retry-delay"
-	// FlagLoginAttemptsSenderKafkaConfigUsername handles SASL mechanism parameters identifying active streaming users.
-	FlagLoginAttemptsSenderKafkaConfigUsername string = "login-attempts-sender-kafka-username"
-	// FlagLoginAttemptsSenderKafkaConfigPassword secures SASL credential verification tokens.
-	FlagLoginAttemptsSenderKafkaConfigPassword string = "login-attempts-sender-kafka-password"
-	// FlagLoginAttemptsSenderKafkaConfigBatchSize handles quantitative constraints sizing accumulated batch records counts.
-	FlagLoginAttemptsSenderKafkaConfigBatchSize string = "login-attempts-sender-kafka-batch-size"
-	// FlagLoginAttemptsSenderKafkaConfigBatchBytes sets byte size allocation limits triggering automated batch flushes.
-	FlagLoginAttemptsSenderKafkaConfigBatchBytes string = "login-attempts-sender-kafka-batch-bytes"
-	// FlagLoginAttemptsSenderKafkaConfigBatchTimeout dictates temporal constraints forcing lazy batch queues onto networks.
-	FlagLoginAttemptsSenderKafkaConfigBatchTimeout string = "login-attempts-sender-kafka-batch-timeout"
-	// FlagLoginAttemptsSenderKafkaConfigWriteTimeout bounds explicit durations assigned for network block socket transmissions.
-	FlagLoginAttemptsSenderKafkaConfigWriteTimeout string = "login-attempts-sender-kafka-write-timeout"
-	// FlagLoginAttemptsSenderKafkaConfigRequiredAcks manages consistency metrics configuring required cluster brokers confirmations (e.g. 0, 1, all).
-	FlagLoginAttemptsSenderKafkaConfigRequiredAcks string = "login-attempts-sender-kafka-required-acks"
+	// FlagLoginAttemptsSenderKafkaBrokers identifies network cluster addresses servicing Kafka streaming nodes.
+	FlagLoginAttemptsSenderKafkaBrokers string = "login-attempts-sender-kafka-brokers"
+	// FlagLoginAttemptsSenderKafkaTargetName defines destination topic patterns routing login tracking payloads.
+	FlagLoginAttemptsSenderKafkaTargetName string = "login-attempts-sender-kafka-target-name"
+	// FlagLoginAttemptsSenderKafkaConnectTimeout limits socket initialization budgets under active Kafka dialers.
+	FlagLoginAttemptsSenderKafkaConnectTimeout string = "login-attempts-sender-kafka-connect-timeout"
+	// FlagLoginAttemptsSenderKafkaIdleTimeout bounds durability metrics for resting broker pipeline connections.
+	FlagLoginAttemptsSenderKafkaIdleTimeout string = "login-attempts-sender-kafka-idle-timeout"
+	// FlagLoginAttemptsSenderKafkaShutdownTimeout restricts termination block intervals allowed for internal producer cleanup.
+	FlagLoginAttemptsSenderKafkaShutdownTimeout string = "login-attempts-sender-kafka-shutdown-timeout"
+	// FlagLoginAttemptsSenderKafkaPublishMaxTryAttempts manages retry policy limitations under producer transport faults.
+	FlagLoginAttemptsSenderKafkaPublishMaxTryAttempts string = "login-attempts-sender-kafka-publish-max-try-attempts"
+	// FlagLoginAttemptsSenderKafkaPublishMaxRetryDelay enforces upper thresholds bounding maximum retry intervals under cluster degradation.
+	FlagLoginAttemptsSenderKafkaPublishMaxRetryDelay string = "login-attempts-sender-kafka-publish-max-retry-delay"
+	// FlagLoginAttemptsSenderKafkaPublishBaseRetryDelay sets initial fallback intervals for backoff routing rules.
+	FlagLoginAttemptsSenderKafkaPublishBaseRetryDelay string = "login-attempts-sender-kafka-publish-base-retry-delay"
+	// FlagLoginAttemptsSenderKafkaUsername handles SASL mechanism parameters identifying active streaming users.
+	FlagLoginAttemptsSenderKafkaUsername string = "login-attempts-sender-kafka-username"
+	// FlagLoginAttemptsSenderKafkaPassword secures SASL credential verification tokens.
+	FlagLoginAttemptsSenderKafkaPassword string = "login-attempts-sender-kafka-password"
+	// FlagLoginAttemptsSenderKafkaBatchSize handles quantitative constraints sizing accumulated batch records counts.
+	FlagLoginAttemptsSenderKafkaBatchSize string = "login-attempts-sender-kafka-batch-size"
+	// FlagLoginAttemptsSenderKafkaBatchBytes sets byte size allocation limits triggering automated batch flushes.
+	FlagLoginAttemptsSenderKafkaBatchBytes string = "login-attempts-sender-kafka-batch-bytes"
+	// FlagLoginAttemptsSenderKafkaBatchTimeout dictates temporal constraints forcing lazy batch queues onto networks.
+	FlagLoginAttemptsSenderKafkaBatchTimeout string = "login-attempts-sender-kafka-batch-timeout"
+	// FlagLoginAttemptsSenderKafkaWriteTimeout bounds explicit durations assigned for network block socket transmissions.
+	FlagLoginAttemptsSenderKafkaWriteTimeout string = "login-attempts-sender-kafka-write-timeout"
+	// FlagLoginAttemptsSenderKafkaRequiredAcks manages consistency metrics configuring required cluster brokers confirmations (e.g. 0, 1, all).
+	FlagLoginAttemptsSenderKafkaRequiredAcks string = "login-attempts-sender-kafka-required-acks"
+)
+
+// data audit sender amqp connector
+//
+//nolint:gosec // G101 : app params
+const (
+	// FlagDataAuditSenderAMQPConnectorURL maps the baseline AMQP network address for the target cluster endpoint.
+	FlagDataAuditSenderAMQPConnectorURL string = "data-audit-sender-amqp-connector-url"
+	// FlagDataAuditSenderAMQPConnectorUsername defines user parameters for authenticating structural broker sessions.
+	FlagDataAuditSenderAMQPConnectorUsername string = "data-audit-sender-amqp-connector-username"
+	// FlagDataAuditSenderAMQPConnectorPassword establishes cryptographic secret tokens identifying connection channels.
+	FlagDataAuditSenderAMQPConnectorPassword string = "data-audit-sender-amqp-connector-password"
+	// FlagDataAuditSenderAMQPConnectorConnectTimeout sets network allocation block limits establishing connections.
+	FlagDataAuditSenderAMQPConnectorConnectTimeout string = "data-audit-sender-amqp-connector-connect-timeout"
+	// FlagDataAuditSenderAMQPConnectorWriteTimeout caps maximum block durations pushing byte messages onto sockets.
+	FlagDataAuditSenderAMQPConnectorWriteTimeout string = "data-audit-sender-amqp-connector-write-timeout"
+	// FlagDataAuditSenderAMQPConnectorIdleTimeout specifies durability boundaries for resting unassigned broker channels.
+	FlagDataAuditSenderAMQPConnectorIdleTimeout string = "data-audit-sender-amqp-connector-idle-timeout"
+	// FlagDataAuditSenderAMQPConnectorShutdownTimeout handles block intervals dedicated to closing server connection context maps gracefully.
+	FlagDataAuditSenderAMQPConnectorShutdownTimeout string = "data-audit-sender-amqp-connector-shutdown-timeout"
+)
+
+// data audit sender
+const (
+	// FlagDataAuditSenderKind chooses specific broker types driving events tracking workflows (e.g. amqp, kafka).
+	FlagDataAuditSenderKind string = "data-audit-sender-kind"
+	// FlagDataAuditSenderNotifyTimeout limits wait budgets assigned for async pubsub broadcasts sequences.
+	FlagDataAuditSenderNotifyTimeout string = "data-audit-sender-notify-timeout"
+)
+
+// data audit sender amqp
+const (
+	// FlagDataAuditSenderAMQPTargetName defines the routing exchange or queue target parameter name inside AMQP broker layouts.
+	FlagDataAuditSenderAMQPTargetName string = "data-audit-sender-amqp-target-name"
+	// FlagDataAuditSenderAMQPConnectTimeout limits socket allocation budgets for publishing streams.
+	FlagDataAuditSenderAMQPConnectTimeout string = "data-audit-sender-amqp-connect-timeout"
+	// FlagDataAuditSenderAMQPShutdownTimeout establishes safe timeout boundaries during event streaming closures.
+	FlagDataAuditSenderAMQPShutdownTimeout string = "data-audit-sender-amqp-shutdown-timeout"
+	// FlagDataAuditSenderAMQPPublishMaxTryAttempts caps total retries loops executed upon network publishing degradations.
+	FlagDataAuditSenderAMQPPublishMaxTryAttempts string = "data-audit-sender-amqp-publish-max-try-attempts"
+	// FlagDataAuditSenderAMQPPublishBaseRetryDelay defines initial backoff durations before retrying failed message publish routines.
+	FlagDataAuditSenderAMQPPublishBaseRetryDelay string = "data-audit-sender-amqp-publish-base-retry-delay"
+	// FlagDataAuditSenderAMQPPublishMaxRetryDelay sets a strict cap bounding maximum potential backoff delays.
+	FlagDataAuditSenderAMQPPublishMaxRetryDelay string = "data-audit-sender-amqp-publish-max-retry-delay"
+)
+
+// data audit sender kafka
+const (
+	// FlagDataAuditSenderKafkaBrokers identifies network cluster addresses servicing Kafka streaming nodes.
+	FlagDataAuditSenderKafkaBrokers string = "data-audit-sender-kafka-brokers"
+	// FlagDataAuditSenderKafkaTargetName defines destination topic patterns routing login tracking payloads.
+	FlagDataAuditSenderKafkaTargetName string = "data-audit-sender-kafka-target-name"
+	// FlagDataAuditSenderKafkaConnectTimeout limits socket initialization budgets under active Kafka dialers.
+	FlagDataAuditSenderKafkaConnectTimeout string = "data-audit-sender-kafka-connect-timeout"
+	// FlagDataAuditSenderKafkaIdleTimeout bounds durability metrics for resting broker pipeline connections.
+	FlagDataAuditSenderKafkaIdleTimeout string = "data-audit-sender-kafka-idle-timeout"
+	// FlagDataAuditSenderKafkaShutdownTimeout restricts termination block intervals allowed for internal producer cleanup.
+	FlagDataAuditSenderKafkaShutdownTimeout string = "data-audit-sender-kafka-shutdown-timeout"
+	// FlagDataAuditSenderKafkaPublishMaxTryAttempts manages retry policy limitations under producer transport faults.
+	FlagDataAuditSenderKafkaPublishMaxTryAttempts string = "data-audit-sender-kafka-publish-max-try-attempts"
+	// FlagDataAuditSenderKafkaPublishMaxRetryDelay enforces upper thresholds bounding maximum retry intervals under cluster degradation.
+	FlagDataAuditSenderKafkaPublishMaxRetryDelay string = "data-audit-sender-kafka-publish-max-retry-delay"
+	// FlagDataAuditSenderKafkaPublishBaseRetryDelay sets initial fallback intervals for backoff routing rules.
+	FlagDataAuditSenderKafkaPublishBaseRetryDelay string = "data-audit-sender-kafka-publish-base-retry-delay"
+	// FlagDataAuditSenderKafkaUsername handles SASL mechanism parameters identifying active streaming users.
+	FlagDataAuditSenderKafkaUsername string = "data-audit-sender-kafka-username"
+	// FlagDataAuditSenderKafkaPassword secures SASL credential verification tokens.
+	FlagDataAuditSenderKafkaPassword string = "data-audit-sender-kafka-password"
+	// FlagDataAuditSenderKafkaBatchSize handles quantitative constraints sizing accumulated batch records counts.
+	FlagDataAuditSenderKafkaBatchSize string = "data-audit-sender-kafka-batch-size"
+	// FlagDataAuditSenderKafkaBatchBytes sets byte size allocation limits triggering automated batch flushes.
+	FlagDataAuditSenderKafkaBatchBytes string = "data-audit-sender-kafka-batch-bytes"
+	// FlagDataAuditSenderKafkaBatchTimeout dictates temporal constraints forcing lazy batch queues onto networks.
+	FlagDataAuditSenderKafkaBatchTimeout string = "data-audit-sender-kafka-batch-timeout"
+	// FlagDataAuditSenderKafkaWriteTimeout bounds explicit durations assigned for network block socket transmissions.
+	FlagDataAuditSenderKafkaWriteTimeout string = "data-audit-sender-kafka-write-timeout"
+	// FlagDataAuditSenderKafkaRequiredAcks manages consistency metrics configuring required cluster brokers confirmations (e.g. 0, 1, all).
+	FlagDataAuditSenderKafkaRequiredAcks string = "data-audit-sender-kafka-required-acks"
 )
 
 // app
@@ -241,44 +290,24 @@ const (
 	keyAppDefShutdownTimeout string = "app.def_shutdown_timeout"
 )
 
-// service credentials
+// login attempts sender amqp connector
 //
 //nolint:gosec // G101 : app conf keys
 const (
-	keySvcCredsUsername              string = "svc_creds.username"
-	keySvcCredsPassword              string = "svc_creds.password"
-	keySvcCredsScheduleInterval      string = "svc_creds.schedule_interval"
-	keySvcCredsErrorScheduleInterval string = "svc_creds.error_schedule_interval"
-)
-
-// data audit client
-const (
-	keyDataAuditClientBaseURL            string = "data_audit_client.base_url"
-	keyDataAuditClientTimeout            string = "data_audit_client.timeout"
-	keyDataAuditClientWorkerCount        string = "data_audit_client.worker_count"
-	keyDataAuditClientDataCapacity       string = "data_audit_client.data_capacity"
-	keyDataAuditClientCompleteProcessing string = "data_audit_client.complete_processing"
-	keyDataAuditClientShutdownTimeout    string = "data_audit_client.shutdown_timeout"
-)
-
-// amqp connector
-//
-//nolint:gosec // G101 : app conf keys
-const (
-	// keyAMQPConnectorURL tracks the nested viper schema dot-key location for the baseline AMQP cluster network address string.
-	keyAMQPConnectorURL string = "amqp_connector.url"
-	// keyAMQPConnectorUsername maps nested path configuration nodes governing authorization user credentials blocks.
-	keyAMQPConnectorUsername string = "amqp_connector.username"
-	// keyAMQPConnectorPassword protects nested trajectories parsing access passwords.
-	keyAMQPConnectorPassword string = "amqp_connector.password"
-	// keyAMQPConnectorConnectTimeout points to internal property structures managing connection budget limits.
-	keyAMQPConnectorConnectTimeout string = "amqp_connector.connect_timeout"
-	// keyAMQPConnectorWriteTimeout targets configurations specifying maximal write block timeouts parameters.
-	keyAMQPConnectorWriteTimeout string = "amqp_connector.write_timeout"
-	// keyAMQPConnectorIdleTimeout dictates internal trajectories formatting unassigned channels durability lifetimes.
-	keyAMQPConnectorIdleTimeout string = "amqp_connector.idle_timeout"
-	// keyAMQPConnectorShutdownTimeout binds execution properties framing termination intervals budgets.
-	keyAMQPConnectorShutdownTimeout string = "amqp_connector.shutdown_timeout"
+	// keyLoginAttemptsSenderAMQPConnectorURL tracks the nested viper schema dot-key location for the baseline AMQP cluster network address string.
+	keyLoginAttemptsSenderAMQPConnectorURL string = "login_attempts_connector.url"
+	// keyLoginAttemptsSenderAMQPConnectorUsername maps nested path configuration nodes governing authorization user credentials blocks.
+	keyLoginAttemptsSenderAMQPConnectorUsername string = "login_attempts_connector.username"
+	// keyLoginAttemptsSenderAMQPConnectorPassword protects nested trajectories parsing access passwords.
+	keyLoginAttemptsSenderAMQPConnectorPassword string = "login_attempts_connector.password"
+	// keyLoginAttemptsSenderAMQPConnectorConnectTimeout points to internal property structures managing connection budget limits.
+	keyLoginAttemptsSenderAMQPConnectorConnectTimeout string = "login_attempts_connector.connect_timeout"
+	// keyLoginAttemptsSenderAMQPConnectorWriteTimeout targets configurations specifying maximal write block timeouts parameters.
+	keyLoginAttemptsSenderAMQPConnectorWriteTimeout string = "login_attempts_connector.write_timeout"
+	// keyLoginAttemptsSenderAMQPConnectorIdleTimeout dictates internal trajectories formatting unassigned channels durability lifetimes.
+	keyLoginAttemptsSenderAMQPConnectorIdleTimeout string = "login_attempts_connector.idle_timeout"
+	// keyLoginAttemptsSenderAMQPConnectorShutdownTimeout binds execution properties framing termination intervals budgets.
+	keyLoginAttemptsSenderAMQPConnectorShutdownTimeout string = "login_attempts_connector.shutdown_timeout"
 )
 
 // login attempts sender
@@ -289,52 +318,130 @@ const (
 	keyLoginAttemptsSenderNotifyTimeout string = "login_attempts_sender.notify_timeout"
 )
 
-// amqp login attempts sender
+// login attempts sender amqp
 const (
-	// keyLoginAttemptsSenderAMQPConfigTargetName targets configuration nodes establishing destination queues or exchanges.
-	keyLoginAttemptsSenderAMQPConfigTargetName string = "login_attempts_sender.amqp_config.target_name"
-	// keyLoginAttemptsSenderAMQPConfigConnectTimeout dictates socket initialization budgets nested under parameters keys.
-	keyLoginAttemptsSenderAMQPConfigConnectTimeout string = "login_attempts_sender.amqp_config.connect_timeout"
-	// keyLoginAttemptsSenderAMQPConfigShutdownTimeout manages contextual timeout structures applied across streaming closures operations.
-	keyLoginAttemptsSenderAMQPConfigShutdownTimeout string = "login_attempts_sender.amqp_config.shutdown_timeout"
-	// keyLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts restricts total retries counters upon network pipeline errors loops.
-	keyLoginAttemptsSenderAMQPConfigPublishMaxTryAttempts string = "login_attempts_sender.amqp_config.publish_max_try_attempts"
-	// keyLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay maps property paths specifying backoff multiplier initial values duration.
-	keyLoginAttemptsSenderAMQPConfigPublishBaseRetryDelay string = "login_attempts_sender.amqp_config.publish_base_retry_delay"
-	// keyLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay caps maximal delay limits managing cascading backoff parameters structures.
-	keyLoginAttemptsSenderAMQPConfigPublishMaxRetryDelay string = "login_attempts_sender.amqp_config.publish_max_retry_delay"
+	// keyLoginAttemptsSenderAMQPTargetName targets configuration nodes establishing destination queues or exchanges.
+	keyLoginAttemptsSenderAMQPTargetName string = "login_attempts_sender.amqp_config.target_name"
+	// keyLoginAttemptsSenderAMQPConnectTimeout dictates socket initialization budgets nested under parameters keys.
+	keyLoginAttemptsSenderAMQPConnectTimeout string = "login_attempts_sender.amqp_config.connect_timeout"
+	// keyLoginAttemptsSenderAMQPShutdownTimeout manages contextual timeout structures applied across streaming closures operations.
+	keyLoginAttemptsSenderAMQPShutdownTimeout string = "login_attempts_sender.amqp_config.shutdown_timeout"
+	// keyLoginAttemptsSenderAMQPPublishMaxTryAttempts restricts total retries counters upon network pipeline errors loops.
+	keyLoginAttemptsSenderAMQPPublishMaxTryAttempts string = "login_attempts_sender.amqp_config.publish_max_try_attempts"
+	// keyLoginAttemptsSenderAMQPPublishBaseRetryDelay maps property paths specifying backoff multiplier initial values duration.
+	keyLoginAttemptsSenderAMQPPublishBaseRetryDelay string = "login_attempts_sender.amqp_config.publish_base_retry_delay"
+	// keyLoginAttemptsSenderAMQPPublishMaxRetryDelay caps maximal delay limits managing cascading backoff parameters structures.
+	keyLoginAttemptsSenderAMQPPublishMaxRetryDelay string = "login_attempts_sender.amqp_config.publish_max_retry_delay"
 )
 
-// kafka login attempts
+// login attemtpts sedner kafka
 const (
-	// keyLoginAttemptsSenderKafkaConfigBrokers identifies compound array configurations trajectories pointing to target Kafka network nodes addresses.
-	keyLoginAttemptsSenderKafkaConfigBrokers string = "login_attempts_sender.kafka_config.brokers"
-	// keyLoginAttemptsSenderKafkaConfigTargetName defines nested topic destination properties.
-	keyLoginAttemptsSenderKafkaConfigTargetName string = "login_attempts_sender.kafka_config.target_name"
-	// keyLoginAttemptsSenderKafkaConfigConnectTimeout manages dialer socket initialization duration parameters keys.
-	keyLoginAttemptsSenderKafkaConfigConnectTimeout string = "login_attempts_sender.kafka_config.connect_timeout"
-	// keyLoginAttemptsSenderKafkaConfigIdleTimeout points to structures specifying passive channels connection lifetime guidelines.
-	keyLoginAttemptsSenderKafkaConfigIdleTimeout string = "login_attempts_sender.kafka_config.idle_timeout"
-	// keyLoginAttemptsSenderKafkaConfigShutdownTimeout constraints cleanup execution durations allowed during stream engine graceful shutdowns.
-	keyLoginAttemptsSenderKafkaConfigShutdownTimeout string = "login_attempts_sender.kafka_config.shutdown_timeout"
-	// keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts targets retry configuration metrics driven under producer faults triggers.
-	keyLoginAttemptsSenderKafkaConfigPublishMaxTryAttempts string = "login_attempts_sender.kafka_config.publish_max_try_attempts"
-	// keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay specifies ceiling boundaries for backoff delay parameters routines.
-	keyLoginAttemptsSenderKafkaConfigPublishMaxRetryDelay string = "login_attempts_sender.kafka_config.publish_max_retry_delay"
-	// keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay sets baseline starting backoff delays duration indices.
-	keyLoginAttemptsSenderKafkaConfigPublishBaseRetryDelay string = "login_attempts_sender.kafka_config.publish_base_retry_delay"
-	// keyLoginAttemptsSenderKafkaConfigUsername resolves SASL auth parameters mapping active users names.
-	keyLoginAttemptsSenderKafkaConfigUsername string = "login_attempts_sender.kafka_config.username"
-	// keyLoginAttemptsSenderKafkaConfigPassword secures nested paths handling SASL verification secret tokens.
-	keyLoginAttemptsSenderKafkaConfigPassword string = "login_attempts_sender.kafka_config.password"
-	// keyLoginAttemptsSenderKafkaConfigBatchSize binds internal arrays constraints pacing maximum batch records numbers.
-	keyLoginAttemptsSenderKafkaConfigBatchSize string = "login_attempts_sender.kafka_config.batch_size"
-	// keyLoginAttemptsSenderKafkaConfigBatchBytes paths configurations checking buffer size limits in bytes before forcing automated network flushes.
-	keyLoginAttemptsSenderKafkaConfigBatchBytes string = "login_attempts_sender.kafka_config.batch_bytes"
-	// keyLoginAttemptsSenderKafkaConfigBatchTimeout manages lazy queue timer triggers forcing buffer flushes to downstream networks interfaces.
-	keyLoginAttemptsSenderKafkaConfigBatchTimeout string = "login_attempts_sender.kafka_config.batch_timeout"
-	// keyLoginAttemptsSenderKafkaConfigWriteTimeout dictates socket block durability limits managing individual record packages writes operations.
-	keyLoginAttemptsSenderKafkaConfigWriteTimeout string = "login_attempts_sender.kafka_config.write_timeout"
-	// keyLoginAttemptsSenderKafkaConfigRequiredAcks structures consensus verification metrics configuring brokers replication confirmations criteria numbers.
-	keyLoginAttemptsSenderKafkaConfigRequiredAcks string = "login_attempts_sender.kafka_config.required_acks"
+	// keyLoginAttemptsSenderKafkaBrokers identifies compound array configurations trajectories pointing to target Kafka network nodes addresses.
+	keyLoginAttemptsSenderKafkaBrokers string = "login_attempts_sender.kafka_config.brokers"
+	// keyLoginAttemptsSenderKafkaTargetName defines nested topic destination properties.
+	keyLoginAttemptsSenderKafkaTargetName string = "login_attempts_sender.kafka_config.target_name"
+	// keyLoginAttemptsSenderKafkaConnectTimeout manages dialer socket initialization duration parameters keys.
+	keyLoginAttemptsSenderKafkaConnectTimeout string = "login_attempts_sender.kafka_config.connect_timeout"
+	// keyLoginAttemptsSenderKafkaIdleTimeout points to structures specifying passive channels connection lifetime guidelines.
+	keyLoginAttemptsSenderKafkaIdleTimeout string = "login_attempts_sender.kafka_config.idle_timeout"
+	// keyLoginAttemptsSenderKafkaShutdownTimeout constraints cleanup execution durations allowed during stream engine graceful shutdowns.
+	keyLoginAttemptsSenderKafkaShutdownTimeout string = "login_attempts_sender.kafka_config.shutdown_timeout"
+	// keyLoginAttemptsSenderKafkaPublishMaxTryAttempts targets retry configuration metrics driven under producer faults triggers.
+	keyLoginAttemptsSenderKafkaPublishMaxTryAttempts string = "login_attempts_sender.kafka_config.publish_max_try_attempts"
+	// keyLoginAttemptsSenderKafkaPublishMaxRetryDelay specifies ceiling boundaries for backoff delay parameters routines.
+	keyLoginAttemptsSenderKafkaPublishMaxRetryDelay string = "login_attempts_sender.kafka_config.publish_max_retry_delay"
+	// keyLoginAttemptsSenderKafkaPublishBaseRetryDelay sets baseline starting backoff delays duration indices.
+	keyLoginAttemptsSenderKafkaPublishBaseRetryDelay string = "login_attempts_sender.kafka_config.publish_base_retry_delay"
+	// keyLoginAttemptsSenderKafkaUsername resolves SASL auth parameters mapping active users names.
+	keyLoginAttemptsSenderKafkaUsername string = "login_attempts_sender.kafka_config.username"
+	// keyLoginAttemptsSenderKafkaPassword secures nested paths handling SASL verification secret tokens.
+	keyLoginAttemptsSenderKafkaPassword string = "login_attempts_sender.kafka_config.password"
+	// keyLoginAttemptsSenderKafkaBatchSize binds internal arrays constraints pacing maximum batch records numbers.
+	keyLoginAttemptsSenderKafkaBatchSize string = "login_attempts_sender.kafka_config.batch_size"
+	// keyLoginAttemptsSenderKafkaBatchBytes paths configurations checking buffer size limits in bytes before forcing automated network flushes.
+	keyLoginAttemptsSenderKafkaBatchBytes string = "login_attempts_sender.kafka_config.batch_bytes"
+	// keyLoginAttemptsSenderKafkaBatchTimeout manages lazy queue timer triggers forcing buffer flushes to downstream networks interfaces.
+	keyLoginAttemptsSenderKafkaBatchTimeout string = "login_attempts_sender.kafka_config.batch_timeout"
+	// keyLoginAttemptsSenderKafkaWriteTimeout dictates socket block durability limits managing individual record packages writes operations.
+	keyLoginAttemptsSenderKafkaWriteTimeout string = "login_attempts_sender.kafka_config.write_timeout"
+	// keyLoginAttemptsSenderKafkaRequiredAcks structures consensus verification metrics configuring brokers replication confirmations criteria numbers.
+	keyLoginAttemptsSenderKafkaRequiredAcks string = "login_attempts_sender.kafka_config.required_acks"
+)
+
+// data audit sender amqp connector
+//
+//nolint:gosec // G101 : app conf keys
+const (
+	// keyDataAuditSenderAMQPConnectorURL tracks the nested viper schema dot-key location for the baseline AMQP cluster network address string.
+	keyDataAuditSenderAMQPConnectorURL string = "data_audit_connector.url"
+	// keyDataAuditSenderAMQPConnectorUsername maps nested path configuration nodes governing authorization user credentials blocks.
+	keyDataAuditSenderAMQPConnectorUsername string = "data_audit_connector.username"
+	// keyDataAuditSenderAMQPConnectorPassword protects nested trajectories parsing access passwords.
+	keyDataAuditSenderAMQPConnectorPassword string = "data_audit_connector.password"
+	// keyDataAuditSenderAMQPConnectorConnectTimeout points to internal property structures managing connection budget limits.
+	keyDataAuditSenderAMQPConnectorConnectTimeout string = "data_audit_connector.connect_timeout"
+	// keyDataAuditSenderAMQPConnectorWriteTimeout targets configurations specifying maximal write block timeouts parameters.
+	keyDataAuditSenderAMQPConnectorWriteTimeout string = "data_audit_connector.write_timeout"
+	// keyDataAuditSenderAMQPConnectorIdleTimeout dictates internal trajectories formatting unassigned channels durability lifetimes.
+	keyDataAuditSenderAMQPConnectorIdleTimeout string = "data_audit_connector.idle_timeout"
+	// keyDataAuditSenderAMQPConnectorShutdownTimeout binds execution properties framing termination intervals budgets.
+	keyDataAuditSenderAMQPConnectorShutdownTimeout string = "data_audit_connector.shutdown_timeout"
+)
+
+// data audit sender
+const (
+	// keyLoginAttemptsSenderKind chooses specific broker types driving events tracking workflows (e.g. amqp, kafka).
+	keyDataAuditSenderKind string = "login_attempts_sender.sender_kind"
+	// keyLoginAttemptsSenderNotifyTimeout limits wait budgets assigned for async pubsub broadcasts sequences.
+	keyDataAuditSenderNotifyTimeout string = "login_attempts_sender.notify_timeout"
+)
+
+// data audit sender amqp
+const (
+	// keyDataAuditSenderAMQPTargetName targets configuration nodes establishing destination queues or exchanges.
+	keyDataAuditSenderAMQPTargetName string = "data_audit_sender.amqp_config.target_name"
+	// keyDataAuditSenderAMQPConnectTimeout dictates socket initialization budgets nested under parameters keys.
+	keyDataAuditSenderAMQPConnectTimeout string = "data_audit_sender.amqp_config.connect_timeout"
+	// keyDataAuditSenderAMQPShutdownTimeout manages contextual timeout structures applied across streaming closures operations.
+	keyDataAuditSenderAMQPShutdownTimeout string = "data_audit_sender.amqp_config.shutdown_timeout"
+	// keyDataAuditSenderAMQPPublishMaxTryAttempts restricts total retries counters upon network pipeline errors loops.
+	keyDataAuditSenderAMQPPublishMaxTryAttempts string = "data_audit_sender.amqp_config.publish_max_try_attempts"
+	// keyDataAuditSenderAMQPPublishBaseRetryDelay maps property paths specifying backoff multiplier initial values duration.
+	keyDataAuditSenderAMQPPublishBaseRetryDelay string = "data_audit_sender.amqp_config.publish_base_retry_delay"
+	// keyDataAuditSenderAMQPPublishMaxRetryDelay caps maximal delay limits managing cascading backoff parameters structures.
+	keyDataAuditSenderAMQPPublishMaxRetryDelay string = "data_audit_sender.amqp_config.publish_max_retry_delay"
+)
+
+// data audit sender kafka
+const (
+	// keyDataAuditSenderKafkaBrokers identifies compound array configurations trajectories pointing to target Kafka network nodes addresses.
+	keyDataAuditSenderKafkaBrokers string = "data_audit_sender.kafka_config.brokers"
+	// keyDataAuditSenderKafkaTargetName defines nested topic destination properties.
+	keyDataAuditSenderKafkaTargetName string = "data_audit_sender.kafka_config.target_name"
+	// keyDataAuditSenderKafkaConnectTimeout manages dialer socket initialization duration parameters keys.
+	keyDataAuditSenderKafkaConnectTimeout string = "data_audit_sender.kafka_config.connect_timeout"
+	// keyDataAuditSenderKafkaIdleTimeout points to structures specifying passive channels connection lifetime guidelines.
+	keyDataAuditSenderKafkaIdleTimeout string = "data_audit_sender.kafka_config.idle_timeout"
+	// keyDataAuditSenderKafkaShutdownTimeout constraints cleanup execution durations allowed during stream engine graceful shutdowns.
+	keyDataAuditSenderKafkaShutdownTimeout string = "data_audit_sender.kafka_config.shutdown_timeout"
+	// keyDataAuditSenderKafkaPublishMaxTryAttempts targets retry configuration metrics driven under producer faults triggers.
+	keyDataAuditSenderKafkaPublishMaxTryAttempts string = "data_audit_sender.kafka_config.publish_max_try_attempts"
+	// keyDataAuditSenderKafkaPublishMaxRetryDelay specifies ceiling boundaries for backoff delay parameters routines.
+	keyDataAuditSenderKafkaPublishMaxRetryDelay string = "data_audit_sender.kafka_config.publish_max_retry_delay"
+	// keyDataAuditSenderKafkaPublishBaseRetryDelay sets baseline starting backoff delays duration indices.
+	keyDataAuditSenderKafkaPublishBaseRetryDelay string = "data_audit_sender.kafka_config.publish_base_retry_delay"
+	// keyDataAuditSenderKafkaUsername resolves SASL auth parameters mapping active users names.
+	keyDataAuditSenderKafkaUsername string = "data_audit_sender.kafka_config.username"
+	// keyDataAuditSenderKafkaPassword secures nested paths handling SASL verification secret tokens.
+	keyDataAuditSenderKafkaPassword string = "data_audit_sender.kafka_config.password"
+	// keyDataAuditSenderKafkaBatchSize binds internal arrays constraints pacing maximum batch records numbers.
+	keyDataAuditSenderKafkaBatchSize string = "data_audit_sender.kafka_config.batch_size"
+	// keyDataAuditSenderKafkaBatchBytes paths configurations checking buffer size limits in bytes before forcing automated network flushes.
+	keyDataAuditSenderKafkaBatchBytes string = "data_audit_sender.kafka_config.batch_bytes"
+	// keyDataAuditSenderKafkaBatchTimeout manages lazy queue timer triggers forcing buffer flushes to downstream networks interfaces.
+	keyDataAuditSenderKafkaBatchTimeout string = "data_audit_sender.kafka_config.batch_timeout"
+	// keyDataAuditSenderKafkaWriteTimeout dictates socket block durability limits managing individual record packages writes operations.
+	keyDataAuditSenderKafkaWriteTimeout string = "data_audit_sender.kafka_config.write_timeout"
+	// keyDataAuditSenderKafkaRequiredAcks structures consensus verification metrics configuring brokers replication confirmations criteria numbers.
+	keyDataAuditSenderKafkaRequiredAcks string = "data_audit_sender.kafka_config.required_acks"
 )

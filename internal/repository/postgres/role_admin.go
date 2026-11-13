@@ -14,7 +14,7 @@ import (
 
 // RoleAdminPgRepository structures administrative relational mapping adapters for generic core role entity CRUD operations.
 type RoleAdminPgRepository struct {
-	*librepo.BaseCRUDRepository[*domain.Role, string] // Generic platform core structural database repository handle
+	*librepo.CRUD[*domain.Role, string] // Generic platform core structural database repository handle
 }
 
 // Compile-time interface compliance verifications
@@ -47,7 +47,7 @@ func NewRoleAdminPgRepository(
 		}).
 		Build()
 	// callbacks
-	callbacks, _ := librepo.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, _ := librepo.NewCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithValidateCreate(res.validateCreate).
@@ -58,7 +58,7 @@ func NewRoleAdminPgRepository(
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := librepo.NewBaseCRUDRepository[*domain.Role, string](
+	base, err := librepo.NewCRUD[*domain.Role, string](
 		executor,
 		decipher,
 		librepo.NewEntityInfo("roles", "Role"),
@@ -69,7 +69,7 @@ func NewRoleAdminPgRepository(
 		return nil, errs.NewCommonError("error create RolePgRepository", err)
 	}
 
-	res.BaseCRUDRepository = base
+	res.CRUD = base
 
 	return res, nil
 }

@@ -18,7 +18,7 @@ type AppRouterOptions struct {
 	Logger          logger.Logger
 	AuthHelper      auth.Helper
 	Health          *health.Health
-	Healthz         libhttp.HealthzFunc
+	Livez           libhttp.LivezFunc
 	Readyz          libhttp.ReadyzFunc
 	AuthFacade      facade.AuthFacade
 	UserFacade      facade.UserFacade
@@ -93,10 +93,10 @@ func WithHealth(health *health.Health) Option {
 	}
 }
 
-// WithHealthz returns an Option assigning the generic liveness probe verification callback.
-func WithHealthz(healthz libhttp.HealthzFunc) Option {
+// WithLivez returns an Option assigning the generic liveness probe verification callback.
+func WithLivez(livez libhttp.LivezFunc) Option {
 	return func(aro *AppRouterOptions) {
-		aro.Healthz = healthz
+		aro.Livez = livez
 	}
 }
 

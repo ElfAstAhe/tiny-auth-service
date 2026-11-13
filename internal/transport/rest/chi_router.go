@@ -27,7 +27,7 @@ type AppChiRouter struct {
 	log             logger.Logger
 	config          *config.Config
 	health          *health.Health
-	healthz         libhttp.HealthzFunc
+	livez           libhttp.LivezFunc
 	readyz          libhttp.ReadyzFunc
 	authFacade      facade.AuthFacade
 	userFacade      facade.UserFacade
@@ -56,7 +56,7 @@ func NewAppRouter(opts ...Option) (*AppChiRouter, error) {
 		options.Logger,
 		options.AuthHelper,
 		options.Health,
-		options.Healthz,
+		options.Livez,
 		options.Readyz,
 		options.AuthFacade,
 		options.UserFacade,
@@ -70,7 +70,7 @@ func newAppChiRouter(
 	logger logger.Logger,
 	authHelper auth.Helper,
 	health *health.Health,
-	healthz libhttp.HealthzFunc,
+	livez libhttp.LivezFunc,
 	readyz libhttp.ReadyzFunc,
 	authFacade facade.AuthFacade,
 	userFacade facade.UserFacade,
@@ -82,7 +82,7 @@ func newAppChiRouter(
 		log:             logger.GetLogger("app-chi-router"),
 		config:          config,
 		health:          health,
-		healthz:         healthz,
+		livez:           livez,
 		readyz:          readyz,
 		authFacade:      authFacade,
 		userFacade:      userFacade,
@@ -143,6 +143,7 @@ func (cr *AppChiRouter) setupMiddleware(
 	cr.router.Use(libmware.NewCompress(logger,
 		libhttp.MediaTypeApplicationJSON,
 		libhttp.MediaTypeTextPlain,
+		libhttp.MediaTypeApplicationXML,
 	).Handle)
 	cr.router.Use(libmware.NewDecompress(int64(cr.config.HTTP.MaxRequestBodySize), logger).Handle)
 
@@ -169,7 +170,7 @@ func (cr *AppChiRouter) setupMiddleware(
 // setupRoutes registers operational routing endpoints, guarding administrative sub-routers and environments conditional blocks.
 func (cr *AppChiRouter) setupRoutes() {
 	// health check
-	cr.router.Get("/healthz", cr.getHealthz)
+	cr.router.Get("/livez", cr.getLivez)
 	// readiness check
 	cr.router.Get("/readyz", cr.getReadyz)
 	// config (debug)
@@ -179,6 +180,7 @@ func (cr *AppChiRouter) setupRoutes() {
 
 	// api
 	cr.router.Route("/api", func(r chi.Router) {
+		// v1
 		r.Route("/v1", func(r chi.Router) {
 			// /auth
 			r.Post("/auth", cr.postAPIV1Auth)

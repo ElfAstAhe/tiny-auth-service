@@ -3,6 +3,7 @@ package domain
 import (
 	"fmt"
 	"hash/fnv"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -11,8 +12,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	auditdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
-	"golang.org/x/exp/slices"
 )
 
 // User encapsulates the core enterprise domain identity aggregate state, mappings, invariants verification checkpoints,
@@ -36,7 +35,7 @@ type User struct {
 var _ libdomain.Entity[string] = (*User)(nil)
 var _ libdomain.SoftDeleteEntity[bool] = (*User)(nil)
 var _ auditdomain.Auditable = (*User)(nil)
-var _ repository.AuditableEntity[string] = (*User)(nil)
+var _ auditdomain.AuditableEntity[string] = (*User)(nil)
 
 // NewEmptyUser allocates a baseline User structure stub initializing empty child nested slice structures.
 func NewEmptyUser() *User {
@@ -192,7 +191,7 @@ func (u *User) HashCode() uint32 {
 	_, _ = h.Write([]byte(u.CreatedAt.Format(time.RFC3339)))
 	_, _ = h.Write([]byte(u.UpdatedAt.Format(time.RFC3339)))
 
-	roleIDs := libdomain.EntitiesToIDList(u.Roles)
+	roleIDs := libdomain.MapEntitiesToIDs(u.Roles)
 	//nolint:govet // broken inline analyzer
 	slices.Sort(roleIDs)
 	for _, roleID := range roleIDs {

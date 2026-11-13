@@ -3,9 +3,11 @@ package worker
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/transport/worker"
@@ -18,7 +20,7 @@ const baseTokenRefresherNameTemplate = "token-refresher-%s"
 // BaseTokenRefresher implements auth.TokenProvider and worker.Scheduler interfaces,
 // orchestrating atomic background thread-safe rotations of expired authentication identities.
 type BaseTokenRefresher struct {
-	*worker.BaseScheduler
+	*worker.PeriodicScheduler
 	name               string
 	mutex              sync.RWMutex
 	token              *utils.AtomicString
@@ -30,6 +32,7 @@ type BaseTokenRefresher struct {
 // Compile-time interface compliance verifications
 var _ auth.TokenProvider = (*BaseTokenRefresher)(nil)
 var _ worker.Scheduler = (*BaseTokenRefresher)(nil)
+var _ container.Runner = (*BaseTokenRefresher)(nil)
 
 // NewBaseTokenRefresher constructs an isolated, standalone refresher unit and mounts internal abstract time.Timer event listeners.
 func NewBaseTokenRefresher(options ...BaseTokenRefresherOption) (*BaseTokenRefresher, error) {
@@ -50,19 +53,19 @@ func NewBaseTokenRefresher(options ...BaseTokenRefresherOption) (*BaseTokenRefre
 		logger:             opts.Logger.GetLogger(fmt.Sprintf(baseTokenRefresherNameTemplate, opts.Name)),
 	}
 	// scheduler
-	scheduler, err := worker.NewBaseScheduler(
-		worker.WithSchedulerName(opts.Name),
-		worker.WithSchedulerStartInterval(opts.StartInterval),
-		worker.WithSchedulerScheduleInterval(opts.ScheduleInterval),
-		worker.WithSchedulerStopTimeout(opts.StopTimeout),
-		worker.WithSchedulerLogger(opts.Logger),
-		worker.WithSchedulerTimerDispatcher(res.timerDispatcher),
+	scheduler, err := worker.NewPeriodicScheduler(
+		worker.WithPeriodicSchedulerName(opts.Name),
+		worker.WithPeriodicSchedulerStartInterval(opts.StartInterval),
+		worker.WithPeriodicSchedulerScheduleInterval(opts.ScheduleInterval),
+		worker.WithPeriodicSchedulerStopTimeout(opts.StopTimeout),
+		worker.WithPeriodicSchedulerLogger(opts.Logger),
+		worker.WithPeriodicSchedulerTimerDispatcher(res.timerDispatcher),
 	)
 	if err != nil {
 		return nil, errs.NewTlCommonError("NewBaseTokenRefresher", "base token refresher scheduler create failed", err)
 	}
 	// setup
-	res.BaseScheduler = scheduler
+	res.PeriodicScheduler = scheduler
 
 	return res, nil
 }
@@ -81,7 +84,7 @@ func (btr *BaseTokenRefresher) timerDispatcher(ctx context.Context, eventTime ti
 	token, err := btr.tokenRefreshAction(ctx, eventTime)
 	if err != nil {
 		// Dynamically downgrade scheduler pace to prevent spamming upstream OIDC providers under networking outage
-		btr.BaseScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ErrorScheduleInterval
+		btr.PeriodicScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ErrorScheduleInterval
 
 		return errs.NewCommonError(fmt.Sprintf("token refresher %s timer event %s token refresh action failed", btr.GetName(), eventTime.Format(time.DateTime)), err)
 	}
@@ -93,7 +96,7 @@ func (btr *BaseTokenRefresher) timerDispatcher(ctx context.Context, eventTime ti
 	btr.token.Store(token)
 
 	// Since btr.GetOpts() references the exact same embedded pointer, the original schedule duration is permanently lost after the first error.
-	btr.BaseScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ScheduleInterval
+	btr.PeriodicScheduler.GetOpts().ScheduleInterval = btr.GetOpts().ScheduleInterval
 
 	return nil
 }
@@ -104,7 +107,7 @@ func (btr *BaseTokenRefresher) GetAccessToken() (string, error) {
 	btr.mutex.RLock()
 	defer btr.mutex.RUnlock()
 
-	if btr.token.Load() == "" {
+	if strings.TrimSpace(btr.token.Load()) == "" {
 		return "", errs.NewCommonError("no actual access token", nil)
 	}
 

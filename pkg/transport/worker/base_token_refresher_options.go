@@ -20,7 +20,7 @@ type BaseTokenRefresherOption func(*BaseTokenRefresherOptions)
 
 // BaseTokenRefresherOptions опции scheduler воркера обновления токена
 type BaseTokenRefresherOptions struct {
-	*worker.BaseSchedulerOptions
+	*worker.PeriodicSchedulerOptions
 	ErrorScheduleInterval time.Duration
 	TokenRefreshAction    TokenRefreshAction
 }
@@ -28,8 +28,8 @@ type BaseTokenRefresherOptions struct {
 // NewBaseTokenRefresherOptions acts as a factory constructor allocating a nested baseline schedule profile configuration blueprints pointer.
 func NewBaseTokenRefresherOptions() *BaseTokenRefresherOptions {
 	return &BaseTokenRefresherOptions{
-		BaseSchedulerOptions:  worker.NewBaseSchedulerOptions(),
-		ErrorScheduleInterval: DefaultTokenRefresherErrorScheduleInterval,
+		PeriodicSchedulerOptions: worker.NewPeriodicSchedulerOptions(),
+		ErrorScheduleInterval:    DefaultTokenRefresherErrorScheduleInterval,
 	}
 }
 
@@ -68,8 +68,8 @@ func (tro *BaseTokenRefresherOptions) Validate() error {
 // Fluent API методы для сборки опций
 // ====================================================================
 
-// WithTokenRefreshedName sets a flat diagnostic tag string pointer identifying the instance inside operational telemetry records blocks.
-func WithTokenRefreshedName(name string) BaseTokenRefresherOption {
+// WithTokenRefresherName sets a flat diagnostic tag string pointer identifying the instance inside operational telemetry records blocks.
+func WithTokenRefresherName(name string) BaseTokenRefresherOption {
 	return func(options *BaseTokenRefresherOptions) {
 		options.Name = name
 	}

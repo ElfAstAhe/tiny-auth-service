@@ -59,6 +59,13 @@ const (
 	InstanceUserRolesAdminMetricsRepo string = "userRolesAdminMetricsRepository"
 	// InstanceUserRolesAdminTraceRepo orchestrates OpenTelemetry spans across administrative relational bridge mapping operations.
 	InstanceUserRolesAdminTraceRepo string = "userRolesAdminTraceRepository"
+
+	// InstanceDataAuditOutboxRepo data audit outbox repository
+	InstanceDataAuditOutboxRepo string = "data-audit-outbox-repository"
+	// InstanceDataAuditOutboxMetricsRepo data audit outbox metrics repository
+	InstanceDataAuditOutboxMetricsRepo string = "data-audit-outbox-metrics-repository"
+	// InstanceDataAuditOutboxTraceRepo data audit outbox trace repository
+	InstanceDataAuditOutboxTraceRepo string = "data-audit-outbox-trace-repository"
 )
 
 // RepositoryContainer structures a lazy-loaded lifecycle dependency injection container managing storage layer data access objects and decorators chains.
@@ -114,6 +121,10 @@ func (rc *RepositoryContainer) Init(ctx context.Context) error {
 		rc.RegisterProvider(InstanceUserRolesAdminRepo, rc.providerUserRolesAdminRepo),
 		rc.RegisterProvider(InstanceUserRolesAdminMetricsRepo, rc.providerUserRolesAdminMetricsRepo),
 		rc.RegisterProvider(InstanceUserRolesAdminTraceRepo, rc.providerUserRolesAdminTraceRepo),
+
+		rc.RegisterProvider(InstanceDataAuditOutboxRepo, rc.providerDataAuditOutboxRepo),
+		rc.RegisterProvider(InstanceDataAuditOutboxMetricsRepo, rc.providerDataAuditOutboxMetricsRepo),
+		rc.RegisterProvider(InstanceDataAuditOutboxTraceRepo, rc.providerDataAuditOutboxTraceRepo),
 	)
 	if err != nil {
 		return errs.NewContainerError(rc.GetName(), "container init: register providers failed", err)

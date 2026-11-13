@@ -9,8 +9,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/transport/worker"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/hellofresh/health-go/v5"
 	healthPg "github.com/hellofresh/health-go/v5/checks/pgx5"
 )
@@ -78,16 +76,6 @@ func (sc *ServiceContainer) Init(initCtx context.Context) error {
 	if err != nil {
 		return errs.NewContainerError(sc.GetName(), "container init: register health status check failed", err)
 	}
-	// setup token refresher
-	simpleLoginUCInst, err := container.GetInstance[usecase.LoginSimpleUseCase](InstanceLoginSimpleUC)
-	if err != nil {
-		return errs.NewContainerError(sc.GetName(), "container init: retrieve instance failed", err)
-	}
-	tokenRefresher, err := container.GetInstance[*worker.TokenRefresher](InstanceTokenRefresher)
-	if err != nil {
-		return errs.NewContainerError(sc.GetName(), "container init: retrieve instance failed", err)
-	}
-	tokenRefresher.SetSimpleLoginUC(simpleLoginUCInst)
 
 	return nil
 }

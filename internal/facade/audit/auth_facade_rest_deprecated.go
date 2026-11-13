@@ -51,7 +51,7 @@ func (aaf *AuthFacadeImpl) Login(ctx context.Context, login *dto.LoginDTO) (*dto
 
 	// отправка
 	// AUDIT FAULT NOTICE: Network transport degradations inside auditClient do not block downstream user sessions execution.
-	err = aaf.auditClient.Audit(data)
+	err = aaf.auditClient.Audit(ctx, data)
 	if err != nil {
 		aaf.logger.Errorf("error audit: %v", err)
 	}
@@ -68,7 +68,7 @@ func (aaf *AuthFacadeImpl) LoginSimple(ctx context.Context, login *dto.LoginDTO)
 	data := aaf.buildAudit(ctx, login, res, err)
 
 	// отправка
-	err = aaf.auditClient.Audit(data)
+	err = aaf.auditClient.Audit(ctx, data)
 	if err != nil {
 		aaf.logger.Errorf("error audit: %v", err)
 	}

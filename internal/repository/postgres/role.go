@@ -16,7 +16,7 @@ import (
 // RolePgRepository structures concrete relational mapping adapters for generic core role entity CRUD operations,
 // implementing lifecycle soft-delete validation filters across active single and collection record streams.
 type RolePgRepository struct {
-	*librepo.BaseCRUDRepository[*domain.Role, string] // Generic platform core structural database repository handle
+	*librepo.CRUD[*domain.Role, string] // Generic platform core structural database repository handle
 }
 
 // Compile-time interface compliance verifications
@@ -51,7 +51,7 @@ func NewRolePgRepository(
 		}).
 		Build()
 	// callbacks
-	callbacks, _ := librepo.NewBaseRepositoryCallbacksBuilder[*domain.Role, string]().NewInstance().
+	callbacks, _ := librepo.NewCallbacksBuilder[*domain.Role, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyRole).
 		WithAfterFind(res.afterFind).
@@ -65,7 +65,7 @@ func NewRolePgRepository(
 		Build()
 
 	// base CRUD
-	base, err := librepo.NewBaseCRUDRepository[*domain.Role, string](
+	base, err := librepo.NewCRUD[*domain.Role, string](
 		executor,
 		decipher,
 		librepo.NewEntityInfo("roles", "Role"),
@@ -76,7 +76,7 @@ func NewRolePgRepository(
 		return nil, errs.NewCommonError("error create RolePgRepository", err)
 	}
 
-	res.BaseCRUDRepository = base
+	res.CRUD = base
 
 	return res, nil
 }

@@ -3,51 +3,53 @@ package audit
 import (
 	"context"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/logger"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
-	auditlibdomain "github.com/ElfAstAhe/tiny-audit-service/pkg/domain"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
+	libdom "github.com/ElfAstAhe/go-service-template/pkg/domain"
+	libextdom "github.com/ElfAstAhe/go-service-template/pkg/ext/domain"
+	libauderrs "github.com/ElfAstAhe/tiny-audit-service/pkg/errs"
+	libaudrepo "github.com/ElfAstAhe/tiny-audit-service/pkg/repository"
+	libaudutl "github.com/ElfAstAhe/tiny-audit-service/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
-// RoleAuditRepository implements the domain.RoleRepository interface,
+// RoleRepository implements the domain.RoleRepository interface,
 // acting as a non-invasive database auditing decorator component for standard user roles.
 // It intercepts data mutations to automatically extract, map, and stream audit records via a broker client.
-type RoleAuditRepository struct {
-	*repository.BaseAuditCRUDRepository[*domain.Role, string]                       // Generic framework-level audit base decorator structure
-	next                                                      domain.RoleRepository // Downstream storage persistence or tracing layer execution implementation path
+type RoleRepository struct {
+	*libaudrepo.AuditCRUD[*domain.Role, *libextdom.DataAuditOutbox, string]
+	next domain.RoleRepository // Downstream storage persistence or tracing layer execution implementation path
 }
 
 // Compile-time interface compliance verification
-var _ domain.RoleRepository = (*RoleAuditRepository)(nil)
+var _ libdom.CRUDRepository[*domain.Role, string] = (*RoleRepository)(nil)
+var _ domain.RoleRepository = (*RoleRepository)(nil)
 
 // NewRoleRepository acts as a factory constructor mounting audit logging proxies over standard role storage adapters.
 func NewRoleRepository(
 	source string,
 	next domain.RoleRepository,
-	auditClient client.DataAuditClient,
-	log logger.Logger,
-) *RoleAuditRepository {
-	res := &RoleAuditRepository{
+	outboxRepo libextdom.OutboxRepository[*libextdom.DataAuditOutbox, string],
+) (*RoleRepository, error) {
+	// instance
+	res := &RoleRepository{
 		next: next,
 	}
-	res.BaseAuditCRUDRepository = repository.NewBaseAuditCRUDRepository[*domain.Role, string](
-		next,
-		source,
-		res.mapEntityToAuditable,
-		auditClient,
-		log,
+	// embed
+	embed, err := libaudrepo.NewAuditCRUD[*domain.Role, *libextdom.DataAuditOutbox, string](
+		libaudrepo.WithAuditSource[*domain.Role, *libextdom.DataAuditOutbox, string](source),
+		libaudrepo.WithAuditNext[*domain.Role, *libextdom.DataAuditOutbox, string](next),
+		libaudrepo.WithAuditOutboxBuilder[*domain.Role, *libextdom.DataAuditOutbox, string](libaudutl.DefaultBuildDataAuditOutbox),
+		libaudrepo.WithAuditOutboxRepository[*domain.Role, *libextdom.DataAuditOutbox, string](outboxRepo),
 	)
+	if err != nil {
+		return nil, libauderrs.NewAuditError("NewRoleRepository", "unable to create audit CRUD embed", err)
+	}
+	// setup
+	res.AuditCRUD = embed
 
-	return res
+	return res, nil
 }
 
 // FindByName proxies name-based query execution straight to the downstream data adapter, bypassing change auditing layers.
-func (rar *RoleAuditRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
+func (rar *RoleRepository) FindByName(ctx context.Context, name string) (*domain.Role, error) {
 	return rar.next.FindByName(ctx, name)
-}
-
-// mapEntityToAuditable transforms an internal role domain object into a transmittable framework audit contract interface.
-func (rar *RoleAuditRepository) mapEntityToAuditable(entity *domain.Role) auditlibdomain.Auditable {
-	return entity
 }

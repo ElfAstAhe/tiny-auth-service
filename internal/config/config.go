@@ -6,6 +6,7 @@ import (
 
 	"github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/spf13/viper"
 )
 
@@ -17,17 +18,17 @@ const (
 // Config aggregates multi-layered environment settings blocks, infrastructure configurations blueprints,
 // cross-cutting telemetry parameters, and credentials profiles required to spin up application services.
 type Config struct {
-	App                 *AppConfig                  `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
-	Credentials         *ServiceCredentialsConfig   `mapstructure:"svc_creds" json:"svc_creds,omitempty" yaml:"svc_creds,omitempty"`
-	DataAuditClient     *AuditClientConfig          `mapstructure:"data_audit_client" json:"data_audit_client,omitempty" yaml:"data_audit_client,omitempty"`
-	Auth                *config.AuthConfig          `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
-	HTTP                *config.HTTPConfig          `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
-	GRPC                *config.GRPCConfig          `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
-	Log                 *config.LogConfig           `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
-	DB                  *config.DBConfig            `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
-	Telemetry           *config.TelemetryConfig     `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
-	AMQPConnector       *config.AMQPConnectorConfig `mapstructure:"amqp_connector" json:"amqp_connector,omitempty" yaml:"amqp_connector,omitempty"`
-	LoginAttemptsSender *LoginAttemptsConfig        `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
+	App                    *AppConfig                  `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
+	Auth                   *config.AuthConfig          `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
+	HTTP                   *config.HTTPConfig          `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
+	GRPC                   *config.GRPCConfig          `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
+	Log                    *config.LogConfig           `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
+	DB                     *config.DBConfig            `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
+	Telemetry              *config.TelemetryConfig     `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
+	LoginAttemptsConnector *config.AMQPConnectorConfig `mapstructure:"login_attempts_connector" json:"login_attempts_connector,omitempty" yaml:"login_attempts_connector,omitempty"`
+	LoginAttemptsSender    *LoginAttemptsConfig        `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
+	DataAuditConnector     *config.AMQPConnectorConfig `mapstructure:"data_audit_connector" json:"data_audit_connector,omitempty" yaml:"data_audit_connector,omitempty"`
+	DataAuditSender        *DataAuditConfig            `mapstructure:"data_audit_sender" json:"data_audit_sender,omitempty" yaml:"data_audit_sender,omitempty"`
 }
 
 // Linker params injected via compiler build automation pipelines (-ldflags).
@@ -39,29 +40,29 @@ var (
 // NewConfig acts as a complete constructor function mapping parameters across individual configuration scopes.
 func NewConfig(
 	app *AppConfig,
-	svcCreds *ServiceCredentialsConfig,
-	dataAuditClient *AuditClientConfig,
 	auth *config.AuthConfig,
 	HTTP *config.HTTPConfig,
 	GRPC *config.GRPCConfig,
 	log *config.LogConfig,
 	db *config.DBConfig,
 	telemetry *config.TelemetryConfig,
-	amqpConnector *config.AMQPConnectorConfig,
+	loginAttemptsConnector *config.AMQPConnectorConfig,
 	loginAttemptsSender *LoginAttemptsConfig,
+	dataAuditConnector *config.AMQPConnectorConfig,
+	dataAuditSender *DataAuditConfig,
 ) *Config {
 	return &Config{
-		App:                 app,
-		Credentials:         svcCreds,
-		DataAuditClient:     dataAuditClient,
-		Auth:                auth,
-		HTTP:                HTTP,
-		GRPC:                GRPC,
-		Log:                 log,
-		DB:                  db,
-		Telemetry:           telemetry,
-		AMQPConnector:       amqpConnector,
-		LoginAttemptsSender: loginAttemptsSender,
+		App:                    app,
+		Auth:                   auth,
+		HTTP:                   HTTP,
+		GRPC:                   GRPC,
+		Log:                    log,
+		DB:                     db,
+		Telemetry:              telemetry,
+		LoginAttemptsConnector: loginAttemptsConnector,
+		LoginAttemptsSender:    loginAttemptsSender,
+		DataAuditConnector:     dataAuditConnector,
+		DataAuditSender:        dataAuditSender,
 	}
 }
 
@@ -69,8 +70,6 @@ func NewConfig(
 func NewDefaultConfig() *Config {
 	return NewConfig(
 		NewDefaultAppConfig(),
-		NewDefaultServiceCredentialsConfig(),
-		NewDefaultAuditClientConfig(),
 		config.NewDefaultAuthConfig(),
 		config.NewDefaultHTTPConfig(),
 		config.NewDefaultGRPCConfig(),
@@ -79,6 +78,8 @@ func NewDefaultConfig() *Config {
 		config.NewDefaultTelemetryConfig(),
 		config.NewDefaultAMQPConnectorConfig(),
 		NewDefaultLoginAttemptsConfig(),
+		config.NewDefaultAMQPConnectorConfig(),
+		NewDefaultDataAuditConfig(),
 	)
 }
 
@@ -87,17 +88,20 @@ func NewDefaultConfig() *Config {
 //goland:noinspection GoUnusedExportedFunction
 func NewEmptyConfig() *Config {
 	return &Config{
-		App:             &AppConfig{},
-		Credentials:     &ServiceCredentialsConfig{},
-		DataAuditClient: &AuditClientConfig{},
-		Auth:            &config.AuthConfig{},
-		HTTP:            &config.HTTPConfig{},
-		GRPC:            &config.GRPCConfig{},
-		Log:             &config.LogConfig{},
-		DB:              &config.DBConfig{},
-		Telemetry:       &config.TelemetryConfig{},
-		AMQPConnector:   &config.AMQPConnectorConfig{},
+		App:                    &AppConfig{},
+		Auth:                   &config.AuthConfig{},
+		HTTP:                   &config.HTTPConfig{},
+		GRPC:                   &config.GRPCConfig{},
+		Log:                    &config.LogConfig{},
+		DB:                     &config.DBConfig{},
+		Telemetry:              &config.TelemetryConfig{},
+		LoginAttemptsConnector: &config.AMQPConnectorConfig{},
 		LoginAttemptsSender: &LoginAttemptsConfig{
+			AMQPConfig:  &config.AMQPSenderConfig{},
+			KafkaConfig: &config.KafkaSenderConfig{},
+		},
+		DataAuditConnector: &config.AMQPConnectorConfig{},
+		DataAuditSender: &DataAuditConfig{
 			AMQPConfig:  &config.AMQPSenderConfig{},
 			KafkaConfig: &config.KafkaSenderConfig{},
 		},
@@ -110,19 +114,22 @@ func (c *Config) Validate() error {
 		Validate() error
 	}{
 		c.App,
-		c.Credentials,
-		c.DataAuditClient,
 		c.Auth,
 		c.HTTP,
 		c.GRPC,
 		c.Log,
 		c.DB,
 		c.Telemetry,
-		c.AMQPConnector,
+		c.LoginAttemptsConnector,
 		c.LoginAttemptsSender,
+		c.DataAuditConnector,
+		c.DataAuditSender,
 	}
 
 	for _, validator := range validators {
+		if utils.IsNil(validator) {
+			return errs.NewConfigValidateError("validator item", "validator", "is required", nil)
+		}
 		if err := validator.Validate(); err != nil {
 			return err
 		}

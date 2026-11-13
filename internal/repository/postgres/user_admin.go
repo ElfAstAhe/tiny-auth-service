@@ -17,10 +17,10 @@ import (
 // UserAdminPgRepository structures administrative relational mapping adapters for comprehensive core user entity CRUD operations,
 // orchestrating automated cryptographic credentials de-serialization hook events and batching cascaded RBAC owned roles persistence.
 type UserAdminPgRepository struct {
-	*librepo.BaseCRUDRepository[*domain.User, string]                                 // Generic platform core structural database repository handle
-	userRolesRepo                                     domain.UserRolesAdminRepository // Downstream administrative sub-repository handle managing relational bridge role mappings
-	cipherHelper                                      helper.Cipher                   // Structural symmetric encryption utility decrypting persisted cryptographic key blocks
-	hashCipher                                        utils.Cipher                    // Cryptographic tool managing comparative password hashing mechanics
+	*librepo.CRUD[*domain.User, string]                                 // Generic platform core structural database repository handle
+	userRolesRepo                       domain.UserRolesAdminRepository // Downstream administrative sub-repository handle managing relational bridge role mappings
+	cipherHelper                        helper.Cipher                   // Structural symmetric encryption utility decrypting persisted cryptographic key blocks
+	hashCipher                          utils.Cipher                    // Cryptographic tool managing comparative password hashing mechanics
 }
 
 // Compile-time interface compliance verifications
@@ -59,7 +59,7 @@ func NewUserAdminPgRepository(
 		}).
 		Build()
 	// callbacks
-	callbacks, _ := librepo.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, _ := librepo.NewCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
@@ -72,7 +72,7 @@ func NewUserAdminPgRepository(
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := librepo.NewBaseCRUDRepository[*domain.User, string](
+	base, err := librepo.NewCRUD[*domain.User, string](
 		executor,
 		errDecipher,
 		librepo.NewEntityInfo("users", "User"),
@@ -83,14 +83,14 @@ func NewUserAdminPgRepository(
 		return nil, errs.NewCommonError("error create UserPgRepository", err)
 	}
 
-	res.BaseCRUDRepository = base
+	res.CRUD = base
 
 	return res, nil
 }
 
 // Find retrieves a single user aggregate record by its specific identifier, performing cascaded eager loading to append associated RBAC roles.
 func (uar *UserAdminPgRepository) Find(ctx context.Context, id string) (*domain.User, error) {
-	res, err := uar.BaseCRUDRepository.Find(ctx, id)
+	res, err := uar.CRUD.Find(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -122,11 +122,11 @@ func (uar *UserAdminPgRepository) FindByName(ctx context.Context, name string) (
 
 // List fetches a paginated array collection of user models, executing optimized single-query batch extraction for all related user role aggregates to mitigate N+1 pitfalls.
 func (uar *UserAdminPgRepository) List(ctx context.Context, limit, offset int) ([]*domain.User, error) {
-	res, err := uar.BaseCRUDRepository.List(ctx, limit, offset)
+	res, err := uar.CRUD.List(ctx, limit, offset)
 	if err != nil {
 		return nil, err
 	}
-	allRoles, err := uar.userRolesRepo.ListAllByOwners(ctx, libdom.EntitiesToIDList(res)...)
+	allRoles, err := uar.userRolesRepo.ListAllByOwners(ctx, libdom.MapEntitiesToIDs(res)...)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +142,7 @@ func (uar *UserAdminPgRepository) List(ctx context.Context, limit, offset int) (
 
 // Create persists a new core user record structure and triggers transactional cascade insertions saving attached role assignment definitions.
 func (uar *UserAdminPgRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
-	res, err := uar.BaseCRUDRepository.Create(ctx, user)
+	res, err := uar.CRUD.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (uar *UserAdminPgRepository) Create(ctx context.Context, user *domain.User)
 
 // Change updates an existing core user record mapping and forces synchronized structural replacements updating the relational role bridge mapping.
 func (uar *UserAdminPgRepository) Change(ctx context.Context, user *domain.User) (*domain.User, error) {
-	res, err := uar.BaseCRUDRepository.Change(ctx, user)
+	res, err := uar.CRUD.Change(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func (uar *UserAdminPgRepository) Delete(ctx context.Context, id string) error {
 	if err != nil {
 		return err
 	}
-	err = uar.BaseCRUDRepository.Delete(ctx, id)
+	err = uar.CRUD.Delete(ctx, id)
 	if err != nil {
 		return err
 	}

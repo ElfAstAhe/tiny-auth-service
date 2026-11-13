@@ -6,10 +6,12 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/container"
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libextdom "github.com/ElfAstAhe/go-service-template/pkg/ext/domain"
+	libextrepo "github.com/ElfAstAhe/go-service-template/pkg/ext/repository"
+	libextmetr "github.com/ElfAstAhe/go-service-template/pkg/ext/repository/metrics"
+	libexttrc "github.com/ElfAstAhe/go-service-template/pkg/ext/repository/trace"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
-	"github.com/ElfAstAhe/go-service-template/pkg/logger"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
-	"github.com/ElfAstAhe/tiny-audit-service/pkg/client"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/audit"
@@ -39,7 +41,7 @@ func (rc *RepositoryContainer) providerRoleMetricsRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewRoleMetricsRepository(repoInst), nil
+	return metrics.NewRoleRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerRoleTraceRepo() (any, error) {
@@ -48,7 +50,7 @@ func (rc *RepositoryContainer) providerRoleTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewRoleTraceRepository(repoInst), nil
+	return trace.NewRoleRepository(repoInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -57,20 +59,20 @@ func (rc *RepositoryContainer) providerRoleAuditRepo() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
-	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
-	clientInst, err := container.GetInstance[client.DataAuditClient](InstanceDataAuditClient)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
 	repoInst, err := container.GetInstance[domain.RoleRepository](InstanceRoleTraceRepo)
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
+	outboxRepoInst, err := container.GetInstance[libextdom.OutboxRepository[*libextdom.DataAuditOutbox, string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := audit.NewRoleRepository(confInst.App.NodeName, repoInst, outboxRepoInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceRoleAuditRepo), err)
+	}
 
-	return audit.NewRoleRepository(confInst.App.NodeName, repoInst, clientInst, logInst), nil
+	return res, nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -94,7 +96,7 @@ func (rc *RepositoryContainer) providerRoleAdminMetricsRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewRoleAdminMetricsRepository(repoInst), nil
+	return metrics.NewRoleAdminRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerRoleAdminTraceRepo() (any, error) {
@@ -103,7 +105,7 @@ func (rc *RepositoryContainer) providerRoleAdminTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewRoleAdminTraceRepository(repoInst), nil
+	return trace.NewRoleAdminRepository(repoInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -112,20 +114,20 @@ func (rc *RepositoryContainer) providerRoleAdminAuditRepo() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
-	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
-	clientInst, err := container.GetInstance[client.DataAuditClient](InstanceDataAuditClient)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
 	repoInst, err := container.GetInstance[domain.RoleAdminRepository](InstanceRoleAdminTraceRepo)
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
+	outboxRepoInst, err := container.GetInstance[libextdom.OutboxRepository[*libextdom.DataAuditOutbox, string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := audit.NewRoleAdminRepository(confInst.App.NodeName, repoInst, outboxRepoInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceRoleAdminAuditRepo), err)
+	}
 
-	return audit.NewRoleAdminRepository(confInst.App.NodeName, repoInst, clientInst, logInst), nil
+	return res, nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -165,7 +167,7 @@ func (rc *RepositoryContainer) providerUserMetricsRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewUserMetricsRepository(repoInst), nil
+	return metrics.NewUserRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerUserTraceRepo() (any, error) {
@@ -174,7 +176,7 @@ func (rc *RepositoryContainer) providerUserTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewUserTraceRepository(repoInst), nil
+	return trace.NewUserRepository(repoInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -183,20 +185,20 @@ func (rc *RepositoryContainer) providerUserAuditRepo() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
-	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
-	clientInst, err := container.GetInstance[client.DataAuditClient](InstanceDataAuditClient)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
 	repoInst, err := container.GetInstance[domain.UserRepository](InstanceUserTraceRepo)
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
+	outboxRepoInst, err := container.GetInstance[libextdom.OutboxRepository[*libextdom.DataAuditOutbox, string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := audit.NewUserRepository(confInst.App.NodeName, repoInst, outboxRepoInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceUserAuditRepo), err)
+	}
 
-	return audit.NewUserRepository(confInst.App.NodeName, repoInst, clientInst, logInst), nil
+	return res, nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -236,7 +238,7 @@ func (rc *RepositoryContainer) providerUserAdminMetricsRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewUserAdminMetricsRepository(repoInst), nil
+	return metrics.NewUserAdminRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerUserAdminTraceRepo() (any, error) {
@@ -245,7 +247,7 @@ func (rc *RepositoryContainer) providerUserAdminTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewUserAdminTraceRepository(repoInst), nil
+	return trace.NewUserAdminRepository(repoInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -254,20 +256,20 @@ func (rc *RepositoryContainer) providerUserAdminAuditRepo() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
-	logInst, err := container.GetInstance[logger.Logger](InstanceLogger)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
-	clientInst, err := container.GetInstance[client.DataAuditClient](InstanceDataAuditClient)
-	if err != nil {
-		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
-	}
 	repoInst, err := container.GetInstance[domain.UserAdminRepository](InstanceUserAdminTraceRepo)
 	if err != nil {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
+	outboxRepoInst, err := container.GetInstance[libextdom.OutboxRepository[*libextdom.DataAuditOutbox, string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := audit.NewUserAdminRepository(confInst.App.NodeName, repoInst, outboxRepoInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceUserAdminAuditRepo), err)
+	}
 
-	return audit.NewUserAdminRepository(confInst.App.NodeName, repoInst, clientInst, logInst), nil
+	return res, nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -291,7 +293,7 @@ func (rc *RepositoryContainer) providerUserRolesMetricsRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewUserRolesMetricsRepository(repoInst), nil
+	return metrics.NewUserRolesRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerUserRolesTraceRepo() (any, error) {
@@ -300,7 +302,7 @@ func (rc *RepositoryContainer) providerUserRolesTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewUserRolesTraceRepository(repoInst), nil
+	return trace.NewUserRolesRepository(repoInst), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -324,7 +326,7 @@ func (rc *RepositoryContainer) providerUserRolesAdminMetricsRepo() (any, error) 
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return metrics.NewUserRolesAdminMetricsRepository(repoInst), nil
+	return metrics.NewUserRolesAdminRepository(repoInst), nil
 }
 
 func (rc *RepositoryContainer) providerUserRolesAdminTraceRepo() (any, error) {
@@ -333,5 +335,36 @@ func (rc *RepositoryContainer) providerUserRolesAdminTraceRepo() (any, error) {
 		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return trace.NewUserRolesAdminTraceRepository(repoInst), nil
+	return trace.NewUserRolesAdminRepository(repoInst), nil
+}
+
+func (rc *RepositoryContainer) providerDataAuditOutboxRepo() (any, error) {
+	dbInst, err := container.GetInstance[db.DB](InstanceDB)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := libextrepo.NewDataAuditOutbox(dbInst.GetDriver(), dbInst, dbInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceDataAuditOutboxRepo), err)
+	}
+
+	return res, nil
+}
+
+func (rc *RepositoryContainer) providerDataAuditOutboxMetricsRepo() (any, error) {
+	repoInst, err := container.GetInstance[libextdom.DataAuditOutboxRepository](InstanceDataAuditOutboxRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libextmetr.NewDataAuditOutboxRepository(repoInst), nil
+}
+
+func (rc *RepositoryContainer) providerDataAuditOutboxTraceRepo() (any, error) {
+	repoInst, err := container.GetInstance[libextdom.DataAuditOutboxRepository](InstanceDataAuditOutboxMetricsRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libexttrc.NewDataAuditOutboxRepository(repoInst), nil
 }

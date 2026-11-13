@@ -20,6 +20,7 @@ type AppConfig struct {
 // NewAppConfig acts as a complete constructor function allocating structural application properties.
 func NewAppConfig(
 	env config.AppEnv,
+	nodeName string,
 	initTimeout time.Duration,
 	stopTimeout time.Duration,
 	closeTimeout time.Duration,
@@ -34,6 +35,7 @@ func NewAppConfig(
 		TokenIssuer:        tokenIssuer,
 		CipherKey:          cipherKey,
 		DefShutdownTimeout: defShutdownTimeout,
+		NodeName:           nodeName,
 	}
 }
 
@@ -41,6 +43,7 @@ func NewAppConfig(
 func NewDefaultAppConfig() *AppConfig {
 	return NewAppConfig(
 		defaultAppEnv,
+		defaultAppNodeName,
 		config.DefaultAppInitTimeout,
 		config.DefaultAppStopTimeout,
 		config.DefaultAppCloseTimeout,

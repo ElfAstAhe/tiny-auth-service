@@ -17,10 +17,10 @@ import (
 // UserPgRepository structures relational mapping adapters for generic public user entity CRUD operations,
 // implementing transparent cryptographic serialization boundaries and eager-loading RBAC associations loops.
 type UserPgRepository struct {
-	*librepo.BaseCRUDRepository[*domain.User, string]                            // Generic platform core structural database repository handle
-	hashCipher                                        utils.Cipher               // Cryptographic tool managing comparative password hashing mechanics
-	cipherHelper                                      helper.Cipher              // Structural symmetric encryption utility decrypting persisted cryptographic key blocks
-	userRolesRepo                                     domain.UserRolesRepository // Relational sub-repository handle managing public role bridge mappings
+	*librepo.CRUD[*domain.User, string]                            // Generic platform core structural database repository handle
+	hashCipher                          utils.Cipher               // Cryptographic tool managing comparative password hashing mechanics
+	cipherHelper                        helper.Cipher              // Structural symmetric encryption utility decrypting persisted cryptographic key blocks
+	userRolesRepo                       domain.UserRolesRepository // Relational sub-repository handle managing public role bridge mappings
 }
 
 // Compile-time interface compliance verifications
@@ -59,7 +59,7 @@ func NewUserPgRepository(
 		}).
 		Build()
 	// callbacks
-	callbacks, _ := librepo.NewBaseRepositoryCallbacksBuilder[*domain.User, string]().NewInstance().
+	callbacks, _ := librepo.NewCallbacksBuilder[*domain.User, string]().NewInstance().
 		WithEntityScanner(res.entityScanner).
 		WithNewEntityFactory(domain.NewEmptyUser).
 		WithAfterFind(res.afterFind).
@@ -72,7 +72,7 @@ func NewUserPgRepository(
 		WithChanger(res.changer).
 		Build()
 	// base CRUD
-	base, err := librepo.NewBaseCRUDRepository[*domain.User, string](
+	base, err := librepo.NewCRUD[*domain.User, string](
 		executor,
 		decipher,
 		librepo.NewEntityInfo("users", "User"),
@@ -83,14 +83,14 @@ func NewUserPgRepository(
 		return nil, errs.NewCommonError("error create UserPgRepository", err)
 	}
 
-	res.BaseCRUDRepository = base
+	res.CRUD = base
 
 	return res, nil
 }
 
 // Find retrieves a single user aggregate record by identifier, returning soft-delete evaluation metrics or loading attached roles.
 func (ur *UserPgRepository) Find(ctx context.Context, id string) (*domain.User, error) {
-	res, err := ur.BaseCRUDRepository.Find(ctx, id)
+	res, err := ur.CRUD.Find(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -123,12 +123,12 @@ func (ur *UserPgRepository) FindByName(ctx context.Context, name string) (*domai
 
 // List fetches a paginated array collection of user records, triggering optimized single-query batch extraction to link owned role maps.
 func (ur *UserPgRepository) List(ctx context.Context, offset, limit int) ([]*domain.User, error) {
-	res, err := ur.BaseCRUDRepository.List(ctx, offset, limit)
+	res, err := ur.CRUD.List(ctx, offset, limit)
 	if err != nil {
 		return nil, err
 	}
 	// получаем списки ролей в разрезе UserID
-	allRoles, err := ur.userRolesRepo.ListAllByOwners(ctx, libdom.EntitiesToIDList(res)...)
+	allRoles, err := ur.userRolesRepo.ListAllByOwners(ctx, libdom.MapEntitiesToIDs(res)...)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func (ur *UserPgRepository) List(ctx context.Context, offset, limit int) ([]*dom
 
 // Create persists a new user record structure and maps associated role allocations inside a transactional cascade.
 func (ur *UserPgRepository) Create(ctx context.Context, user *domain.User) (*domain.User, error) {
-	res, err := ur.BaseCRUDRepository.Create(ctx, user)
+	res, err := ur.CRUD.Create(ctx, user)
 	if err != nil {
 		return nil, err
 	}
