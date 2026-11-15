@@ -97,25 +97,13 @@ run: build ## Собрать проект и запустить бинарник
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--token-refresher-username "svc_auth" \
-		--token-refresher-password "password" \
-		--token-refresher-start-interval "3s" \
-		--token-refresher-schedule-interval "25s" \
-		--token-refresher-error-schedule-interval "10s" \
-		--token-refresher-stop-timeout "5s" \
-		--data-audit-client-base-url "http://localhost:8081/" \
-		--data-audit-client-timeout "5s" \
-		--data-audit-client-worker-count "2" \
-		--data-audit-client-data-capacity "10000" \
-		--data-audit-client-complete-processing \
-		--data-audit-client-shutdown-timeout "15s" \
-		--amqp-connector-url "amqp://localhost:5672" \
-		--amqp-connector-username "svc-auth" \
-		--amqp-connector-password "test" \
-		--amqp-connector-connect-timeout "2s" \
-		--amqp-connector-write-timeout "2s" \
-		--amqp-connector-idle-timeout "30s" \
-		--amqp-connector-shutdown-timeout "3s" \
+		--login-attempts-sender-amqp-connector-url "amqp://localhost:5672" \
+		--login-attempts-sender-amqp-connector-username "svc-auth" \
+		--login-attempts-sender-amqp-connector-password "test" \
+		--login-attempts-sender-amqp-connector-connect-timeout "2s" \
+		--login-attempts-sender-amqp-connector-write-timeout "2s" \
+		--login-attempts-sender-amqp-connector-idle-timeout "30s" \
+		--login-attempts-sender-amqp-connector-shutdown-timeout "3s" \
 		--login-attempts-sender-kind "kafka" \
 		--login-attempts-sender-notify-timeout "2s" \
 		--login-attempts-sender-amqp-target-name "tiny.auth::login.attempts" \
@@ -136,7 +124,35 @@ run: build ## Собрать проект и запустить бинарник
 		--login-attempts-sender-kafka-batch-bytes "1048576" \
 		--login-attempts-sender-kafka-batch-timeout "10ms" \
 		--login-attempts-sender-kafka-write-timeout "10s" \
-		--login-attempts-sender-kafka-required-acks "-1"
+		--login-attempts-sender-kafka-required-acks "-1" \
+		--data-audit-sender-amqp-connector-url "amqp://localhost:5672" \
+		--data-audit-sender-amqp-connector-username "svc-auth" \
+		--data-audit-sender-amqp-connector-password "test" \
+		--data-audit-sender-amqp-connector-connect-timeout "2s" \
+		--data-audit-sender-amqp-connector-write-timeout "2s" \
+		--data-audit-sender-amqp-connector-idle-timeout "30s" \
+		--data-audit-sender-amqp-connector-shutdown-timeout "3s" \
+		--data-audit-sender-kind "kafka" \
+		--data-audit-sender-notify-timeout "2s" \
+		--data-audit-sender-amqp-target-name "tiny.audit::data.audit" \
+		--data-audit-sender-amqp-connect-timeout "2s" \
+		--data-audit-sender-amqp-shutdown-timeout "3s" \
+		--data-audit-sender-amqp-publish-max-try-attempts "3" \
+		--data-audit-sender-amqp-publish-base-retry-delay "1s" \
+		--data-audit-sender-amqp-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-brokers "localhost:9092" \
+		--data-audit-sender-kafka-target-name "tiny.audit.data.audit" \
+		--data-audit-sender-kafka-connect-timeout "2s" \
+		--data-audit-sender-kafka-idle-timeout "60s" \
+		--data-audit-sender-kafka-shutdown-timeout "3s" \
+		--data-audit-sender-kafka-publish-max-try-attempts "3" \
+		--data-audit-sender-kafka-publish-base-retry-delay "1s" \
+		--data-audit-sender-kafka-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-batch-size "100" \
+		--data-audit-sender-kafka-batch-bytes "1048576" \
+		--data-audit-sender-kafka-batch-timeout "10ms" \
+		--data-audit-sender-kafka-write-timeout "10s" \
+		--data-audit-sender-kafka-required-acks "-1"
 
 run-kafka: build ## Собрать проект и запустить бинарник с локальными флагами и kafka клиентом (БД, логи)
 	./bin/$(SERVER_BINARY_NAME) \
@@ -149,33 +165,62 @@ run-kafka: build ## Собрать проект и запустить бинар
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--token-refresher-username "svc_auth" \
-		--token-refresher-password "password" \
-		--token-refresher-start-interval "3s" \
-		--token-refresher-schedule-interval "25s" \
-		--token-refresher-error-schedule-interval "10s" \
-		--token-refresher-stop-timeout "5s" \
-		--data-audit-client-base-url "http://localhost:8081/" \
-		--data-audit-client-timeout "5s" \
-		--data-audit-client-worker-count "2" \
-		--data-audit-client-data-capacity "10000" \
-		--data-audit-client-complete-processing \
-		--data-audit-client-shutdown-timeout "15s" \
-		--amqp-connector-url "amqp://localhost:5672" \
-		--amqp-connector-username "svc-auth" \
-		--amqp-connector-password "test" \
-		--amqp-connector-connect-timeout "2s" \
-		--amqp-connector-write-timeout "2s" \
-		--amqp-connector-idle-timeout "30s" \
-		--amqp-connector-shutdown-timeout "3s" \
-		--login-attempts-sender-kind "amqp" \
+		--login-attempts-sender-amqp-connector-url "amqp://localhost:5672" \
+		--login-attempts-sender-amqp-connector-username "svc-auth" \
+		--login-attempts-sender-amqp-connector-password "test" \
+		--login-attempts-sender-amqp-connector-connect-timeout "2s" \
+		--login-attempts-sender-amqp-connector-write-timeout "2s" \
+		--login-attempts-sender-amqp-connector-idle-timeout "30s" \
+		--login-attempts-sender-amqp-connector-shutdown-timeout "3s" \
+		--login-attempts-sender-kind "kafka" \
 		--login-attempts-sender-notify-timeout "2s" \
 		--login-attempts-sender-amqp-target-name "tiny.auth::login.attempts" \
 		--login-attempts-sender-amqp-connect-timeout "2s" \
 		--login-attempts-sender-amqp-shutdown-timeout "3s" \
 		--login-attempts-sender-amqp-publish-max-try-attempts "3" \
 		--login-attempts-sender-amqp-publish-base-retry-delay "1s" \
-		--login-attempts-sender-amqp-publish-max-retry-delay "4s"
+		--login-attempts-sender-amqp-publish-max-retry-delay "4s" \
+		--login-attempts-sender-kafka-brokers "localhost:9092" \
+		--login-attempts-sender-kafka-target-name "tiny.auth.login.attempts" \
+		--login-attempts-sender-kafka-connect-timeout "2s" \
+		--login-attempts-sender-kafka-idle-timeout "60s" \
+		--login-attempts-sender-kafka-shutdown-timeout "3s" \
+		--login-attempts-sender-kafka-publish-max-try-attempts "3" \
+		--login-attempts-sender-kafka-publish-base-retry-delay "1s" \
+		--login-attempts-sender-kafka-publish-max-retry-delay "4s" \
+		--login-attempts-sender-kafka-batch-size "100" \
+		--login-attempts-sender-kafka-batch-bytes "1048576" \
+		--login-attempts-sender-kafka-batch-timeout "10ms" \
+		--login-attempts-sender-kafka-write-timeout "10s" \
+		--login-attempts-sender-kafka-required-acks "-1" \
+		--data-audit-sender-amqp-connector-url "amqp://localhost:5672" \
+		--data-audit-sender-amqp-connector-username "svc-auth" \
+		--data-audit-sender-amqp-connector-password "test" \
+		--data-audit-sender-amqp-connector-connect-timeout "2s" \
+		--data-audit-sender-amqp-connector-write-timeout "2s" \
+		--data-audit-sender-amqp-connector-idle-timeout "30s" \
+		--data-audit-sender-amqp-connector-shutdown-timeout "3s" \
+		--data-audit-sender-kind "kafka" \
+		--data-audit-sender-notify-timeout "2s" \
+		--data-audit-sender-amqp-target-name "tiny.audit::data.audit" \
+		--data-audit-sender-amqp-connect-timeout "2s" \
+		--data-audit-sender-amqp-shutdown-timeout "3s" \
+		--data-audit-sender-amqp-publish-max-try-attempts "3" \
+		--data-audit-sender-amqp-publish-base-retry-delay "1s" \
+		--data-audit-sender-amqp-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-brokers "localhost:9092" \
+		--data-audit-sender-kafka-target-name "tiny.audit.data.audit" \
+		--data-audit-sender-kafka-connect-timeout "2s" \
+		--data-audit-sender-kafka-idle-timeout "60s" \
+		--data-audit-sender-kafka-shutdown-timeout "3s" \
+		--data-audit-sender-kafka-publish-max-try-attempts "3" \
+		--data-audit-sender-kafka-publish-base-retry-delay "1s" \
+		--data-audit-sender-kafka-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-batch-size "100" \
+		--data-audit-sender-kafka-batch-bytes "1048576" \
+		--data-audit-sender-kafka-batch-timeout "10ms" \
+		--data-audit-sender-kafka-write-timeout "10s" \
+		--data-audit-sender-kafka-required-acks "-1"
 
 # Запуск проекта (amqp client)(сначала соберет, потом запустит)
 run-amqp: build ## Собрать проект и запустить бинарник с локальными флагами и amqp клиентом (БД, логи)
@@ -189,20 +234,21 @@ run-amqp: build ## Собрать проект и запустить бинар�
 		--app-cipher-key "12345" \
 		--app-token-issuer "tiny-auth-service" \
 		--app-max-list-limit 500 \
-		--token-refresher-username "svc_auth" \
-		--token-refresher-password "password" \
-		--token-refresher-start-interval "3s" \
-		--token-refresher-schedule-interval "25s" \
-		--token-refresher-error-schedule-interval "10s" \
-		--token-refresher-stop-timeout "5s" \
-		--data-audit-client-base-url "http://localhost:8081/" \
-		--data-audit-client-timeout "5s" \
-		--data-audit-client-worker-count "2" \
-		--data-audit-client-data-capacity "10000" \
-		--data-audit-client-complete-processing \
-		--data-audit-client-shutdown-timeout "15s" \
-		--login-attempts-sender-kind "kafka" \
+		--login-attempts-sender-amqp-connector-url "amqp://localhost:5672" \
+		--login-attempts-sender-amqp-connector-username "svc-auth" \
+		--login-attempts-sender-amqp-connector-password "test" \
+		--login-attempts-sender-amqp-connector-connect-timeout "2s" \
+		--login-attempts-sender-amqp-connector-write-timeout "2s" \
+		--login-attempts-sender-amqp-connector-idle-timeout "30s" \
+		--login-attempts-sender-amqp-connector-shutdown-timeout "3s" \
+		--login-attempts-sender-kind "amqp" \
 		--login-attempts-sender-notify-timeout "2s" \
+		--login-attempts-sender-amqp-target-name "tiny.auth::login.attempts" \
+		--login-attempts-sender-amqp-connect-timeout "2s" \
+		--login-attempts-sender-amqp-shutdown-timeout "3s" \
+		--login-attempts-sender-amqp-publish-max-try-attempts "3" \
+		--login-attempts-sender-amqp-publish-base-retry-delay "1s" \
+		--login-attempts-sender-amqp-publish-max-retry-delay "4s" \
 		--login-attempts-sender-kafka-brokers "localhost:9092" \
 		--login-attempts-sender-kafka-target-name "tiny.auth.login.attempts" \
 		--login-attempts-sender-kafka-connect-timeout "2s" \
@@ -215,7 +261,35 @@ run-amqp: build ## Собрать проект и запустить бинар�
 		--login-attempts-sender-kafka-batch-bytes "1048576" \
 		--login-attempts-sender-kafka-batch-timeout "10ms" \
 		--login-attempts-sender-kafka-write-timeout "10s" \
-		--login-attempts-sender-kafka-required-acks "-1"
+		--login-attempts-sender-kafka-required-acks "-1" \
+		--data-audit-sender-amqp-connector-url "amqp://localhost:5672" \
+		--data-audit-sender-amqp-connector-username "svc-auth" \
+		--data-audit-sender-amqp-connector-password "test" \
+		--data-audit-sender-amqp-connector-connect-timeout "2s" \
+		--data-audit-sender-amqp-connector-write-timeout "2s" \
+		--data-audit-sender-amqp-connector-idle-timeout "30s" \
+		--data-audit-sender-amqp-connector-shutdown-timeout "3s" \
+		--data-audit-sender-kind "amqp" \
+		--data-audit-sender-notify-timeout "2s" \
+		--data-audit-sender-amqp-target-name "tiny.audit::data.audit" \
+		--data-audit-sender-amqp-connect-timeout "2s" \
+		--data-audit-sender-amqp-shutdown-timeout "3s" \
+		--data-audit-sender-amqp-publish-max-try-attempts "3" \
+		--data-audit-sender-amqp-publish-base-retry-delay "1s" \
+		--data-audit-sender-amqp-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-brokers "localhost:9092" \
+		--data-audit-sender-kafka-target-name "tiny.audit.data.audit" \
+		--data-audit-sender-kafka-connect-timeout "2s" \
+		--data-audit-sender-kafka-idle-timeout "60s" \
+		--data-audit-sender-kafka-shutdown-timeout "3s" \
+		--data-audit-sender-kafka-publish-max-try-attempts "3" \
+		--data-audit-sender-kafka-publish-base-retry-delay "1s" \
+		--data-audit-sender-kafka-publish-max-retry-delay "4s" \
+		--data-audit-sender-kafka-batch-size "100" \
+		--data-audit-sender-kafka-batch-bytes "1048576" \
+		--data-audit-sender-kafka-batch-timeout "10ms" \
+		--data-audit-sender-kafka-write-timeout "10s" \
+		--data-audit-sender-kafka-required-acks "-1"
 
 # Запуск тестов
 test: gen-proto gen-swagger gen-http-client gen-mocks ## Запустить модульные и интеграционные тесты проекта

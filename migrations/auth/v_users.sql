@@ -5,6 +5,7 @@ select
 	u.name as username,
 	u.active as user_active,
 	u.deleted as user_deleted,
+    u.user_type,
 	ur.role_id,
 	r.name as role_name,
 	r.deleted as role_deleted

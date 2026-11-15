@@ -1,7 +1,7 @@
 github.com/Azure/go-amqp v1.7.0 h1:9VlH/LEWr386XWWJRNON0eslFqSClYBXP4HewvIqkDQ=
 github.com/Azure/go-amqp v1.7.0/go.mod h1:pCJaHsvRlmmFUpxyQbh2qPkUFqYJeRBTqJSHKJadvPg=
-github.com/ElfAstAhe/go-service-template v0.0.133 h1:cvGHHtfjOXDu0tflcUf96ZxyDouadZjMQUsvq/eN7+Q=
-github.com/ElfAstAhe/go-service-template v0.0.133/go.mod h1:pydiqi76LDapcCHYTjZGlXuME+4P1hlOoe7xvDJSHg0=
+github.com/ElfAstAhe/go-service-template v0.0.134 h1:N2xf3/q8EZw/GXlBSgAwIfhXRwMU5BcKn6XX7X1Q2Sg=
+github.com/ElfAstAhe/go-service-template v0.0.134/go.mod h1:pydiqi76LDapcCHYTjZGlXuME+4P1hlOoe7xvDJSHg0=
 github.com/ElfAstAhe/tiny-audit-service v0.0.43 h1:BD5LUEijhHdmUHuyECGW71aSHzvViUt4ovfpkKLhzK4=
 github.com/ElfAstAhe/tiny-audit-service v0.0.43/go.mod h1:DmdzdZsEl2UsfhD85N2PoDNr8gYcO7KnxTYR9Ge3J9Q=
 github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=

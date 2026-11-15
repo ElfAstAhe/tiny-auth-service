@@ -127,7 +127,7 @@ const (
 //nolint:gosec // G101 : app params
 const (
 	// FlagLoginAttemptsSenderAMQPConnectorURL maps the baseline AMQP network address for the target cluster endpoint.
-	FlagLoginAttemptsSenderAMQPConnectorURL string = "logom-attempts-sender-amqp-connector-url"
+	FlagLoginAttemptsSenderAMQPConnectorURL string = "login-attempts-sender-amqp-connector-url"
 	// FlagLoginAttemptsSenderAMQPConnectorUsername defines user parameters for authenticating structural broker sessions.
 	FlagLoginAttemptsSenderAMQPConnectorUsername string = "login-attempts-sender-amqp-connector-username"
 	// FlagLoginAttemptsSenderAMQPConnectorPassword establishes cryptographic secret tokens identifying connection channels.
