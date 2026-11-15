@@ -30,8 +30,8 @@ type ChangePasswordInteractor struct {
 // Compile-time interface compliance verification
 var _ ChangePasswordUseCase = (*ChangePasswordInteractor)(nil)
 
-// NewChangePasswordUseCase acts as a factory constructor mounting interactor dependencies.
-func NewChangePasswordUseCase(
+// NewChangePassword acts as a factory constructor mounting interactor dependencies.
+func NewChangePassword(
 	hashCipher utils.Cipher,
 	uw libdom.UnitOfWork,
 	userRepo domain.UserRepository,

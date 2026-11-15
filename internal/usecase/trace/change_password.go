@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -10,21 +10,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// ChangePasswordTraceInteractor implements the usecase.ChangePasswordUseCase interface,
+// ChangePasswordInteractor implements the usecase.ChangePasswordUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts password mutation workflows to track account security lifecycles and record failures.
-type ChangePasswordTraceInteractor struct {
+type ChangePasswordInteractor struct {
 	*telemetry.BaseTelemetry                               // Embedded framework-level telemetry engine core orchestrator
 	spanName                 string                        // Pre-formatted OpenTelemetry specification span name
 	next                     usecase.ChangePasswordUseCase // The encapsulated downstream active core business usecase logic
 }
 
 // Compile-time interface compliance verification
-var _ usecase.ChangePasswordUseCase = (*ChangePasswordTraceInteractor)(nil)
+var _ usecase.ChangePasswordUseCase = (*ChangePasswordInteractor)(nil)
 
-// NewChangePasswordTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for password modification operations.
-func NewChangePasswordTraceUseCase(ucName string, next usecase.ChangePasswordUseCase) *ChangePasswordTraceInteractor {
-	return &ChangePasswordTraceInteractor{
+// NewChangePasswordUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for password modification operations.
+func NewChangePasswordUseCase(ucName string, next usecase.ChangePasswordUseCase) *ChangePasswordInteractor {
+	return &ChangePasswordInteractor{
 		next:          next,
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
 		spanName:      fmt.Sprintf("%s.ChangePassword", ucName),
@@ -32,7 +32,7 @@ func NewChangePasswordTraceUseCase(ucName string, next usecase.ChangePasswordUse
 }
 
 // ChangePassword executes a traced wrapper sequence over the underlying core business scenario "ChangePassword" account state modification.
-func (cpt *ChangePasswordTraceInteractor) ChangePassword(ctx context.Context, userID, oldPassword, newPassword string) error {
+func (cpt *ChangePasswordInteractor) ChangePassword(ctx context.Context, userID, oldPassword, newPassword string) error {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := cpt.StartSpan(ctx, cpt.spanName)
 	defer span.End()

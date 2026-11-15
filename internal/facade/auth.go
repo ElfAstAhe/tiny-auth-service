@@ -20,16 +20,16 @@ type AuthFacade interface {
 
 // AuthFacadeImpl structures sessions boundary routers, conducting metadata transformations and payload assertions.
 type AuthFacadeImpl struct {
-	jwtHelper     *helper.JWTHelper          // Framework core security utility managing serialization of token cryptographic layouts
-	loginUC       usecase.LoginUseCase       // Downstream usecase executing public full cryptographic authentication scenarios
-	loginSimpleUC usecase.LoginSimpleUseCase // Downstream usecase handling simplified machine session credentials processing
+	jwtHelper     *helper.JWTHelper            // Framework core security utility managing serialization of token cryptographic layouts
+	loginUC       usecase.LoginCipheredUseCase // Downstream usecase executing public full cryptographic authentication scenarios
+	loginSimpleUC usecase.LoginBasicUseCase    // Downstream usecase handling simplified machine session credentials processing
 }
 
 // Compile-time interface compliance verification
 var _ AuthFacade = (*AuthFacadeImpl)(nil)
 
 // NewAuthFacade acts as a factory constructor embedding modular usecase components and token serialization utilities.
-func NewAuthFacade(jwtHelper *helper.JWTHelper, loginUC usecase.LoginUseCase, loginSimpleUC usecase.LoginSimpleUseCase) *AuthFacadeImpl {
+func NewAuthFacade(jwtHelper *helper.JWTHelper, loginUC usecase.LoginCipheredUseCase, loginSimpleUC usecase.LoginBasicUseCase) *AuthFacadeImpl {
 	return &AuthFacadeImpl{
 		jwtHelper:     jwtHelper,
 		loginUC:       loginUC,

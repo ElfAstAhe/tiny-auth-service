@@ -24,13 +24,13 @@ type UserAdminFacade interface {
 
 // UserAdminFacadeImpl structures administrative boundary routers, conducting data transformations and permission assertions.
 type UserAdminFacadeImpl struct {
-	authHelper   auth.Helper                     // Framework core token management tool verifying structural context identity claims
-	getUC        usecase.UserAdminGetUseCase     // Downstream application usecase handling administrative specific identifier lookup
-	getByNameUC  usecase.UserAdminGetNameUseCase // Downstream application usecase managing criteria name string lookup routines
-	listUC       usecase.UserAdminListUseCase    // Downstream application usecase managing array paginated aggregate lookup queries
-	saveUC       usecase.UserAdminSaveUseCase    // Downstream application usecase coordinating persistence operations across creation and update workflows
-	deleteUC     usecase.UserAdminDeleteUseCase  // Downstream application usecase executing single identity entity eviction bounds
-	maxListLimit int                             // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
+	authHelper   auth.Helper                       // Framework core token management tool verifying structural context identity claims
+	getUC        usecase.UserAdminGetUseCase       // Downstream application usecase handling administrative specific identifier lookup
+	getByNameUC  usecase.UserAdminGetByNameUseCase // Downstream application usecase managing criteria name string lookup routines
+	listUC       usecase.UserAdminListUseCase      // Downstream application usecase managing array paginated aggregate lookup queries
+	saveUC       usecase.UserAdminSaveUseCase      // Downstream application usecase coordinating persistence operations across creation and update workflows
+	deleteUC     usecase.UserAdminDeleteUseCase    // Downstream application usecase executing single identity entity eviction bounds
+	maxListLimit int                               // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
 }
 
 // Compile-time interface compliance verification
@@ -40,7 +40,7 @@ var _ UserAdminFacade = (*UserAdminFacadeImpl)(nil)
 func NewUserAdminFacade(
 	authHelper auth.Helper,
 	getUC usecase.UserAdminGetUseCase,
-	getByNameUC usecase.UserAdminGetNameUseCase,
+	getByNameUC usecase.UserAdminGetByNameUseCase,
 	listUC usecase.UserAdminListUseCase,
 	saveUC usecase.UserAdminSaveUseCase,
 	deleteUC usecase.UserAdminDeleteUseCase,

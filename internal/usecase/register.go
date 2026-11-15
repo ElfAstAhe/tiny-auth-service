@@ -32,8 +32,8 @@ type RegisterInteractor struct {
 // Compile-time interface compliance verification
 var _ RegisterUseCase = (*RegisterInteractor)(nil)
 
-// NewRegisterUseCase acts as a factory constructor mounting required user repository, cryptographic, and transaction dependencies.
-func NewRegisterUseCase(
+// NewRegister acts as a factory constructor mounting required user repository, cryptographic, and transaction dependencies.
+func NewRegister(
 	uw libdom.UnitOfWork,
 	hashCipher utils.Cipher,
 	keysHelper helper.RSAKeys,

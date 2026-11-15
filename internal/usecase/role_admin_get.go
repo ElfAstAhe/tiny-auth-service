@@ -25,8 +25,8 @@ type RoleAdminGetInteractor struct {
 // Compile-time interface compliance verification
 var _ RoleAdminGetUseCase = (*RoleAdminGetInteractor)(nil)
 
-// NewRoleAdminGetUseCase acts as a factory constructor mounting required role administration repository dependencies.
-func NewRoleAdminGetUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminGetInteractor {
+// NewRoleAdminGet acts as a factory constructor mounting required role administration repository dependencies.
+func NewRoleAdminGet(roleRepo domain.RoleAdminRepository) *RoleAdminGetInteractor {
 	return &RoleAdminGetInteractor{
 		roleRepo: roleRepo,
 	}

@@ -12,15 +12,15 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// LoginSimpleUseCase defines the simplified application boundary contract for authentication workflows bypassing asymmetric encryption steps.
-type LoginSimpleUseCase interface {
+// LoginBasicUseCase defines the simplified application boundary contract for authentication workflows bypassing asymmetric encryption steps.
+type LoginBasicUseCase interface {
 	// Login validates credentials directly and yields cryptographically signed JWT access token pairs.
 	Login(ctx context.Context, username string, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error)
 }
 
-// LoginSimpleInteractor implements the LoginSimpleUseCase interface, orchestrating simplified identity checking
+// LoginBasicInteractor implements the LoginBasicUseCase interface, orchestrating simplified identity checking
 // and raw password hashing sequences without intermediate asymmetric private key operations.
-type LoginSimpleInteractor struct {
+type LoginBasicInteractor struct {
 	hashCipher utils.Cipher          // Utility engine to recalculate secure password hash sums
 	authHelper auth.Helper           // Framework core helper orchestrating physical token structural layout packing
 	userRepo   domain.UserRepository // DAL repository handle managing user identity search operations
@@ -29,11 +29,11 @@ type LoginSimpleInteractor struct {
 }
 
 // Compile-time interface compliance verification
-var _ LoginSimpleUseCase = (*LoginSimpleInteractor)(nil)
+var _ LoginBasicUseCase = (*LoginBasicInteractor)(nil)
 
-// NewLoginSimpleUseCase creates a new LoginSimpleUseCase instance wrapping direct hashing and storage infrastructure dependencies.
-func NewLoginSimpleUseCase(hashCipher utils.Cipher, authHelper auth.Helper, userRepo domain.UserRepository) *LoginSimpleInteractor {
-	return &LoginSimpleInteractor{
+// NewLoginBasic creates a new LoginBasicUseCase instance wrapping direct hashing and storage infrastructure dependencies.
+func NewLoginBasic(hashCipher utils.Cipher, authHelper auth.Helper, userRepo domain.UserRepository) *LoginBasicInteractor {
+	return &LoginBasicInteractor{
 		hashCipher: hashCipher,
 		authHelper: authHelper,
 		userRepo:   userRepo,
@@ -43,34 +43,34 @@ func NewLoginSimpleUseCase(hashCipher utils.Cipher, authHelper auth.Helper, user
 // Login executes fast input evaluation, repository identity matching, direct encryption hashing, and final response assembly.
 //
 // ToDo: переделать передачу пароля через []byte
-func (lsi *LoginSimpleInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
+func (lbi *LoginBasicInteractor) Login(ctx context.Context, username, encryptedPassword string) (token *jwt.Token, refreshToken *jwt.Token, err error) {
 	// fails-fast
-	if err := lsi.validate(username, encryptedPassword); err != nil {
+	if err := lbi.validate(username, encryptedPassword); err != nil {
 		return nil, nil, errs.NewBllValidateError("LoginSimpleInteractor.Login", "validate income data failed", err)
 	}
 	// пользователь
-	user, err := lsi.userRepo.FindByName(ctx, username)
+	user, err := lbi.userRepo.FindByName(ctx, username)
 	if err != nil {
 		return nil, nil, errs.NewBllError("LoginSimpleInteractor.Login", "load user", err)
 	}
 	// password hash
-	passwordHash, err := lsi.buildPasswordHash(user, encryptedPassword)
+	passwordHash, err := lbi.buildPasswordHash(user, encryptedPassword)
 	if err != nil {
 		return nil, nil, errs.NewBllError("LoginSimpleInteractor.Login", "hash password", err)
 	}
 	// проверка пароля
-	err = lsi.validateUserAndPassword(user, passwordHash)
+	err = lbi.validateUserAndPassword(user, passwordHash)
 	if err != nil {
 		return nil, nil, errs.NewBllValidateError("LoginSimpleInteractor.Login", fmt.Sprintf("user [%s], invalid credentials", username), err)
 	}
 
-	return lsi.buildAnswer(user)
+	return lbi.buildAnswer(user)
 }
 
 // validate executes preliminary syntax and presence checks over raw boundaries parameters.
 //
 // ToDo: переделать передачу пароля через []byte
-func (lsi *LoginSimpleInteractor) validate(username, encryptedPassword string) error {
+func (lbi *LoginBasicInteractor) validate(username, encryptedPassword string) error {
 	if strings.TrimSpace(username) == "" {
 		return errs.NewInvalidArgumentError("username", "username is required")
 	}
@@ -84,9 +84,9 @@ func (lsi *LoginSimpleInteractor) validate(username, encryptedPassword string) e
 // buildPasswordHash generates a secure comparative hash sum out of the inbound password string criteria.
 //
 // ToDo: переделать передачу пароля через []byte
-func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password string) (string, error) {
+func (lbi *LoginBasicInteractor) buildPasswordHash(user *domain.User, password string) (string, error) {
 	// password hash
-	passwordHash, err := lsi.hashCipher.EncryptString(password)
+	passwordHash, err := lbi.hashCipher.EncryptString(password)
 	if err != nil {
 		return "", errs.NewBllError("LoginSimpleInteractor.buildPasswordHash", "hash password", err)
 	}
@@ -95,7 +95,7 @@ func (lsi *LoginSimpleInteractor) buildPasswordHash(user *domain.User, password 
 }
 
 // validateUserAndPassword reviews aggregate active status fields before confirming matching password credentials state.
-func (lsi *LoginSimpleInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
+func (lbi *LoginBasicInteractor) validateUserAndPassword(user *domain.User, passwordHash string) error {
 	// active
 	if !user.Active {
 		return errs.NewBllUnauthorizedError("LoginSimpleInteractor.validateUserAndPassword", "user is not active", nil)
@@ -113,13 +113,13 @@ func (lsi *LoginSimpleInteractor) validateUserAndPassword(user *domain.User, pas
 }
 
 // buildAnswer coordinates underlying mappings converting identities into structured tokens payloads.
-func (lsi *LoginSimpleInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
+func (lbi *LoginBasicInteractor) buildAnswer(user *domain.User) (*jwt.Token, *jwt.Token, error) {
 	subject := ToSubject(user, nil)
-	token, err := lsi.buildToken(subject)
+	token, err := lbi.buildToken(subject)
 	if err != nil {
 		return nil, nil, errs.NewBllError("LoginSimpleInteractor.buildAnswer", "build token from subject", err)
 	}
-	refreshToken, err := lsi.buildRefreshToken(user)
+	refreshToken, err := lbi.buildRefreshToken(user)
 	if err != nil {
 		return nil, nil, errs.NewBllError("LoginSimpleInteractor.buildAnswer", "build refresh token from user", err)
 	}
@@ -128,12 +128,12 @@ func (lsi *LoginSimpleInteractor) buildAnswer(user *domain.User) (*jwt.Token, *j
 }
 
 // buildToken wraps core claims into standard signed cryptographically signed access tokens.
-func (lsi *LoginSimpleInteractor) buildToken(subject *auth.Subject) (*jwt.Token, error) {
-	return lsi.authHelper.TokenFromSubject(subject)
+func (lbi *LoginBasicInteractor) buildToken(subject *auth.Subject) (*jwt.Token, error) {
+	return lbi.authHelper.TokenFromSubject(subject)
 }
 
 // buildRefreshToken yields session tracking structures for persistent token rotation configurations.
-func (lsi *LoginSimpleInteractor) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
+func (lbi *LoginBasicInteractor) buildRefreshToken(user *domain.User) (*jwt.Token, error) {
 	// ToDo: реализовать в будущем :-)
 	// ..
 

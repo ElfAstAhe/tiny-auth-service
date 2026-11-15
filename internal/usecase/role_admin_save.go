@@ -26,8 +26,8 @@ type RoleAdminSaveInteractor struct {
 // Compile-time interface compliance verification
 var _ RoleAdminSaveUseCase = (*RoleAdminSaveInteractor)(nil)
 
-// NewRoleAdminSaveUseCase acts as a factory constructor mounting required role administration repository and transaction dependencies.
-func NewRoleAdminSaveUseCase(uw libdom.UnitOfWork, roleRepo domain.RoleAdminRepository) *RoleAdminSaveInteractor {
+// NewRoleAdminSave acts as a factory constructor mounting required role administration repository and transaction dependencies.
+func NewRoleAdminSave(uw libdom.UnitOfWork, roleRepo domain.RoleAdminRepository) *RoleAdminSaveInteractor {
 	return &RoleAdminSaveInteractor{
 		uw:       uw,
 		roleRepo: roleRepo,

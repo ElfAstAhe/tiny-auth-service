@@ -29,8 +29,8 @@ type ChangeKeysInteractor struct {
 // Compile-time interface compliance verification
 var _ ChangeKeysUseCase = (*ChangeKeysInteractor)(nil)
 
-// NewChangeKeysUseCase acts as a factory constructor mounting interactor dependencies.
-func NewChangeKeysUseCase(
+// NewChangeKeys acts as a factory constructor mounting interactor dependencies.
+func NewChangeKeys(
 	keysHelper helper.RSAKeys,
 	uw libdom.UnitOfWork,
 	userRepo domain.UserRepository,

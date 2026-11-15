@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleAdminGetTraceInteractor implements the usecase.RoleAdminGetUseCase interface,
+// RoleAdminGetInteractor implements the usecase.RoleAdminGetUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts role retrieval query paths to manage child span lifecycles and append identification metadata attributes.
-type RoleAdminGetTraceInteractor struct {
+type RoleAdminGetInteractor struct {
 	*telemetry.BaseTelemetry                             // Embedded base framework-level telemetry orchestrator
 	next                     usecase.RoleAdminGetUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                      // Pre-calculated target tracing operational span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RoleAdminGetUseCase = (*RoleAdminGetTraceInteractor)(nil)
+var _ usecase.RoleAdminGetUseCase = (*RoleAdminGetInteractor)(nil)
 
-// NewRoleAdminGetTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role Get operations.
-func NewRoleAdminGetTraceUseCase(ucName string, next usecase.RoleAdminGetUseCase) *RoleAdminGetTraceInteractor {
-	return &RoleAdminGetTraceInteractor{
+// NewRoleAdminGetUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role Get operations.
+func NewRoleAdminGetUseCase(ucName string, next usecase.RoleAdminGetUseCase) *RoleAdminGetInteractor {
+	return &RoleAdminGetInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Get", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -33,7 +33,7 @@ func NewRoleAdminGetTraceUseCase(ucName string, next usecase.RoleAdminGetUseCase
 }
 
 // Get executes the underlying domain role retrieval query wrapped safely within an isolated OTel child span context.
-func (ragt *RoleAdminGetTraceInteractor) Get(ctx context.Context, ID string) (*domain.Role, error) {
+func (ragt *RoleAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.Role, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := ragt.StartSpan(ctx, ragt.spanName)
 	defer span.End()

@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -10,21 +10,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// ChangeKeysTraceInteractor implements the usecase.ChangeKeysUseCase interface,
+// ChangeKeysInteractor implements the usecase.ChangeKeysUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts cryptographic key rotation workflows to track identity security cycles and record failure states.
-type ChangeKeysTraceInteractor struct {
+type ChangeKeysInteractor struct {
 	*telemetry.BaseTelemetry                           // Embedded framework-level telemetry engine core orchestrator
 	next                     usecase.ChangeKeysUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                    // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.ChangeKeysUseCase = (*ChangeKeysTraceInteractor)(nil)
+var _ usecase.ChangeKeysUseCase = (*ChangeKeysInteractor)(nil)
 
-// NewChangeKeysTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for key modification operations.
-func NewChangeKeysTraceUseCase(ucName string, next usecase.ChangeKeysUseCase) *ChangeKeysTraceInteractor {
-	return &ChangeKeysTraceInteractor{
+// NewChangeKeysUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for key modification operations.
+func NewChangeKeysUseCase(ucName string, next usecase.ChangeKeysUseCase) *ChangeKeysInteractor {
+	return &ChangeKeysInteractor{
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
 		next:          next,
 		spanName:      fmt.Sprintf("%s.ChangeKeys", ucName),
@@ -32,7 +32,7 @@ func NewChangeKeysTraceUseCase(ucName string, next usecase.ChangeKeysUseCase) *C
 }
 
 // ChangeKeys executes a traced wrapper sequence over the underlying core business scenario "ChangeKeys" cryptography state modification.
-func (ckt *ChangeKeysTraceInteractor) ChangeKeys(ctx context.Context, userID string) (string, string, error) {
+func (ckt *ChangeKeysInteractor) ChangeKeys(ctx context.Context, userID string) (string, string, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := ckt.StartSpan(ctx, ckt.spanName)
 	defer span.End()

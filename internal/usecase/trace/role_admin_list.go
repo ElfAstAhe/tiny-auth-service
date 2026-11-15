@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleAdminListTraceInteractor implements the usecase.RoleAdminListUseCase interface,
+// RoleAdminListInteractor implements the usecase.RoleAdminListUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts high-throughput query lists for roles to inject tracking spans and capture metadata attributes.
-type RoleAdminListTraceInteractor struct {
+type RoleAdminListInteractor struct {
 	*telemetry.BaseTelemetry                              // Embedded base framework-level telemetry orchestrator
 	next                     usecase.RoleAdminListUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                       // Pre-calculated target tracing operational span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RoleAdminListUseCase = (*RoleAdminListTraceInteractor)(nil)
+var _ usecase.RoleAdminListUseCase = (*RoleAdminListInteractor)(nil)
 
-// NewRoleAdminListTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role List operations.
-func NewRoleAdminListTraceUseCase(ucName string, next usecase.RoleAdminListUseCase) *RoleAdminListTraceInteractor {
-	return &RoleAdminListTraceInteractor{
+// NewRoleAdminListUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role List operations.
+func NewRoleAdminListUseCase(ucName string, next usecase.RoleAdminListUseCase) *RoleAdminListInteractor {
+	return &RoleAdminListInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.List", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -33,7 +33,7 @@ func NewRoleAdminListTraceUseCase(ucName string, next usecase.RoleAdminListUseCa
 }
 
 // List executes the underlying domain role collection retrieval wrapped safely within an isolated OTel child span context.
-func (alt *RoleAdminListTraceInteractor) List(ctx context.Context, limit, offset int) ([]*domain.Role, error) {
+func (alt *RoleAdminListInteractor) List(ctx context.Context, limit, offset int) ([]*domain.Role, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := alt.StartSpan(ctx, alt.spanName)
 	defer span.End()

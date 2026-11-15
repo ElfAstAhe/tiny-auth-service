@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -10,21 +10,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleAdminDeleteTraceInteractor implements the usecase.RoleAdminDeleteUseCase interface,
-// acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
-// It intercepts destructive role eviction workflows to track operational runtime states and record failure events.
-type RoleAdminDeleteTraceInteractor struct {
+// UserAdminDeleteInteractor implements the usecase.UserAdminDeleteUseCase interface,
+// serving as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
+// It intercepts destructive identity eviction flows to track operational runtime states and record failure event logs.
+type UserAdminDeleteInteractor struct {
 	*telemetry.BaseTelemetry                                // Embedded framework-level telemetry engine core orchestrator
-	next                     usecase.RoleAdminDeleteUseCase // The encapsulated downstream active core business usecase logic
+	next                     usecase.UserAdminDeleteUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                         // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RoleAdminDeleteUseCase = (*RoleAdminDeleteTraceInteractor)(nil)
+var _ usecase.UserAdminDeleteUseCase = (*UserAdminDeleteInteractor)(nil)
 
-// NewRoleAdminDeleteTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role Delete operations.
-func NewRoleAdminDeleteTraceUseCase(ucName string, next usecase.RoleAdminDeleteUseCase) *RoleAdminDeleteTraceInteractor {
-	return &RoleAdminDeleteTraceInteractor{
+// NewUserAdminDeleteUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Delete operations.
+func NewUserAdminDeleteUseCase(ucName string, next usecase.UserAdminDeleteUseCase) *UserAdminDeleteInteractor {
+	return &UserAdminDeleteInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Delete", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -32,15 +32,15 @@ func NewRoleAdminDeleteTraceUseCase(ucName string, next usecase.RoleAdminDeleteU
 }
 
 // Delete executes a traced wrapper sequence over the underlying core business scenario "Delete" removal procedure.
-func (radt *RoleAdminDeleteTraceInteractor) Delete(ctx context.Context, ID string) error {
+func (adt *UserAdminDeleteInteractor) Delete(ctx context.Context, ID string) error {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
-	ctx, span := radt.StartSpan(ctx, radt.spanName)
+	ctx, span := adt.StartSpan(ctx, adt.spanName)
 	defer span.End()
 
 	// Capture high-cardinality payload identifiers into tracking span metadata safely
-	span.SetAttributes(attribute.String("param.role_id", ID))
+	span.SetAttributes(attribute.String("param.user_id", ID))
 
-	err := radt.next.Delete(ctx, ID)
+	err := adt.next.Delete(ctx, ID)
 	if err != nil {
 		// Log explicit infrastructure degradation events directly into the telemetry collector record
 		span.AddEvent("Delete_failed")

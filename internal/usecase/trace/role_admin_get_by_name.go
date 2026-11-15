@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,22 +11,22 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleAdminGetNameTraceInteractor implements the usecase.RoleAdminGetNameUseCase interface,
+// RoleAdminGetByNameInteractor implements the usecase.RoleAdminGetByNameUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts role query paths using string-based name lookups to manage tracing spans and capture metadata attributes.
-type RoleAdminGetNameTraceInteractor struct {
-	*telemetry.BaseTelemetry                                 // Embedded framework-level telemetry engine core orchestrator
-	next                     usecase.RoleAdminGetNameUseCase // The encapsulated downstream active core business usecase logic
-	spanName                 string                          // Pre-formatted OpenTelemetry specification span name
+type RoleAdminGetByNameInteractor struct {
+	*telemetry.BaseTelemetry                                   // Embedded framework-level telemetry engine core orchestrator
+	next                     usecase.RoleAdminGetByNameUseCase // The encapsulated downstream active core business usecase logic
+	spanName                 string                            // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RoleAdminGetNameUseCase = (*RoleAdminGetNameTraceInteractor)(nil)
+var _ usecase.RoleAdminGetByNameUseCase = (*RoleAdminGetByNameInteractor)(nil)
 
-// NewRoleAdminGetNameTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for name-based role lookups.
+// NewRoleAdminGetByNameUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for name-based role lookups.
 // NOTICE: The constructor name contains a minor casing typo ("NewROle..." with an uppercase 'O' instead of "NewRole...").
-func NewRoleAdminGetNameTraceUseCase(ucName string, next usecase.RoleAdminGetNameUseCase) *RoleAdminGetNameTraceInteractor {
-	return &RoleAdminGetNameTraceInteractor{
+func NewRoleAdminGetByNameUseCase(ucName string, next usecase.RoleAdminGetByNameUseCase) *RoleAdminGetByNameInteractor {
+	return &RoleAdminGetByNameInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Get", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -34,7 +34,7 @@ func NewRoleAdminGetNameTraceUseCase(ucName string, next usecase.RoleAdminGetNam
 }
 
 // Get executes a traced wrapper sequence over the underlying core business scenario "Get" retrieval procedure using role names.
-func (gnt *RoleAdminGetNameTraceInteractor) Get(ctx context.Context, name string) (*domain.Role, error) {
+func (gnt *RoleAdminGetByNameInteractor) Get(ctx context.Context, name string) (*domain.Role, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := gnt.StartSpan(ctx, gnt.spanName)
 	defer span.End()

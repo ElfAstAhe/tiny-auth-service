@@ -32,11 +32,11 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	//if err != nil {
 	//    return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	//}
-	loginUCInst, err := container.GetInstance[usecase.LoginUseCase](InstanceLoginUC)
+	loginUCInst, err := container.GetInstance[usecase.LoginCipheredUseCase](InstanceLoginUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
-	loginSimpleUCInst, err := container.GetInstance[usecase.LoginSimpleUseCase](InstanceLoginSimpleUC)
+	loginSimpleUCInst, err := container.GetInstance[usecase.LoginBasicUseCase](InstanceLoginSimpleUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
@@ -80,7 +80,7 @@ func (fc *FacadeContainer) providerRoleAdminFacade() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
-	roleAdminGetByNameUCInst, err := container.GetInstance[usecase.RoleAdminGetNameUseCase](InstanceRoleAdminGetByNameUC)
+	roleAdminGetByNameUCInst, err := container.GetInstance[usecase.RoleAdminGetByNameUseCase](InstanceRoleAdminGetByNameUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
@@ -154,7 +154,7 @@ func (fc *FacadeContainer) providerUserAdminFacade() (any, error) {
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
-	userAdminGetByNameUCInst, err := container.GetInstance[usecase.UserAdminGetNameUseCase](InstanceUserAdminGetByNameUC)
+	userAdminGetByNameUCInst, err := container.GetInstance[usecase.UserAdminGetByNameUseCase](InstanceUserAdminGetByNameUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}

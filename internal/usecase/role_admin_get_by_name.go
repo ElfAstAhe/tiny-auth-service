@@ -10,30 +10,30 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 )
 
-// RoleAdminGetNameUseCase defines the application business logic boundary for handling administrative role retrieval operations by name identifiers.
-type RoleAdminGetNameUseCase interface {
+// RoleAdminGetByNameUseCase defines the application business logic boundary for handling administrative role retrieval operations by name identifiers.
+type RoleAdminGetByNameUseCase interface {
 	// Get retrieves a specific role entity blueprint matching the provided unique string name key.
 	Get(ctx context.Context, name string) (*domain.Role, error)
 }
 
-// RoleAdminGetNameInteractor implements the RoleAdminGetNameUseCase interface, orchestrating criteria evaluation
+// RoleAdminGetByNameInteractor implements the RoleAdminGetByNameUseCase interface, orchestrating criteria evaluation
 // and data storage lookup queries to deliver role identity structures matching string keys.
-type RoleAdminGetNameInteractor struct {
+type RoleAdminGetByNameInteractor struct {
 	roleRepo domain.RoleAdminRepository // DAL administrative repository handle for role state persistence
 }
 
 // Compile-time interface compliance verification
-var _ RoleAdminGetNameUseCase = (*RoleAdminGetNameInteractor)(nil)
+var _ RoleAdminGetByNameUseCase = (*RoleAdminGetByNameInteractor)(nil)
 
-// NewRoleAdminGetNameUseCase acts as a factory constructor mounting required role administration repository dependencies.
-func NewRoleAdminGetNameUseCase(roleRepo domain.RoleAdminRepository) *RoleAdminGetNameInteractor {
-	return &RoleAdminGetNameInteractor{
+// NewRoleAdminGetByName acts as a factory constructor mounting required role administration repository dependencies.
+func NewRoleAdminGetByName(roleRepo domain.RoleAdminRepository) *RoleAdminGetByNameInteractor {
+	return &RoleAdminGetByNameInteractor{
 		roleRepo: roleRepo,
 	}
 }
 
 // Get validates inbound name criteria bounds and delegates execution to the persistence layer to fetch role aggregate fields.
-func (agn *RoleAdminGetNameInteractor) Get(ctx context.Context, name string) (*domain.Role, error) {
+func (agn *RoleAdminGetByNameInteractor) Get(ctx context.Context, name string) (*domain.Role, error) {
 	if err := agn.validate(name); err != nil {
 		return nil, errs.NewBllValidateError("RoleAdminGetNameInteractor.Get", "validate income data failed", err)
 	}
@@ -51,7 +51,7 @@ func (agn *RoleAdminGetNameInteractor) Get(ctx context.Context, name string) (*d
 }
 
 // validate executes initial presence analysis over inbound name query criteria before hitting storage.
-func (agn *RoleAdminGetNameInteractor) validate(name string) error {
+func (agn *RoleAdminGetByNameInteractor) validate(name string) error {
 	if strings.TrimSpace(name) == "" {
 		return errs.NewInvalidArgumentError("name", "name is empty")
 	}

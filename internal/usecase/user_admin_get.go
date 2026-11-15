@@ -25,8 +25,8 @@ type UserAdminGetInteractor struct {
 // Compile-time interface compliance verification
 var _ UserAdminGetUseCase = (*UserAdminGetInteractor)(nil)
 
-// NewUserAdminGetUseCase acts as a factory constructor mounting required user administration repository dependencies.
-func NewUserAdminGetUseCase(userRepo domain.UserAdminRepository) *UserAdminGetInteractor {
+// NewUserAdminGet acts as a factory constructor mounting required user administration repository dependencies.
+func NewUserAdminGet(userRepo domain.UserAdminRepository) *UserAdminGetInteractor {
 	return &UserAdminGetInteractor{
 		userRepo: userRepo,
 	}

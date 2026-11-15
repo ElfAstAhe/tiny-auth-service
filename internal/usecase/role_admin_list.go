@@ -24,8 +24,8 @@ type RoleAdminListInteractor struct {
 // Compile-time interface compliance verification
 var _ RoleAdminListUseCase = (*RoleAdminListInteractor)(nil)
 
-// NewRoleAdminListUseCase acts as a factory constructor mounting required role administration repository and safety thresholds.
-func NewRoleAdminListUseCase(roleRepo domain.RoleAdminRepository, maxListLimit int) *RoleAdminListInteractor {
+// NewRoleAdminList acts as a factory constructor mounting required role administration repository and safety thresholds.
+func NewRoleAdminList(roleRepo domain.RoleAdminRepository, maxListLimit int) *RoleAdminListInteractor {
 	return &RoleAdminListInteractor{
 		roleRepo:     roleRepo,
 		maxListLimit: maxListLimit,

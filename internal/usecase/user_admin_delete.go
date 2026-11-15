@@ -27,8 +27,8 @@ type UserAdminDeleteInteractor struct {
 // Compile-time interface compliance verification
 var _ UserAdminDeleteUseCase = (*UserAdminDeleteInteractor)(nil)
 
-// NewUserAdminDeleteUseCase acts as a factory constructor mounting required user administration repository and transaction dependencies.
-func NewUserAdminDeleteUseCase(
+// NewUserAdminDelete acts as a factory constructor mounting required user administration repository and transaction dependencies.
+func NewUserAdminDelete(
 	uw libdom.UnitOfWork,
 	userRepo domain.UserAdminRepository,
 ) *UserAdminDeleteInteractor {

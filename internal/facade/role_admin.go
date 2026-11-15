@@ -24,13 +24,13 @@ type RoleAdminFacade interface {
 
 // RoleAdminFacadeImpl structures administrative boundary routers, conducting data transformations and permission assertions.
 type RoleAdminFacadeImpl struct {
-	authHelper   auth.Helper                     // Framework core token management tool verifying structural context identity claims
-	getUC        usecase.RoleAdminGetUseCase     // Downstream application usecase handling administrative specific identifier lookup
-	getByNameUC  usecase.RoleAdminGetNameUseCase // Downstream application usecase managing criteria name string lookup routines
-	listUC       usecase.RoleAdminListUseCase    // Downstream application usecase managing array paginated aggregate lookup queries
-	saveUC       usecase.RoleAdminSaveUseCase    // Downstream application usecase coordinating persistence operations across creation and update workflows
-	deleteUC     usecase.RoleAdminDeleteUseCase  // Downstream application usecase executing single identity entity eviction bounds
-	maxListLimit int                             // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
+	authHelper   auth.Helper                       // Framework core token management tool verifying structural context identity claims
+	getUC        usecase.RoleAdminGetUseCase       // Downstream application usecase handling administrative specific identifier lookup
+	getByNameUC  usecase.RoleAdminGetByNameUseCase // Downstream application usecase managing criteria name string lookup routines
+	listUC       usecase.RoleAdminListUseCase      // Downstream application usecase managing array paginated aggregate lookup queries
+	saveUC       usecase.RoleAdminSaveUseCase      // Downstream application usecase coordinating persistence operations across creation and update workflows
+	deleteUC     usecase.RoleAdminDeleteUseCase    // Downstream application usecase executing single identity entity eviction bounds
+	maxListLimit int                               // Safety threshold boundary limit preventing memory exhaustion during extensive query operations
 }
 
 // Compile-time interface compliance verification
@@ -40,7 +40,7 @@ var _ RoleAdminFacade = (*RoleAdminFacadeImpl)(nil)
 func NewRoleAdminFacade(
 	authHelper auth.Helper,
 	getUC usecase.RoleAdminGetUseCase,
-	getByNameUC usecase.RoleAdminGetNameUseCase,
+	getByNameUC usecase.RoleAdminGetByNameUseCase,
 	listUC usecase.RoleAdminListUseCase,
 	saveUC usecase.RoleAdminSaveUseCase,
 	deleteUC usecase.RoleAdminDeleteUseCase,

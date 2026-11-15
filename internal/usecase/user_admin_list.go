@@ -24,8 +24,8 @@ type UserAdminListInteractor struct {
 // Compile-time interface compliance verification
 var _ UserAdminListUseCase = (*UserAdminListInteractor)(nil)
 
-// NewUserAdminListUseCase acts as a factory constructor mounting required user administration repository and safety thresholds.
-func NewUserAdminListUseCase(userRepo domain.UserAdminRepository, maxListLimit int) *UserAdminListInteractor {
+// NewUserAdminList acts as a factory constructor mounting required user administration repository and safety thresholds.
+func NewUserAdminList(userRepo domain.UserAdminRepository, maxListLimit int) *UserAdminListInteractor {
 	res := &UserAdminListInteractor{
 		userRepo:     userRepo,
 		maxListLimit: maxListLimit,

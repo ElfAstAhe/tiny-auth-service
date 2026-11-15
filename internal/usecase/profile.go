@@ -25,8 +25,8 @@ type ProfileInteractor struct {
 // Compile-time interface compliance verification
 var _ ProfileUseCase = (*ProfileInteractor)(nil)
 
-// NewProfileUseCase acts as a factory constructor mounting required user repository dependencies.
-func NewProfileUseCase(userRepo domain.UserRepository) *ProfileInteractor {
+// NewProfile acts as a factory constructor mounting required user repository dependencies.
+func NewProfile(userRepo domain.UserRepository) *ProfileInteractor {
 	return &ProfileInteractor{
 		userRepo: userRepo,
 	}

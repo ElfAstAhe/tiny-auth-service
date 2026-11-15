@@ -27,8 +27,8 @@ type RoleAdminDeleteInteractor struct {
 // Compile-time interface compliance verification
 var _ RoleAdminDeleteUseCase = (*RoleAdminDeleteInteractor)(nil)
 
-// NewRoleAdminDeleteUseCase acts as a factory constructor mounting required role administration repository and transaction dependencies.
-func NewRoleAdminDeleteUseCase(
+// NewRoleAdminDelete acts as a factory constructor mounting required role administration repository and transaction dependencies.
+func NewRoleAdminDelete(
 	uw libdom.UnitOfWork,
 	roleRepo domain.RoleAdminRepository,
 ) *RoleAdminDeleteInteractor {

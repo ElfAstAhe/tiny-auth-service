@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RegisterTraceInteractor implements the usecase.RegisterUseCase interface,
+// RegisterInteractor implements the usecase.RegisterUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts user registration workflows to track identity creation lifecycles and safely append metadata context.
-type RegisterTraceInteractor struct {
+type RegisterInteractor struct {
 	*telemetry.BaseTelemetry                         // Embedded framework-level telemetry engine core orchestrator
 	next                     usecase.RegisterUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                  // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RegisterUseCase = (*RegisterTraceInteractor)(nil)
+var _ usecase.RegisterUseCase = (*RegisterInteractor)(nil)
 
-// NewRegisterTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for identity registration operations.
-func NewRegisterTraceUseCase(ucName string, next usecase.RegisterUseCase) *RegisterTraceInteractor {
-	return &RegisterTraceInteractor{
+// NewRegisterUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for identity registration operations.
+func NewRegisterUseCase(ucName string, next usecase.RegisterUseCase) *RegisterInteractor {
+	return &RegisterInteractor{
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
 		spanName:      fmt.Sprintf("%s.Register", ucName),
 		next:          next,
@@ -33,7 +33,7 @@ func NewRegisterTraceUseCase(ucName string, next usecase.RegisterUseCase) *Regis
 }
 
 // Register executes a traced wrapper sequence over the underlying core business scenario "Register" account creation procedure.
-func (rti *RegisterTraceInteractor) Register(ctx context.Context, username string, password string) (*domain.User, error) {
+func (rti *RegisterInteractor) Register(ctx context.Context, username string, password string) (*domain.User, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := rti.StartSpan(ctx, rti.spanName)
 	defer span.End()

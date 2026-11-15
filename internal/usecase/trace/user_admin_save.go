@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -12,21 +12,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// UserAdminSaveTraceInteractor implements the usecase.UserAdminSaveUseCase interface,
+// UserAdminSaveInteractor implements the usecase.UserAdminSaveUseCase interface,
 // serving as a distributed tracing decorator leveraging OpenTelemetry API primitives.
 // Automatically spans across business scenario persistence workflows to capture runtime states.
-type UserAdminSaveTraceInteractor struct {
+type UserAdminSaveInteractor struct {
 	*telemetry.BaseTelemetry                              // Embedded base framework-level telemetry orchestrator
 	next                     usecase.UserAdminSaveUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                       // Pre-calculated target tracing operational span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.UserAdminSaveUseCase = (*UserAdminSaveTraceInteractor)(nil)
+var _ usecase.UserAdminSaveUseCase = (*UserAdminSaveInteractor)(nil)
 
-// NewUserAdminSaveTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer.
-func NewUserAdminSaveTraceUseCase(ucName string, next usecase.UserAdminSaveUseCase) *UserAdminSaveTraceInteractor {
-	return &UserAdminSaveTraceInteractor{
+// NewUserAdminSaveUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer.
+func NewUserAdminSaveUseCase(ucName string, next usecase.UserAdminSaveUseCase) *UserAdminSaveInteractor {
+	return &UserAdminSaveInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Save", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -34,7 +34,7 @@ func NewUserAdminSaveTraceUseCase(ucName string, next usecase.UserAdminSaveUseCa
 }
 
 // Save executes the underlying domain persistence layer wrapped safely within an isolated OTel child span context.
-func (uast *UserAdminSaveTraceInteractor) Save(ctx context.Context, model *domain.User) (*domain.User, error) {
+func (uast *UserAdminSaveInteractor) Save(ctx context.Context, model *domain.User) (*domain.User, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := uast.StartSpan(ctx, uast.spanName)
 	defer span.End()

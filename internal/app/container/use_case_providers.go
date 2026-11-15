@@ -12,7 +12,7 @@ import (
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/telemetry"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase/trace"
 )
 
 func (ucc *UseCaseContainer) providerUnitOfWork() (any, error) {
@@ -39,9 +39,9 @@ func (ucc *UseCaseContainer) providerChangeKeysUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewChangeKeysTraceUseCase(
+	return trace.NewChangeKeysUseCase(
 		"ChangeKeysUseCase",
-		usecase.NewChangeKeysUseCase(
+		usecase.NewChangeKeys(
 			keysHelperInst,
 			uwInst,
 			userRepoInst,
@@ -63,9 +63,9 @@ func (ucc *UseCaseContainer) providerChangePasswordUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewChangePasswordTraceUseCase(
+	return trace.NewChangePasswordUseCase(
 		"ChangePasswordUseCase",
-		usecase.NewChangePasswordUseCase(
+		usecase.NewChangePassword(
 			hashCipherInst,
 			uwInst,
 			userRepoInst,
@@ -91,9 +91,9 @@ func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewLoginTraceUseCase(
+	return trace.NewLoginTraceUseCase(
 		"LoginUseCase",
-		usecase.NewLoginUseCase(
+		usecase.NewLoginCiphered(
 			hashCipherInst,
 			keysHelperInst,
 			authHelperInst,
@@ -116,9 +116,9 @@ func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewLoginSimpleTraceUseCase(
+	return trace.NewLoginBasicUseCase(
 		"LoginSimpleUseCase",
-		usecase.NewLoginSimpleUseCase(
+		usecase.NewLoginBasic(
 			hashCipherInst,
 			authHelperInst,
 			userRepoInst,
@@ -132,7 +132,7 @@ func (ucc *UseCaseContainer) providerProfileUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfileUseCase(userRepoInst)), nil
+	return trace.NewProfileTraceUseCase("ProfileUseCase", usecase.NewProfile(userRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -154,9 +154,9 @@ func (ucc *UseCaseContainer) providerRegisterUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRegisterTraceUseCase(
+	return trace.NewRegisterUseCase(
 		"RegisterUseCase",
-		usecase.NewRegisterUseCase(
+		usecase.NewRegister(
 			uwInst,
 			hashCipherInst,
 			keysHelperInst,
@@ -175,9 +175,9 @@ func (ucc *UseCaseContainer) providerRoleAdminDeleteUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRoleAdminDeleteTraceUseCase(
+	return trace.NewRoleAdminDeleteUseCase(
 		"RoleAdminDeleteUseCase",
-		usecase.NewRoleAdminDeleteUseCase(uwInst, roleAdminRepoInst)), nil
+		usecase.NewRoleAdminDelete(uwInst, roleAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -187,7 +187,7 @@ func (ucc *UseCaseContainer) providerRoleAdminGetUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRoleAdminGetTraceUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGetUseCase(roleAdminRepoInst)), nil
+	return trace.NewRoleAdminGetUseCase("RoleAdminGetUseCase", usecase.NewRoleAdminGet(roleAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -197,7 +197,7 @@ func (ucc *UseCaseContainer) providerRoleAdminGetByNameUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRoleAdminGetNameTraceUseCase("RoleAdminGetByNameUseCase", usecase.NewRoleAdminGetNameUseCase(roleAdminRepoInst)), nil
+	return trace.NewRoleAdminGetByNameUseCase("RoleAdminGetByNameUseCase", usecase.NewRoleAdminGetByName(roleAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -211,9 +211,9 @@ func (ucc *UseCaseContainer) providerRoleAdminListUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRoleAdminListTraceUseCase(
+	return trace.NewRoleAdminListUseCase(
 		"RoleAdminListUseCase",
-		usecase.NewRoleAdminListUseCase(roleAdminRepoInst, confInst.App.MaxListLimit)), nil
+		usecase.NewRoleAdminList(roleAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -227,9 +227,9 @@ func (ucc *UseCaseContainer) providerRoleAdminSaveUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewRoleAdminSaveTraceUseCase(
+	return trace.NewRoleAdminSaveUseCase(
 		"RoleAdminSaveUseCase",
-		usecase.NewRoleAdminSaveUseCase(uwInst, roleAdminRepoInst)), nil
+		usecase.NewRoleAdminSave(uwInst, roleAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -243,9 +243,9 @@ func (ucc *UseCaseContainer) providerUserAdminDeleteUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewUserAdminDeleteTraceUseCase(
+	return trace.NewUserAdminDeleteUseCase(
 		"UserAdminDeleteUseCase",
-		usecase.NewUserAdminDeleteUseCase(uwInst, userAdminRepoInst)), nil
+		usecase.NewUserAdminDelete(uwInst, userAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -255,9 +255,9 @@ func (ucc *UseCaseContainer) providerUserAdminGetUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewUserAdminGetTraceUseCase(
+	return trace.NewUserAdminGetUseCase(
 		"UserAdminGetUseCase",
-		usecase.NewUserAdminGetUseCase(userAdminRepoInst)), nil
+		usecase.NewUserAdminGet(userAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -267,9 +267,9 @@ func (ucc *UseCaseContainer) providerUserAdminGetByNameUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewUserAdminGetNameTraceUseCase(
+	return trace.NewUserAdminGetByNameUseCase(
 		"UserAdminGetByNameUseCase",
-		usecase.NewUserAdminGetNameUseCase(userAdminRepoInst)), nil
+		usecase.NewUserAdminGetByName(userAdminRepoInst)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -283,9 +283,9 @@ func (ucc *UseCaseContainer) providerUserAdminListUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewUserAdminListTraceUseCase(
+	return trace.NewUserAdminListUseCase(
 		"UserAdminListUseCase",
-		usecase.NewUserAdminListUseCase(userAdminRepoInst, confInst.App.MaxListLimit)), nil
+		usecase.NewUserAdminList(userAdminRepoInst, confInst.App.MaxListLimit)), nil
 }
 
 //goland:noinspection DuplicatedCode
@@ -307,9 +307,9 @@ func (ucc *UseCaseContainer) providerUserAdminSaveUC() (any, error) {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
 	}
 
-	return telemetry.NewUserAdminSaveTraceUseCase(
+	return trace.NewUserAdminSaveUseCase(
 		"UserAdminSaveUseCase",
-		usecase.NewUserAdminSaveUseCase(
+		usecase.NewUserAdminSave(
 			uwInst,
 			hashCipherInst,
 			keysHelperInst,

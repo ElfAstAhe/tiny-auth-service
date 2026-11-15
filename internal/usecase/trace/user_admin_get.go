@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// UserAdminGetTraceInteractor implements the usecase.UserAdminGetUseCase interface,
+// UserAdminGetInteractor implements the usecase.UserAdminGetUseCase interface,
 // acting as a non-invasive distributed tracing decorator on top of OpenTelemetry (OTel).
 // It intercepts business usecase flows to automatically manage span lifecycles and inject telemetry baggage.
-type UserAdminGetTraceInteractor struct {
+type UserAdminGetInteractor struct {
 	*telemetry.BaseTelemetry                             // Framework-level telemetry engine core
 	next                     usecase.UserAdminGetUseCase // The wrapped underlying concrete business scenario execution path
 	spanName                 string                      // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.UserAdminGetUseCase = (*UserAdminGetTraceInteractor)(nil)
+var _ usecase.UserAdminGetUseCase = (*UserAdminGetInteractor)(nil)
 
-// NewUserAdminGetTraceUseCase acts as a factory constructor mounting a middleware tracing layer on top of a business interactor.
-func NewUserAdminGetTraceUseCase(ucName string, next usecase.UserAdminGetUseCase) *UserAdminGetTraceInteractor {
-	return &UserAdminGetTraceInteractor{
+// NewUserAdminGetUseCase acts as a factory constructor mounting a middleware tracing layer on top of a business interactor.
+func NewUserAdminGetUseCase(ucName string, next usecase.UserAdminGetUseCase) *UserAdminGetInteractor {
+	return &UserAdminGetInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Get", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -34,7 +34,7 @@ func NewUserAdminGetTraceUseCase(ucName string, next usecase.UserAdminGetUseCase
 
 // Get executes a traced wrapper sequence over the underlying core business scenario "Get" retrieval procedure.
 // Safely tracks span lifecycle states, records exception events, and maps errors into formal infrastructure statuses.
-func (agt *UserAdminGetTraceInteractor) Get(ctx context.Context, ID string) (*domain.User, error) {
+func (agt *UserAdminGetInteractor) Get(ctx context.Context, ID string) (*domain.User, error) {
 	// Spawns a child OpenTelemetry span bound seamlessly to the propagation sequence context
 	ctx, span := agt.StartSpan(ctx, agt.spanName)
 	defer span.End()

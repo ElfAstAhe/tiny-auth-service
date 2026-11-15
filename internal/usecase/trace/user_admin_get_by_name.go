@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// UserAdminGetNameTraceInteractor implements the usecase.UserAdminGetNameUseCase interface,
+// UserAdminGetByNameInteractor implements the usecase.UserAdminGetByNameUseCase interface,
 // serving as a non-invasive distributed tracing decorator leveraging OpenTelemetry API.
 // It intercepts user identity query flows to track runtime lifecycle state using name-based lookup semantics.
-type UserAdminGetNameTraceInteractor struct {
-	*telemetry.BaseTelemetry                                 // Embedded framework-level telemetry engine core orchestrator
-	next                     usecase.UserAdminGetNameUseCase // The encapsulated downstream active core business usecase logic
-	spanName                 string                          // Pre-formatted OpenTelemetry specification span name
+type UserAdminGetByNameInteractor struct {
+	*telemetry.BaseTelemetry                                   // Embedded framework-level telemetry engine core orchestrator
+	next                     usecase.UserAdminGetByNameUseCase // The encapsulated downstream active core business usecase logic
+	spanName                 string                            // Pre-formatted OpenTelemetry specification span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.UserAdminGetNameUseCase = (*UserAdminGetNameTraceInteractor)(nil)
+var _ usecase.UserAdminGetByNameUseCase = (*UserAdminGetByNameInteractor)(nil)
 
-// NewUserAdminGetNameTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for name-based lookup operations.
-func NewUserAdminGetNameTraceUseCase(ucName string, next usecase.UserAdminGetNameUseCase) *UserAdminGetNameTraceInteractor {
-	return &UserAdminGetNameTraceInteractor{
+// NewUserAdminGetByNameUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for name-based lookup operations.
+func NewUserAdminGetByNameUseCase(ucName string, next usecase.UserAdminGetByNameUseCase) *UserAdminGetByNameInteractor {
+	return &UserAdminGetByNameInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Get", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -33,7 +33,7 @@ func NewUserAdminGetNameTraceUseCase(ucName string, next usecase.UserAdminGetNam
 }
 
 // Get executes a traced wrapper sequence over the underlying core business scenario "Get" retrieval procedure using string keys.
-func (gnt *UserAdminGetNameTraceInteractor) Get(ctx context.Context, name string) (*domain.User, error) {
+func (gnt *UserAdminGetByNameInteractor) Get(ctx context.Context, name string) (*domain.User, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := gnt.StartSpan(ctx, gnt.spanName)
 	defer span.End()

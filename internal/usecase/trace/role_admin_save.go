@@ -1,4 +1,4 @@
-package telemetry
+package trace
 
 import (
 	"context"
@@ -12,21 +12,21 @@ import (
 	"go.opentelemetry.io/otel/codes"
 )
 
-// RoleAdminSaveTraceInteractor implements the usecase.RoleAdminSaveUseCase interface,
+// RoleAdminSaveInteractor implements the usecase.RoleAdminSaveUseCase interface,
 // acting as a non-invasive distributed tracing decorator powered by OpenTelemetry API.
 // It intercepts role entity persistence workflows to record operational trace spans and capture metadata state attributes.
-type RoleAdminSaveTraceInteractor struct {
+type RoleAdminSaveInteractor struct {
 	*telemetry.BaseTelemetry                              // Embedded framework-level telemetry engine core orchestrator
 	next                     usecase.RoleAdminSaveUseCase // The encapsulated downstream active core business usecase logic
 	spanName                 string                       // Pre-calculated target tracing operational span name
 }
 
 // Compile-time interface compliance verification
-var _ usecase.RoleAdminSaveUseCase = (*RoleAdminSaveTraceInteractor)(nil)
+var _ usecase.RoleAdminSaveUseCase = (*RoleAdminSaveInteractor)(nil)
 
-// NewRoleAdminSaveTraceUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role Save operations.
-func NewRoleAdminSaveTraceUseCase(ucName string, next usecase.RoleAdminSaveUseCase) *RoleAdminSaveTraceInteractor {
-	return &RoleAdminSaveTraceInteractor{
+// NewRoleAdminSaveUseCase acts as a factory constructor mounting the non-invasive tracing telemetry layer for Role Save operations.
+func NewRoleAdminSaveUseCase(ucName string, next usecase.RoleAdminSaveUseCase) *RoleAdminSaveInteractor {
+	return &RoleAdminSaveInteractor{
 		next:          next,
 		spanName:      fmt.Sprintf("%s.Save", ucName),
 		BaseTelemetry: telemetry.NewBaseTelemetry(ucName),
@@ -34,7 +34,7 @@ func NewRoleAdminSaveTraceUseCase(ucName string, next usecase.RoleAdminSaveUseCa
 }
 
 // Save executes the underlying domain role persistence layer wrapped safely within an isolated OTel child span context.
-func (ast *RoleAdminSaveTraceInteractor) Save(ctx context.Context, model *domain.Role) (*domain.Role, error) {
+func (ast *RoleAdminSaveInteractor) Save(ctx context.Context, model *domain.Role) (*domain.Role, error) {
 	// Spawns a dedicated child execution tracker span injected into the propagation context
 	ctx, span := ast.StartSpan(ctx, ast.spanName)
 	defer span.End()

@@ -30,8 +30,8 @@ type UserAdminSaveInteractor struct {
 // Compile-time interface compliance verification
 var _ UserAdminSaveUseCase = (*UserAdminSaveInteractor)(nil)
 
-// NewUserAdminSaveUseCase acts as a factory constructor mounting required user administration repository, cryptographic, and transaction dependencies.
-func NewUserAdminSaveUseCase(
+// NewUserAdminSave acts as a factory constructor mounting required user administration repository, cryptographic, and transaction dependencies.
+func NewUserAdminSave(
 	uw libdom.UnitOfWork,
 	hashCipher utils.Cipher,
 	keysHelper helper.RSAKeys,
