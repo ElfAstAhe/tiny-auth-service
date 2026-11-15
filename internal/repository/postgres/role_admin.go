@@ -9,7 +9,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	librepo "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 // RoleAdminPgRepository structures administrative relational mapping adapters for generic core role entity CRUD operations.
@@ -80,7 +79,7 @@ func (rar *RoleAdminPgRepository) FindByName(ctx context.Context, name string) (
 		return nil, errs.NewInvalidArgumentError("name", "cannot be empty")
 	}
 
-	return rar.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlRoleAdminFindByName, name)
+	return rar.GetHelper().Get(ctx, SourceLabelFindByName, sqlRoleAdminFindByName, name)
 }
 
 // entityScanner maps raw relational row column values into concrete memory model pointers.

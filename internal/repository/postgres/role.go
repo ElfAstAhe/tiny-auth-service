@@ -10,7 +10,6 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	librepo "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 // RolePgRepository structures concrete relational mapping adapters for generic core role entity CRUD operations,
@@ -87,7 +86,7 @@ func (rr *RolePgRepository) FindByName(ctx context.Context, name string) (*domai
 		return nil, errs.NewInvalidArgumentError("name", "is required")
 	}
 
-	return rr.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlRoleFindByName, name)
+	return rr.GetHelper().Get(ctx, SourceLabelFindByName, sqlRoleFindByName, name)
 }
 
 // entityScanner maps raw relational SQL row column values directly into a concrete role domain model pointer.

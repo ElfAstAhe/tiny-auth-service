@@ -245,6 +245,8 @@ const (
 )
 
 // data audit sender kafka
+//
+//nolint:gosec // G101 : app params
 const (
 	// FlagDataAuditSenderKafkaBrokers identifies network cluster addresses servicing Kafka streaming nodes.
 	FlagDataAuditSenderKafkaBrokers string = "data-audit-sender-kafka-brokers"
@@ -413,6 +415,8 @@ const (
 )
 
 // data audit sender kafka
+//
+//nolint:gosec // G101 : app params
 const (
 	// keyDataAuditSenderKafkaBrokers identifies compound array configurations trajectories pointing to target Kafka network nodes addresses.
 	keyDataAuditSenderKafkaBrokers string = "data_audit_sender.kafka_config.brokers"

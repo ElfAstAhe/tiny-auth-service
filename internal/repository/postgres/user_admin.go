@@ -11,7 +11,6 @@ import (
 	librepo "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 // UserAdminPgRepository structures administrative relational mapping adapters for comprehensive core user entity CRUD operations,
@@ -107,7 +106,7 @@ func (uar *UserAdminPgRepository) FindByName(ctx context.Context, name string) (
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := uar.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlUserAdminFindByName, name)
+	res, err := uar.GetHelper().Get(ctx, SourceLabelFindByName, sqlUserAdminFindByName, name)
 	if err != nil {
 		return nil, err
 	}

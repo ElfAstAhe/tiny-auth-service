@@ -1,7 +1,13 @@
 package container
 
-func (wc *WorkerContainer) providerDataAuditTailCutter() (any, error) {
+func (wc *WorkerContainer) providerDataAuditOutboxTailCutter() (any, error) {
 	// ToDo: implement
+
+	return nil, nil
+}
+
+func (wc *WorkerContainer) providerAuthAuditOutboxTailCutter() (any, error) {
+	// ToDo : implement
 
 	return nil, nil
 }

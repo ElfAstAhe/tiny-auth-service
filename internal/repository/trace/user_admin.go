@@ -32,6 +32,8 @@ func NewUserAdminRepository(repo domain.UserAdminRepository) *UserAdminRepositor
 }
 
 // FindByName intercepts administrative lookup sequences by username parameters to execute data retrieval wrapped inside an OTel trace span boundary.
+//
+//goland:noinspection DuplicatedCode
 func (uat *UserAdminRepository) FindByName(ctx context.Context, name string) (*domain.User, error) {
 	ctx, span := uat.StartSpan(ctx, fmt.Sprintf("%s.FindByName", uat.GetRepositoryName()))
 	defer span.End()

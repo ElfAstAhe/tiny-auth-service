@@ -24,6 +24,8 @@ var _ libdom.CRUDRepository[*domain.User, string] = (*UserAuditRepository)(nil)
 var _ domain.UserRepository = (*UserAuditRepository)(nil)
 
 // NewUserRepository acts as a factory constructor mounting audit logging proxies over standard user storage adapters.
+//
+//goland:noinspection DuplicatedCode
 func NewUserRepository(
 	source string,
 	next domain.UserRepository,

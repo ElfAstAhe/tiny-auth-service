@@ -12,12 +12,18 @@ func up0006(ctx context.Context, db *sql.DB) error {
 	if err := libextmigrpg.CreateTableDataAuditOutbox(ctx, db); err != nil {
 		return err
 	}
+	if err := libextmigrpg.CreateIndexDataAuditOutboxProcessed(ctx, db); err != nil {
+		return err
+	}
 
 	return libextmigrpg.CreateIndexDataAuditOutboxPending(ctx, db)
 }
 
 func down0006(ctx context.Context, db *sql.DB) error {
 	if err := libextmigrpg.DropIndexDataAuditOutboxPending(ctx, db); err != nil {
+		return err
+	}
+	if err := libextmigrpg.DropIndexDataAuditOutboxProcessed(ctx, db); err != nil {
 		return err
 	}
 

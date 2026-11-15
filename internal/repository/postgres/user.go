@@ -11,7 +11,6 @@ import (
 	librepo "github.com/ElfAstAhe/go-service-template/pkg/repository"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
-	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 )
 
 // UserPgRepository structures relational mapping adapters for generic public user entity CRUD operations,
@@ -108,7 +107,7 @@ func (ur *UserPgRepository) FindByName(ctx context.Context, name string) (*domai
 	if name == "" {
 		return nil, errs.NewInvalidArgumentError("name", "name is empty")
 	}
-	res, err := ur.GetHelper().Get(ctx, repository.SourceLabelFindByName, sqlUserFindByName, name)
+	res, err := ur.GetHelper().Get(ctx, SourceLabelFindByName, sqlUserFindByName, name)
 	if err != nil {
 		return nil, err
 	}

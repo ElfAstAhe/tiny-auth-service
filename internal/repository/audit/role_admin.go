@@ -24,6 +24,8 @@ var _ libdom.CRUDRepository[*domain.Role, string] = (*RoleAdminRepository)(nil)
 var _ domain.RoleAdminRepository = (*RoleAdminRepository)(nil)
 
 // NewRoleAdminRepository acts as a factory constructor mounting audit logging proxies over administrative role storage adapters.
+//
+//goland:noinspection DuplicatedCode
 func NewRoleAdminRepository(
 	source string,
 	next domain.RoleAdminRepository,

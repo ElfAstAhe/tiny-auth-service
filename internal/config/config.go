@@ -4,8 +4,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libconf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libextconf "github.com/ElfAstAhe/go-service-template/pkg/ext/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/spf13/viper"
 )
@@ -18,17 +19,19 @@ const (
 // Config aggregates multi-layered environment settings blocks, infrastructure configurations blueprints,
 // cross-cutting telemetry parameters, and credentials profiles required to spin up application services.
 type Config struct {
-	App                    *AppConfig                  `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
-	Auth                   *config.AuthConfig          `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
-	HTTP                   *config.HTTPConfig          `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
-	GRPC                   *config.GRPCConfig          `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
-	Log                    *config.LogConfig           `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
-	DB                     *config.DBConfig            `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
-	Telemetry              *config.TelemetryConfig     `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
-	LoginAttemptsConnector *config.AMQPConnectorConfig `mapstructure:"login_attempts_connector" json:"login_attempts_connector,omitempty" yaml:"login_attempts_connector,omitempty"`
-	LoginAttemptsSender    *LoginAttemptsConfig        `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
-	DataAuditConnector     *config.AMQPConnectorConfig `mapstructure:"data_audit_connector" json:"data_audit_connector,omitempty" yaml:"data_audit_connector,omitempty"`
-	DataAuditSender        *DataAuditConfig            `mapstructure:"data_audit_sender" json:"data_audit_sender,omitempty" yaml:"data_audit_sender,omitempty"`
+	App                       *AppConfig                   `mapstructure:"app" json:"app,omitempty" yaml:"app,omitempty"`
+	Auth                      *libconf.AuthConfig          `mapstructure:"auth" json:"auth,omitempty" yaml:"auth,omitempty"`
+	HTTP                      *libconf.HTTPConfig          `mapstructure:"http" json:"http,omitempty" yaml:"http,omitempty"`
+	GRPC                      *libconf.GRPCConfig          `mapstructure:"grpc" json:"grpc,omitempty" yaml:"grpc,omitempty"`
+	Log                       *libconf.LogConfig           `mapstructure:"log" json:"log,omitempty" yaml:"log,omitempty"`
+	DB                        *libconf.DBConfig            `mapstructure:"db" json:"db,omitempty" yaml:"db,omitempty"`
+	Telemetry                 *libconf.TelemetryConfig     `mapstructure:"telemetry" json:"telemetry,omitempty" yaml:"telemetry,omitempty"`
+	LoginAttemptsConnector    *libconf.AMQPConnectorConfig `mapstructure:"login_attempts_connector" json:"login_attempts_connector,omitempty" yaml:"login_attempts_connector,omitempty"`
+	LoginAttemptsSender       *LoginAttemptsConfig         `mapstructure:"login_attempts_sender" json:"login_attempts_sender,omitempty" yaml:"login_attempts_sender,omitempty"`
+	DataAuditConnector        *libconf.AMQPConnectorConfig `mapstructure:"data_audit_connector" json:"data_audit_connector,omitempty" yaml:"data_audit_connector,omitempty"`
+	DataAuditSender           *DataAuditConfig             `mapstructure:"data_audit_sender" json:"data_audit_sender,omitempty" yaml:"data_audit_sender,omitempty"`
+	DataAuditOutboxTailCutter *libextconf.TailCutterConfig `mapstructure:"data_audit_outbox_tail_cutter" json:"data_audit_outbox_tail_cutter,omitempty" yaml:"data_audit_outbox_tail_cutter,omitempty"`
+	AuthAuditOutboxTailCutter *libextconf.TailCutterConfig `mapstructure:"auth_audit_outbox_tail_cutter" json:"auth_audit_outbox_tail_cutter,omitempty" yaml:"auth_audit_outbox_tail_cutter,omitempty"`
 }
 
 // Linker params injected via compiler build automation pipelines (-ldflags).
@@ -40,29 +43,33 @@ var (
 // NewConfig acts as a complete constructor function mapping parameters across individual configuration scopes.
 func NewConfig(
 	app *AppConfig,
-	auth *config.AuthConfig,
-	HTTP *config.HTTPConfig,
-	GRPC *config.GRPCConfig,
-	log *config.LogConfig,
-	db *config.DBConfig,
-	telemetry *config.TelemetryConfig,
-	loginAttemptsConnector *config.AMQPConnectorConfig,
+	auth *libconf.AuthConfig,
+	HTTP *libconf.HTTPConfig,
+	GRPC *libconf.GRPCConfig,
+	log *libconf.LogConfig,
+	db *libconf.DBConfig,
+	telemetry *libconf.TelemetryConfig,
+	loginAttemptsConnector *libconf.AMQPConnectorConfig,
 	loginAttemptsSender *LoginAttemptsConfig,
-	dataAuditConnector *config.AMQPConnectorConfig,
+	dataAuditConnector *libconf.AMQPConnectorConfig,
 	dataAuditSender *DataAuditConfig,
+	dataAuditOutboxTailCutter *libextconf.TailCutterConfig,
+	authAuditOutboxTailCutter *libextconf.TailCutterConfig,
 ) *Config {
 	return &Config{
-		App:                    app,
-		Auth:                   auth,
-		HTTP:                   HTTP,
-		GRPC:                   GRPC,
-		Log:                    log,
-		DB:                     db,
-		Telemetry:              telemetry,
-		LoginAttemptsConnector: loginAttemptsConnector,
-		LoginAttemptsSender:    loginAttemptsSender,
-		DataAuditConnector:     dataAuditConnector,
-		DataAuditSender:        dataAuditSender,
+		App:                       app,
+		Auth:                      auth,
+		HTTP:                      HTTP,
+		GRPC:                      GRPC,
+		Log:                       log,
+		DB:                        db,
+		Telemetry:                 telemetry,
+		LoginAttemptsConnector:    loginAttemptsConnector,
+		LoginAttemptsSender:       loginAttemptsSender,
+		DataAuditConnector:        dataAuditConnector,
+		DataAuditSender:           dataAuditSender,
+		DataAuditOutboxTailCutter: dataAuditOutboxTailCutter,
+		AuthAuditOutboxTailCutter: authAuditOutboxTailCutter,
 	}
 }
 
@@ -70,16 +77,18 @@ func NewConfig(
 func NewDefaultConfig() *Config {
 	return NewConfig(
 		NewDefaultAppConfig(),
-		config.NewDefaultAuthConfig(),
-		config.NewDefaultHTTPConfig(),
-		config.NewDefaultGRPCConfig(),
-		config.NewDefaultLogConfig(),
-		config.NewDefaultDBConfig(),
-		config.NewDefaultTelemetryConfig(),
-		config.NewDefaultAMQPConnectorConfig(),
+		libconf.NewDefaultAuthConfig(),
+		libconf.NewDefaultHTTPConfig(),
+		libconf.NewDefaultGRPCConfig(),
+		libconf.NewDefaultLogConfig(),
+		libconf.NewDefaultDBConfig(),
+		libconf.NewDefaultTelemetryConfig(),
+		libconf.NewDefaultAMQPConnectorConfig(),
 		NewDefaultLoginAttemptsConfig(),
-		config.NewDefaultAMQPConnectorConfig(),
+		libconf.NewDefaultAMQPConnectorConfig(),
 		NewDefaultDataAuditConfig(),
+		libextconf.NewDefaultTailCutterConfig(),
+		libextconf.NewDefaultTailCutterConfig(),
 	)
 }
 
@@ -89,21 +98,27 @@ func NewDefaultConfig() *Config {
 func NewEmptyConfig() *Config {
 	return &Config{
 		App:                    &AppConfig{},
-		Auth:                   &config.AuthConfig{},
-		HTTP:                   &config.HTTPConfig{},
-		GRPC:                   &config.GRPCConfig{},
-		Log:                    &config.LogConfig{},
-		DB:                     &config.DBConfig{},
-		Telemetry:              &config.TelemetryConfig{},
-		LoginAttemptsConnector: &config.AMQPConnectorConfig{},
+		Auth:                   &libconf.AuthConfig{},
+		HTTP:                   &libconf.HTTPConfig{},
+		GRPC:                   &libconf.GRPCConfig{},
+		Log:                    &libconf.LogConfig{},
+		DB:                     &libconf.DBConfig{},
+		Telemetry:              &libconf.TelemetryConfig{},
+		LoginAttemptsConnector: &libconf.AMQPConnectorConfig{},
 		LoginAttemptsSender: &LoginAttemptsConfig{
-			AMQPConfig:  &config.AMQPSenderConfig{},
-			KafkaConfig: &config.KafkaSenderConfig{},
+			AMQPConfig:  &libconf.AMQPSenderConfig{},
+			KafkaConfig: &libconf.KafkaSenderConfig{},
 		},
-		DataAuditConnector: &config.AMQPConnectorConfig{},
+		DataAuditConnector: &libconf.AMQPConnectorConfig{},
 		DataAuditSender: &DataAuditConfig{
-			AMQPConfig:  &config.AMQPSenderConfig{},
-			KafkaConfig: &config.KafkaSenderConfig{},
+			AMQPConfig:  &libconf.AMQPSenderConfig{},
+			KafkaConfig: &libconf.KafkaSenderConfig{},
+		},
+		DataAuditOutboxTailCutter: &libextconf.TailCutterConfig{
+			Dispatcher: &libconf.SchedulerDispatcherConfig{},
+		},
+		AuthAuditOutboxTailCutter: &libextconf.TailCutterConfig{
+			Dispatcher: &libconf.SchedulerDispatcherConfig{},
 		},
 	}
 }

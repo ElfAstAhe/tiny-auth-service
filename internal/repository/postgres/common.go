@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 const (
 	// SourceLabelFindByName defines a specialized metadata scanning route identifier used inside DAL execution loops
