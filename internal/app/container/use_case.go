@@ -17,10 +17,10 @@ const (
 	InstanceChangeKeysUC string = "change-keys-uc"
 	// InstanceChangePasswordUC maps the configuration identifier for secure profile password modification workflow interactor.
 	InstanceChangePasswordUC string = "change-password-uc"
-	// InstanceLoginUC sets the lookup token mapping full cryptographic security validation login usecases boundaries.
-	InstanceLoginUC string = "login-uc"
-	// InstanceLoginSimpleUC tracks identifiers servicing lightweight machine credentials verification procedures workflows.
-	InstanceLoginSimpleUC string = "login-simple-uc"
+	// InstanceLoginCipheredUC sets the lookup token mapping full cryptographic security validation login usecases boundaries.
+	InstanceLoginCipheredUC string = "login-ciphered-uc"
+	// InstanceLoginBasicUC tracks identifiers servicing lightweight machine credentials verification procedures workflows.
+	InstanceLoginBasicUC string = "login-basic-uc"
 	// InstanceProfileUC links targets resolving structural non-administrative profile properties queries scripts.
 	InstanceProfileUC string = "profile-uc"
 	// InstanceRegisterUC sets unique system keys identifying registration and asset provisioning workflows.
@@ -47,6 +47,16 @@ const (
 	InstanceUserAdminListUC string = "user-admin-list-uc"
 	// InstanceUserAdminSaveUC orchestrates required target identifiers execution routes balancing user profiles updates and insertion commands.
 	InstanceUserAdminSaveUC string = "user-admin-save-uc"
+
+	// InstanceAuthAuditOutboxGetTailUC auth audit tail get use case
+	InstanceAuthAuditOutboxGetTailUC string = "auth-audit-outbox-get-tail-uc"
+	// InstanceAuthAuditOutboxCutTailUC auth audit single tail item remove use case
+	InstanceAuthAuditOutboxCutTailUC string = "auth-audit-outbox-cut-tail-uc"
+
+	// InstanceDataAuditOutboxGetTailUC data audit tail get use case
+	InstanceDataAuditOutboxGetTailUC string = "data-audit-outbox-get-tail-uc"
+	// InstanceDataAuditOutboxCutTailUC data audit single tail item remove use case
+	InstanceDataAuditOutboxCutTailUC string = "data-audit-outbox-cut-tail-uc"
 )
 
 // UseCaseContainer structures a lazy-loaded lifecycle dependency injection container managing application business logic interactors.
@@ -79,8 +89,8 @@ func (ucc *UseCaseContainer) Init(ctx context.Context) error {
 
 		ucc.RegisterProvider(InstanceChangeKeysUC, ucc.providerChangeKeysUC),
 		ucc.RegisterProvider(InstanceChangePasswordUC, ucc.providerChangePasswordUC),
-		ucc.RegisterProvider(InstanceLoginUC, ucc.providerLoginUC),
-		ucc.RegisterProvider(InstanceLoginSimpleUC, ucc.providerLoginSimpleUC),
+		ucc.RegisterProvider(InstanceLoginCipheredUC, ucc.providerLoginCipheredUC),
+		ucc.RegisterProvider(InstanceLoginBasicUC, ucc.providerLoginBasicUC),
 		ucc.RegisterProvider(InstanceProfileUC, ucc.providerProfileUC),
 		ucc.RegisterProvider(InstanceRegisterUC, ucc.providerRegisterUC),
 
@@ -95,6 +105,12 @@ func (ucc *UseCaseContainer) Init(ctx context.Context) error {
 		ucc.RegisterProvider(InstanceUserAdminGetByNameUC, ucc.providerUserAdminGetByNameUC),
 		ucc.RegisterProvider(InstanceUserAdminListUC, ucc.providerUserAdminListUC),
 		ucc.RegisterProvider(InstanceUserAdminSaveUC, ucc.providerUserAdminSaveUC),
+
+		ucc.RegisterProvider(InstanceAuthAuditOutboxGetTailUC, ucc.providerAuthAuditOutboxGetTailUC),
+		ucc.RegisterProvider(InstanceAuthAuditOutboxCutTailUC, ucc.providerAuthAuditOutboxCutTailUC),
+
+		ucc.RegisterProvider(InstanceDataAuditOutboxGetTailUC, ucc.providerDataAuditOutboxGetTailUC),
+		ucc.RegisterProvider(InstanceDataAuditOutboxCutTailUC, ucc.providerDataAuditOutboxCutTailUC),
 	)
 	if err != nil {
 		return errs.NewContainerError(ucc.GetName(), "container init: register providers failed", err)

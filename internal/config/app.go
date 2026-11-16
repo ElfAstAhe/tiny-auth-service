@@ -3,13 +3,13 @@ package config
 import (
 	"time"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libconf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 )
 
 // AppConfig — метаданные сервиса
 type AppConfig struct {
-	*config.AppConfig  `mapstructure:",squash"`
+	*libconf.AppConfig `mapstructure:",squash"`
 	NodeName           string        `mapstructure:"node_name" json:"node_name,omitempty" yaml:"node_name,omitempty"`
 	MaxListLimit       int           `mapstructure:"max_list_limit" json:"max_list_limit,omitempty" yaml:"max_list_limit,omitempty"`
 	TokenIssuer        string        `mapstructure:"token_issuer" json:"token_issuer,omitempty" yaml:"token_issuer,omitempty"`
@@ -19,7 +19,7 @@ type AppConfig struct {
 
 // NewAppConfig acts as a complete constructor function allocating structural application properties.
 func NewAppConfig(
-	env config.AppEnv,
+	env libconf.AppEnv,
 	nodeName string,
 	initTimeout time.Duration,
 	stopTimeout time.Duration,
@@ -30,7 +30,7 @@ func NewAppConfig(
 	defShutdownTimeout time.Duration,
 ) *AppConfig {
 	return &AppConfig{
-		AppConfig:          config.NewAppConfig(env, initTimeout, stopTimeout, closeTimeout),
+		AppConfig:          libconf.NewAppConfig(env, initTimeout, stopTimeout, closeTimeout),
 		MaxListLimit:       maxListLimit,
 		TokenIssuer:        tokenIssuer,
 		CipherKey:          cipherKey,
@@ -44,9 +44,9 @@ func NewDefaultAppConfig() *AppConfig {
 	return NewAppConfig(
 		defaultAppEnv,
 		defaultAppNodeName,
-		config.DefaultAppInitTimeout,
-		config.DefaultAppStopTimeout,
-		config.DefaultAppCloseTimeout,
+		libconf.DefaultAppInitTimeout,
+		libconf.DefaultAppStopTimeout,
+		libconf.DefaultAppCloseTimeout,
 		defaultMaxListLimit,
 		defaultTokenIssuer,
 		"",

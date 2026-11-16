@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libconf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	"github.com/ElfAstAhe/go-service-template/pkg/ext/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/usecase"
 	"github.com/spf13/pflag"
 )
@@ -30,10 +31,10 @@ func initFLags() (res *pflag.FlagSet, err error) {
 	{
 		// app
 		res.String(FlagConfig, "config/config.yaml", "path to config file")
-		res.String(config.FlagAppEnv, string(defaultAppEnv), "application environment")
-		res.Duration(config.FlagAppInitTimeout, config.DefaultAppInitTimeout, "application init timeout")
-		res.Duration(config.FlagAppStopTimeout, config.DefaultAppStopTimeout, "application stop timeout")
-		res.Duration(config.FlagAppCloseTimeout, config.DefaultAppCloseTimeout, "application close timeout")
+		res.String(libconf.FlagAppEnv, string(defaultAppEnv), "application environment")
+		res.Duration(libconf.FlagAppInitTimeout, libconf.DefaultAppInitTimeout, "application init timeout")
+		res.Duration(libconf.FlagAppStopTimeout, libconf.DefaultAppStopTimeout, "application stop timeout")
+		res.Duration(libconf.FlagAppCloseTimeout, libconf.DefaultAppCloseTimeout, "application close timeout")
 		res.String(FlagAppNodeName, defaultAppNodeName, "application node name")
 		res.Int(FlagAppMaxListLimit, usecase.DefaultMaxLimit, "max list limit")
 		res.String(FlagAppTokenIssuer, defaultTokenIssuer, "token issuer")
@@ -42,60 +43,60 @@ func initFLags() (res *pflag.FlagSet, err error) {
 
 		// Auth
 		res.String(FlagAuthJWTSecret, "", "JWT secret")
-		res.String(FlagAuthJWTSigningMethod, config.DefaultAuthSigningMethod, "JWT signing method")
-		res.Duration(FlagAuthAccessTokenTTL, config.DefaultAuthAccessTokenTTL, "JWT access token TTL")
-		res.Duration(FlagAuthRefreshTokenTTL, config.DefaultAuthRefreshTokenTTL, "JWT refresh token TTL")
+		res.String(FlagAuthJWTSigningMethod, libconf.DefaultAuthSigningMethod, "JWT signing method")
+		res.Duration(FlagAuthAccessTokenTTL, libconf.DefaultAuthAccessTokenTTL, "JWT access token TTL")
+		res.Duration(FlagAuthRefreshTokenTTL, libconf.DefaultAuthRefreshTokenTTL, "JWT refresh token TTL")
 		res.String(FlagAuthRSAPrivateKeyPath, "", "RSA private key path")
 		res.String(FlagAuthMasterPasswordSalt, "", "master password salt")
 
 		// HTTP
-		res.String(FlagHTTPAddress, config.DefaultHTTPAddress, "http address")
-		res.Duration(FlagHTTPReadTimeout, config.DefaultHTTPReadTimeout, "http read timeout")
-		res.Duration(FlagHTTPWriteTimeout, config.DefaultHTTPWriteTimeout, "http write timeout")
-		res.Duration(FlagHTTPIdleTimeout, config.DefaultHTTPIdleTimeout, "http idle timeout")
-		res.Duration(FlagHTTPShutdownTimeout, config.DefaultHTTPShutdownTimeout, "http shutdown timeout")
+		res.String(FlagHTTPAddress, libconf.DefaultHTTPAddress, "http address")
+		res.Duration(FlagHTTPReadTimeout, libconf.DefaultHTTPReadTimeout, "http read timeout")
+		res.Duration(FlagHTTPWriteTimeout, libconf.DefaultHTTPWriteTimeout, "http write timeout")
+		res.Duration(FlagHTTPIdleTimeout, libconf.DefaultHTTPIdleTimeout, "http idle timeout")
+		res.Duration(FlagHTTPShutdownTimeout, libconf.DefaultHTTPShutdownTimeout, "http shutdown timeout")
 		res.String(FlagHTTPPrivateKeyPath, "", "http private key path")
 		res.String(FlagHTTPCertificatePath, "", "http certificate path")
-		res.Bool(FlagHTTPSecure, config.DefaultHTTPSecure, "http secure mode")
-		res.Int(FlagHTTPMaxRequestBodySize, config.DefaultHTTPMaxRequestBodySize, "http max request body size")
+		res.Bool(FlagHTTPSecure, libconf.DefaultHTTPSecure, "http secure mode")
+		res.Int(FlagHTTPMaxRequestBodySize, libconf.DefaultHTTPMaxRequestBodySize, "http max request body size")
 
 		// gRPC
-		res.String(FlagGRPCAddress, config.DefaultGRPCAddress, "gRPC address")
-		res.Duration(FlagGRPCMaxConnIdle, config.DefaultGRPCMaxConnIdle, "gRPC max connection idle timeout")
-		res.Duration(FlagGRPCMaxConnAge, config.DefaultGRPCMaxConnAge, "gRPC max connection age timeout")
-		res.Duration(FlagGRPCMaxConnAgeGrace, config.DefaultGRPCMaxConnAgeGrace, "gRPC max connection age grace timeout")
-		res.Duration(FlagGRPCTimeout, config.DefaultGRPCTimeout, "gRPC timeout")
-		res.Duration(FlagGRPCKeepAliveTime, config.DefaultGRPCKeepAliveTime, "gRPC keep alive timeout")
-		res.Duration(FlagGRPCKeepAliveTimeout, config.DefaultGRPCKeepAliveTimeout, "gRPC keep alive timeout")
-		res.Duration(FlagGRPCShutdownTimeout, config.DefaultGRPCShutdownTimeout, "gRPC shutdown timeout")
+		res.String(FlagGRPCAddress, libconf.DefaultGRPCAddress, "gRPC address")
+		res.Duration(FlagGRPCMaxConnIdle, libconf.DefaultGRPCMaxConnIdle, "gRPC max connection idle timeout")
+		res.Duration(FlagGRPCMaxConnAge, libconf.DefaultGRPCMaxConnAge, "gRPC max connection age timeout")
+		res.Duration(FlagGRPCMaxConnAgeGrace, libconf.DefaultGRPCMaxConnAgeGrace, "gRPC max connection age grace timeout")
+		res.Duration(FlagGRPCTimeout, libconf.DefaultGRPCTimeout, "gRPC timeout")
+		res.Duration(FlagGRPCKeepAliveTime, libconf.DefaultGRPCKeepAliveTime, "gRPC keep alive timeout")
+		res.Duration(FlagGRPCKeepAliveTimeout, libconf.DefaultGRPCKeepAliveTimeout, "gRPC keep alive timeout")
+		res.Duration(FlagGRPCShutdownTimeout, libconf.DefaultGRPCShutdownTimeout, "gRPC shutdown timeout")
 
 		// DB
 		res.String(FlagDBDSN, defaultDBDSN, "database dsn")
 		res.String(FlagDBDriver, defaultDBDriver, "database driver name/alias")
-		res.Int(FlagDBMaxOpenConns, config.DefaultDBMaxOpenConns, "db max open connections")
-		res.Int(FlagDBMaxIdleConns, config.DefaultDBMaxIdleConns, "db max idle connections")
-		res.Duration(FlagDBMaxIdleLifetime, config.DefaultDBConnMaxIdleLifetime, "db max idle connection lifetime")
-		res.Duration(FlagDBConnTimeout, config.DefaultDBConnTimeout, "db connection timeout)")
+		res.Int(FlagDBMaxOpenConns, libconf.DefaultDBMaxOpenConns, "db max open connections")
+		res.Int(FlagDBMaxIdleConns, libconf.DefaultDBMaxIdleConns, "db max idle connections")
+		res.Duration(FlagDBMaxIdleLifetime, libconf.DefaultDBConnMaxIdleLifetime, "db max idle connection lifetime")
+		res.Duration(FlagDBConnTimeout, libconf.DefaultDBConnTimeout, "db connection timeout)")
 
 		// Log
-		res.String(FlagLogLevel, config.DefaultLogLevel, "log level")
-		res.String(FlagLogFormat, config.DefaultLogFormat, "log format")
+		res.String(FlagLogLevel, libconf.DefaultLogLevel, "log level")
+		res.String(FlagLogFormat, libconf.DefaultLogFormat, "log format")
 
 		// Telemetry
-		res.Bool(FlagTelemetryEnabled, config.DefaultTelemetryEnabled, "telemetry enabled")
+		res.Bool(FlagTelemetryEnabled, libconf.DefaultTelemetryEnabled, "telemetry enabled")
 		res.String(FlagTelemetryServiceName, "", "telemetry service name")
-		res.String(FlagTelemetryExporterEndpoint, config.DefaultTelemetryExporterEndpoint, "telemetry exporter endpoint")
-		res.Float64(FlagTelemetrySampleRate, config.DefaultTelemetrySampleRate, "telemetry sample rate")
-		res.Duration(FlagTelemetryTimeout, config.DefaultTelemetryTimeout, "telemetry timeout")
+		res.String(FlagTelemetryExporterEndpoint, libconf.DefaultTelemetryExporterEndpoint, "telemetry exporter endpoint")
+		res.Float64(FlagTelemetrySampleRate, libconf.DefaultTelemetrySampleRate, "telemetry sample rate")
+		res.Duration(FlagTelemetryTimeout, libconf.DefaultTelemetryTimeout, "telemetry timeout")
 
 		// login attempts sender amqp connector
-		res.String(FlagLoginAttemptsSenderAMQPConnectorURL, config.DefaultAMQPConnectorURL, "login attempts sender connector AMQP server URL")
+		res.String(FlagLoginAttemptsSenderAMQPConnectorURL, libconf.DefaultAMQPConnectorURL, "login attempts sender connector AMQP server URL")
 		res.String(FlagLoginAttemptsSenderAMQPConnectorUsername, defaultLoginAttemptsSenderAMQPConnectorUsername, "login attempts sender connector AMQP server username")
 		res.String(FlagLoginAttemptsSenderAMQPConnectorPassword, defaultLoginAttemptsSenderAMQPConnectorPassword, "login attempts sender connector AMQP server password")
-		res.Duration(FlagLoginAttemptsSenderAMQPConnectorConnectTimeout, config.DefaultAMQPConnectorConnectTimeout, "login attempts sender connector AMQP connect timeout")
-		res.Duration(FlagLoginAttemptsSenderAMQPConnectorIdleTimeout, config.DefaultAMQPConnectorIdleTimeout, "login attempts sender connector AMQP idle timeout")
-		res.Duration(FlagLoginAttemptsSenderAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout, "login attempts sender connector AMQP write timeout")
-		res.Duration(FlagLoginAttemptsSenderAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout, "login attempts sender connector AMQP shutdown timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConnectorConnectTimeout, libconf.DefaultAMQPConnectorConnectTimeout, "login attempts sender connector AMQP connect timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConnectorIdleTimeout, libconf.DefaultAMQPConnectorIdleTimeout, "login attempts sender connector AMQP idle timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConnectorWriteTimeout, libconf.DefaultAMQPConnectorWriteTimeout, "login attempts sender connector AMQP write timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPConnectorShutdownTimeout, libconf.DefaultAMQPConnectorShutdownTimeout, "login attempts sender connector AMQP shutdown timeout")
 
 		// login attempts sender
 		res.String(FlagLoginAttemptsSenderKind, defaultLoginAttemptsSenderKind, "login attempts sender kind (accepted values: amqp, kafka)")
@@ -103,37 +104,37 @@ func initFLags() (res *pflag.FlagSet, err error) {
 
 		// login attempts sender amqp
 		res.String(FlagLoginAttemptsSenderAMQPTargetName, defaultLoginAttemptsSenderAMQPTargetName, "login attempts sender AMQP queue/topic name")
-		res.Duration(FlagLoginAttemptsSenderAMQPConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "login attempts sender AMQP connect timeout")
-		res.Duration(FlagLoginAttemptsSenderAMQPShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "login attempts sender AMQP shutdown timeout")
-		res.Int(FlagLoginAttemptsSenderAMQPPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender AMQP max send tries")
-		res.Duration(FlagLoginAttemptsSenderAMQPPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender AMQP publish base retry delay")
-		res.Duration(FlagLoginAttemptsSenderAMQPPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "login attempts sender AMQP publish max retry delay")
+		res.Duration(FlagLoginAttemptsSenderAMQPConnectTimeout, libconf.DefaultAMQPSenderConnectTimeout, "login attempts sender AMQP connect timeout")
+		res.Duration(FlagLoginAttemptsSenderAMQPShutdownTimeout, libconf.DefaultAMQPSenderShutdownTimeout, "login attempts sender AMQP shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderAMQPPublishMaxTryAttempts, libconf.DefaultAMQPSenderPublishMaxTryAttempts, "login attempts sender AMQP max send tries")
+		res.Duration(FlagLoginAttemptsSenderAMQPPublishBaseRetryDelay, libconf.DefaultAMQPSenderPublishBaseRetryDelay, "login attempts sender AMQP publish base retry delay")
+		res.Duration(FlagLoginAttemptsSenderAMQPPublishMaxRetryDelay, libconf.DefaultAMQPSenderPublishMaxRetryDelay, "login attempts sender AMQP publish max retry delay")
 
 		// login attempts sender kafka
-		res.StringSlice(FlagLoginAttemptsSenderKafkaBrokers, config.DefaultKafkaBrokers, "login attempts sender kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
+		res.StringSlice(FlagLoginAttemptsSenderKafkaBrokers, libconf.DefaultKafkaBrokers, "login attempts sender kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
 		res.String(FlagLoginAttemptsSenderKafkaTargetName, "", "login attempts sender kafka queue/topic name")
-		res.Duration(FlagLoginAttemptsSenderKafkaConnectTimeout, config.DefaultKafkaSenderConnectTimeout, "login attempts sender kafka connect timeout")
-		res.Duration(FlagLoginAttemptsSenderKafkaIdleTimeout, config.DefaultKafkaSenderIdleTimeout, "login attempts sender kafka idle timeout")
-		res.Duration(FlagLoginAttemptsSenderKafkaShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "login attempts sender kafka shutdown timeout")
-		res.Int(FlagLoginAttemptsSenderKafkaPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts, "login attempts sender kafka max try attempts")
-		res.Duration(FlagLoginAttemptsSenderKafkaPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay, "login attempts sender kafka max retry delay")
-		res.Duration(FlagLoginAttemptsSenderKafkaPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay, "login attempts sender kafka publish base retry delay")
+		res.Duration(FlagLoginAttemptsSenderKafkaConnectTimeout, libconf.DefaultKafkaSenderConnectTimeout, "login attempts sender kafka connect timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaIdleTimeout, libconf.DefaultKafkaSenderIdleTimeout, "login attempts sender kafka idle timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaShutdownTimeout, libconf.DefaultKafkaSenderShutdownTimeout, "login attempts sender kafka shutdown timeout")
+		res.Int(FlagLoginAttemptsSenderKafkaPublishMaxTryAttempts, libconf.DefaultKafkaSenderPublishMaxTryAttempts, "login attempts sender kafka max try attempts")
+		res.Duration(FlagLoginAttemptsSenderKafkaPublishMaxRetryDelay, libconf.DefaultKafkaSenderPublishMaxRetryDelay, "login attempts sender kafka max retry delay")
+		res.Duration(FlagLoginAttemptsSenderKafkaPublishBaseRetryDelay, libconf.DefaultKafkaSenderPublishBaseRetryDelay, "login attempts sender kafka publish base retry delay")
 		res.String(FlagLoginAttemptsSenderKafkaUsername, "", "login attempts sender kafka username")
 		res.String(FlagLoginAttemptsSenderKafkaPassword, "", "login attempts sender kafka password")
-		res.Int(FlagLoginAttemptsSenderKafkaBatchSize, config.DefaultKafkaSenderBatchSize, "login attempts sender kafka batch size")
-		res.Int(FlagLoginAttemptsSenderKafkaBatchBytes, config.DefaultKafkaSenderBatchBytes, "login attempts sender kafka batch bytes")
-		res.Duration(FlagLoginAttemptsSenderKafkaBatchTimeout, config.DefaultKafkaSenderBatchTimeout, "login attempts sender kafka batch timeout")
-		res.Duration(FlagLoginAttemptsSenderKafkaWriteTimeout, config.DefaultKafkaSenderWriteTimeout, "login attempts sender kafka write timeout")
-		res.Int(FlagLoginAttemptsSenderKafkaRequiredAcks, config.DefaultKafkaSenderRequiredAcks, "login attempts sender kafka required acks")
+		res.Int(FlagLoginAttemptsSenderKafkaBatchSize, libconf.DefaultKafkaSenderBatchSize, "login attempts sender kafka batch size")
+		res.Int(FlagLoginAttemptsSenderKafkaBatchBytes, libconf.DefaultKafkaSenderBatchBytes, "login attempts sender kafka batch bytes")
+		res.Duration(FlagLoginAttemptsSenderKafkaBatchTimeout, libconf.DefaultKafkaSenderBatchTimeout, "login attempts sender kafka batch timeout")
+		res.Duration(FlagLoginAttemptsSenderKafkaWriteTimeout, libconf.DefaultKafkaSenderWriteTimeout, "login attempts sender kafka write timeout")
+		res.Int(FlagLoginAttemptsSenderKafkaRequiredAcks, libconf.DefaultKafkaSenderRequiredAcks, "login attempts sender kafka required acks")
 
 		// data audit sender amqp connector
-		res.String(FlagDataAuditSenderAMQPConnectorURL, config.DefaultAMQPConnectorURL, "data audit sender connector AMQP server URL")
+		res.String(FlagDataAuditSenderAMQPConnectorURL, libconf.DefaultAMQPConnectorURL, "data audit sender connector AMQP server URL")
 		res.String(FlagDataAuditSenderAMQPConnectorUsername, defaultDataAuditSenderAMQPConnectorUsername, "data audit sender connector AMQP server username")
 		res.String(FlagDataAuditSenderAMQPConnectorPassword, defaultDataAuditSenderAMQPConnectorPassword, "data audit sender connector AMQP server password")
-		res.Duration(FlagDataAuditSenderAMQPConnectorConnectTimeout, config.DefaultAMQPConnectorConnectTimeout, "data audit sender connector AMQP connect timeout")
-		res.Duration(FlagDataAuditSenderAMQPConnectorIdleTimeout, config.DefaultAMQPConnectorIdleTimeout, "data audit sender connector AMQP idle timeout")
-		res.Duration(FlagDataAuditSenderAMQPConnectorWriteTimeout, config.DefaultAMQPConnectorWriteTimeout, "data audit sender connector AMQP write timeout")
-		res.Duration(FlagDataAuditSenderAMQPConnectorShutdownTimeout, config.DefaultAMQPConnectorShutdownTimeout, "data audit sender connector AMQP shutdown timeout")
+		res.Duration(FlagDataAuditSenderAMQPConnectorConnectTimeout, libconf.DefaultAMQPConnectorConnectTimeout, "data audit sender connector AMQP connect timeout")
+		res.Duration(FlagDataAuditSenderAMQPConnectorIdleTimeout, libconf.DefaultAMQPConnectorIdleTimeout, "data audit sender connector AMQP idle timeout")
+		res.Duration(FlagDataAuditSenderAMQPConnectorWriteTimeout, libconf.DefaultAMQPConnectorWriteTimeout, "data audit sender connector AMQP write timeout")
+		res.Duration(FlagDataAuditSenderAMQPConnectorShutdownTimeout, libconf.DefaultAMQPConnectorShutdownTimeout, "data audit sender connector AMQP shutdown timeout")
 
 		// data audit sender
 		res.String(FlagDataAuditSenderKind, defaultDataAuditSenderKind, "data audit sender kind (accepted values: amqp, kafka)")
@@ -141,28 +142,50 @@ func initFLags() (res *pflag.FlagSet, err error) {
 
 		// data audit sender amqp
 		res.String(FlagDataAuditSenderAMQPTargetName, defaultDataAuditSenderAMQPTargetName, "data audit sender AMQP queue/topic name")
-		res.Duration(FlagDataAuditSenderAMQPConnectTimeout, config.DefaultAMQPSenderConnectTimeout, "data audit sender AMQP connect timeout")
-		res.Duration(FlagDataAuditSenderAMQPShutdownTimeout, config.DefaultAMQPSenderShutdownTimeout, "data audit sender AMQP shutdown timeout")
-		res.Int(FlagDataAuditSenderAMQPPublishMaxTryAttempts, config.DefaultAMQPSenderPublishMaxTryAttempts, "data audit sender AMQP max send tries")
-		res.Duration(FlagDataAuditSenderAMQPPublishBaseRetryDelay, config.DefaultAMQPSenderPublishBaseRetryDelay, "data audit sender AMQP publish base retry delay")
-		res.Duration(FlagDataAuditSenderAMQPPublishMaxRetryDelay, config.DefaultAMQPSenderPublishMaxRetryDelay, "data audit sender AMQP publish max retry delay")
+		res.Duration(FlagDataAuditSenderAMQPConnectTimeout, libconf.DefaultAMQPSenderConnectTimeout, "data audit sender AMQP connect timeout")
+		res.Duration(FlagDataAuditSenderAMQPShutdownTimeout, libconf.DefaultAMQPSenderShutdownTimeout, "data audit sender AMQP shutdown timeout")
+		res.Int(FlagDataAuditSenderAMQPPublishMaxTryAttempts, libconf.DefaultAMQPSenderPublishMaxTryAttempts, "data audit sender AMQP max send tries")
+		res.Duration(FlagDataAuditSenderAMQPPublishBaseRetryDelay, libconf.DefaultAMQPSenderPublishBaseRetryDelay, "data audit sender AMQP publish base retry delay")
+		res.Duration(FlagDataAuditSenderAMQPPublishMaxRetryDelay, libconf.DefaultAMQPSenderPublishMaxRetryDelay, "data audit sender AMQP publish max retry delay")
 
 		// data audit sender kafka
-		res.StringSlice(FlagDataAuditSenderKafkaBrokers, config.DefaultKafkaBrokers, "data audit sender kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
+		res.StringSlice(FlagDataAuditSenderKafkaBrokers, libconf.DefaultKafkaBrokers, "data audit sender kafka brokers, separated by comma, like: localhost:9092,localhost:9093")
 		res.String(FlagDataAuditSenderKafkaTargetName, "", "data audit sender kafka queue/topic name")
-		res.Duration(FlagDataAuditSenderKafkaConnectTimeout, config.DefaultKafkaSenderConnectTimeout, "data audit sender kafka connect timeout")
-		res.Duration(FlagDataAuditSenderKafkaIdleTimeout, config.DefaultKafkaSenderIdleTimeout, "data audit sender kafka idle timeout")
-		res.Duration(FlagDataAuditSenderKafkaShutdownTimeout, config.DefaultKafkaSenderShutdownTimeout, "data audit sender kafka shutdown timeout")
-		res.Int(FlagDataAuditSenderKafkaPublishMaxTryAttempts, config.DefaultKafkaSenderPublishMaxTryAttempts, "data audit sender kafka max try attempts")
-		res.Duration(FlagDataAuditSenderKafkaPublishMaxRetryDelay, config.DefaultKafkaSenderPublishMaxRetryDelay, "data audit sender kafka max retry delay")
-		res.Duration(FlagDataAuditSenderKafkaPublishBaseRetryDelay, config.DefaultKafkaSenderPublishBaseRetryDelay, "data audit sender kafka publish base retry delay")
+		res.Duration(FlagDataAuditSenderKafkaConnectTimeout, libconf.DefaultKafkaSenderConnectTimeout, "data audit sender kafka connect timeout")
+		res.Duration(FlagDataAuditSenderKafkaIdleTimeout, libconf.DefaultKafkaSenderIdleTimeout, "data audit sender kafka idle timeout")
+		res.Duration(FlagDataAuditSenderKafkaShutdownTimeout, libconf.DefaultKafkaSenderShutdownTimeout, "data audit sender kafka shutdown timeout")
+		res.Int(FlagDataAuditSenderKafkaPublishMaxTryAttempts, libconf.DefaultKafkaSenderPublishMaxTryAttempts, "data audit sender kafka max try attempts")
+		res.Duration(FlagDataAuditSenderKafkaPublishMaxRetryDelay, libconf.DefaultKafkaSenderPublishMaxRetryDelay, "data audit sender kafka max retry delay")
+		res.Duration(FlagDataAuditSenderKafkaPublishBaseRetryDelay, libconf.DefaultKafkaSenderPublishBaseRetryDelay, "data audit sender kafka publish base retry delay")
 		res.String(FlagDataAuditSenderKafkaUsername, "", "data audit sender kafka username")
 		res.String(FlagDataAuditSenderKafkaPassword, "", "data audit sender kafka password")
-		res.Int(FlagDataAuditSenderKafkaBatchSize, config.DefaultKafkaSenderBatchSize, "data audit sender kafka batch size")
-		res.Int(FlagDataAuditSenderKafkaBatchBytes, config.DefaultKafkaSenderBatchBytes, "data audit sender kafka batch bytes")
-		res.Duration(FlagDataAuditSenderKafkaBatchTimeout, config.DefaultKafkaSenderBatchTimeout, "data audit sender kafka batch timeout")
-		res.Duration(FlagDataAuditSenderKafkaWriteTimeout, config.DefaultKafkaSenderWriteTimeout, "data audit sender kafka write timeout")
-		res.Int(FlagDataAuditSenderKafkaRequiredAcks, config.DefaultKafkaSenderRequiredAcks, "data audit sender kafka required acks")
+		res.Int(FlagDataAuditSenderKafkaBatchSize, libconf.DefaultKafkaSenderBatchSize, "data audit sender kafka batch size")
+		res.Int(FlagDataAuditSenderKafkaBatchBytes, libconf.DefaultKafkaSenderBatchBytes, "data audit sender kafka batch bytes")
+		res.Duration(FlagDataAuditSenderKafkaBatchTimeout, libconf.DefaultKafkaSenderBatchTimeout, "data audit sender kafka batch timeout")
+		res.Duration(FlagDataAuditSenderKafkaWriteTimeout, libconf.DefaultKafkaSenderWriteTimeout, "data audit sender kafka write timeout")
+		res.Int(FlagDataAuditSenderKafkaRequiredAcks, libconf.DefaultKafkaSenderRequiredAcks, "data audit sender kafka required acks")
+
+		// auth audit outbox tail cutter
+		res.Int(FlagAuthAuditOutboxTCTailLimit, config.DefaultTailCutterTailLimit, "auth audit outbox tail cutter tail limit")
+		res.Duration(FlagAuthAuditOutboxTCTailInterval, defaultAuthAuditOutboxTailCutterTailInterval, "auth audit outbox tail cutter tail interval")
+		res.Bool(FlagAuthAuditOutboxTCTailCut, defaultAuthAuditOutboxTailCutterTailCut, "auth audit outbox tail cutter tail cut flag")
+		res.Int(FlagAuthAuditOutboxTCWorkerCount, config.DefaultTailCutterWorkerCount, "auth audit outbox tail cutter worker count")
+		res.Int(FlagAuthAuditOutboxTCDataCapacity, config.DefaultTailCutterDataCapacity, "auth audit outbox tail cutter data capacity")
+		res.Bool(FlagAuthAuditOutboxTCCompleteProcess, config.DefaultTailCutterCompleteProcessing, "auth audit outbox tail cutter complete process flag")
+		res.Duration(FlagAuthAuditOutboxTCStartInterval, config.DefaultTailCutterStartInterval, "auth audit outbox tail cutter start interval")
+		res.Duration(FlagAuthAuditOutboxTCScheduleInterval, config.DefaultTailCutterScheduleInterval, "auth audit outbox tail cutter schedule interval")
+		res.Duration(FlagAuthAuditOutboxTCStopTimeout, config.DefaultTailCutterStopTimeout, "auth audit outbox tail cutter stop timeout")
+
+		// data audit outbox tail cutter
+		res.Int(FlagDataAuditOutboxTCTailLimit, config.DefaultTailCutterTailLimit, "data audit outbox tail cutter tail limit")
+		res.Duration(FlagDataAuditOutboxTCTailInterval, defaultDataAuditOutboxTailCutterTailInterval, "data audit outbox tail cutter tail interval")
+		res.Bool(FlagDataAuditOutboxTCTailCut, defaultDataAuditOutboxTailCutterTailCut, "data audit outbox tail cutter tail cut flag")
+		res.Int(FlagDataAuditOutboxTCWorkerCount, config.DefaultTailCutterWorkerCount, "data audit outbox tail cutter worker count")
+		res.Int(FlagDataAuditOutboxTCDataCapacity, config.DefaultTailCutterDataCapacity, "data audit outbox tail cutter data capacity")
+		res.Bool(FlagDataAuditOutboxTCCompleteProcess, config.DefaultTailCutterCompleteProcessing, "data audit outbox tail cutter complete process flag")
+		res.Duration(FlagDataAuditOutboxTCStartInterval, config.DefaultTailCutterStartInterval, "data audit outbox tail cutter start interval")
+		res.Duration(FlagDataAuditOutboxTCScheduleInterval, config.DefaultTailCutterScheduleInterval, "data audit outbox tail cutter schedule interval")
+		res.Duration(FlagDataAuditOutboxTCStopTimeout, config.DefaultTailCutterStopTimeout, "data audit outbox tail cutter stop timeout")
 	}
 
 	// Парсинг

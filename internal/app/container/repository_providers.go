@@ -14,6 +14,7 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/config"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/domain"
+	"github.com/ElfAstAhe/tiny-auth-service/internal/repository"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/audit"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/metrics"
 	"github.com/ElfAstAhe/tiny-auth-service/internal/repository/postgres"
@@ -338,6 +339,7 @@ func (rc *RepositoryContainer) providerUserRolesAdminTraceRepo() (any, error) {
 	return trace.NewUserRolesAdminRepository(repoInst), nil
 }
 
+//goland:noinspection DuplicatedCode
 func (rc *RepositoryContainer) providerDataAuditOutboxRepo() (any, error) {
 	dbInst, err := container.GetInstance[db.DB](InstanceDB)
 	if err != nil {
@@ -367,4 +369,35 @@ func (rc *RepositoryContainer) providerDataAuditOutboxTraceRepo() (any, error) {
 	}
 
 	return libexttrc.NewDataAuditOutboxRepository(repoInst), nil
+}
+
+func (rc *RepositoryContainer) providerAuthAuditOutboxRepo() (any, error) {
+	dbInst, err := container.GetInstance[db.DB](InstanceDB)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+	res, err := repository.NewAuthAuditOutbox(dbInst.GetDriver(), dbInst, dbInst)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), fmt.Sprintf("provider: create %s instance failed", InstanceAuthAuditOutboxRepo), err)
+	}
+
+	return res, nil
+}
+
+func (rc *RepositoryContainer) providerAuthAuditOutboxMetricsRepo() (any, error) {
+	repoInst, err := container.GetInstance[domain.AuthAuditOutboxRepository](InstanceAuthAuditOutboxRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return metrics.NewAuthAuditOutboxRepository(repoInst), nil
+}
+
+func (rc *RepositoryContainer) providerAuthAuditOutboxTraceRepo() (any, error) {
+	repoInst, err := container.GetInstance[domain.AuthAuditOutboxRepository](InstanceAuthAuditOutboxMetricsRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(rc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return trace.NewAuthAuditOutboxRepository(repoInst), nil
 }

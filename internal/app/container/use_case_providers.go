@@ -6,6 +6,9 @@ import (
 	"github.com/ElfAstAhe/go-service-template/pkg/db"
 	libdom "github.com/ElfAstAhe/go-service-template/pkg/domain"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
+	libextdom "github.com/ElfAstAhe/go-service-template/pkg/ext/domain"
+	libextuc "github.com/ElfAstAhe/go-service-template/pkg/ext/usecase"
+	libexttrc "github.com/ElfAstAhe/go-service-template/pkg/ext/usecase/trace"
 	"github.com/ElfAstAhe/go-service-template/pkg/helper"
 	libuc "github.com/ElfAstAhe/go-service-template/pkg/usecase"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
@@ -73,7 +76,7 @@ func (ucc *UseCaseContainer) providerChangePasswordUC() (any, error) {
 }
 
 //goland:noinspection DuplicatedCode
-func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
+func (ucc *UseCaseContainer) providerLoginCipheredUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
@@ -92,7 +95,7 @@ func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
 	}
 
 	return trace.NewLoginTraceUseCase(
-		"LoginUseCase",
+		"LoginCipheredUseCase",
 		usecase.NewLoginCiphered(
 			hashCipherInst,
 			keysHelperInst,
@@ -102,7 +105,7 @@ func (ucc *UseCaseContainer) providerLoginUC() (any, error) {
 }
 
 //goland:noinspection DuplicatedCode
-func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
+func (ucc *UseCaseContainer) providerLoginBasicUC() (any, error) {
 	hashCipherInst, err := container.GetInstance[utils.Cipher](InstanceHashCipher)
 	if err != nil {
 		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
@@ -117,7 +120,7 @@ func (ucc *UseCaseContainer) providerLoginSimpleUC() (any, error) {
 	}
 
 	return trace.NewLoginBasicUseCase(
-		"LoginSimpleUseCase",
+		"LoginBasicUseCase",
 		usecase.NewLoginBasic(
 			hashCipherInst,
 			authHelperInst,
@@ -315,4 +318,60 @@ func (ucc *UseCaseContainer) providerUserAdminSaveUC() (any, error) {
 			keysHelperInst,
 			userAdminRepoInst,
 		)), nil
+}
+
+func (ucc *UseCaseContainer) providerAuthAuditOutboxGetTailUC() (any, error) {
+	tailRepoInst, err := container.GetInstance[libextdom.TailRepository[string]](InstanceAuthAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libexttrc.NewTailGetUseCase[string](
+		"auth-audit-outbox",
+		libextuc.NewTailGet[string](tailRepoInst),
+	), nil
+}
+
+func (ucc *UseCaseContainer) providerAuthAuditOutboxCutTailUC() (any, error) {
+	uwInst, err := container.GetInstance[libdom.UnitOfWork](InstanceUnitOfWork)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tailRepoInst, err := container.GetInstance[libextdom.TailRepository[string]](InstanceAuthAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libexttrc.NewTailCutUseCase[string](
+		"auth-audit-outbox",
+		libextuc.NewTailCut[string](uwInst, tailRepoInst),
+	), nil
+}
+
+func (ucc *UseCaseContainer) providerDataAuditOutboxGetTailUC() (any, error) {
+	tailRepoInst, err := container.GetInstance[libextdom.TailRepository[string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libexttrc.NewTailGetUseCase[string](
+		"data-audit-outbox",
+		libextuc.NewTailGet[string](tailRepoInst),
+	), nil
+}
+
+func (ucc *UseCaseContainer) providerDataAuditOutboxCutTailUC() (any, error) {
+	uwInst, err := container.GetInstance[libdom.UnitOfWork](InstanceUnitOfWork)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+	tailRepoInst, err := container.GetInstance[libextdom.TailRepository[string]](InstanceDataAuditOutboxTraceRepo)
+	if err != nil {
+		return nil, errs.NewContainerError(ucc.GetName(), "provider: retrieve instance failed", err)
+	}
+
+	return libexttrc.NewTailCutUseCase[string](
+		"data-audit-outbox",
+		libextuc.NewTailCut[string](uwInst, tailRepoInst),
+	), nil
 }

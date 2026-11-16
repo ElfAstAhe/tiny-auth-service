@@ -62,13 +62,13 @@ func NewAuthAuditOutbox(
 }
 
 // GetTail возвращает список идентификаторов старых записей аудита, созданных до указанной даты.
-func (aao *AuthAuditOutbox) GetTail(ctx context.Context, tailDate time.Time) ([]string, error) {
+func (aao *AuthAuditOutbox) GetTail(ctx context.Context, tailDate time.Time, limit int) ([]string, error) {
 	// fail fast
 	if tailDate.IsZero() {
 		return []string{}, errs.NewInvalidArgumentError("TailDate", "tail date is required")
 	}
 	// act
-	res, err := aao.GetHelper().List(ctx, statementAuthAuditOutboxGetTail, tailDate)
+	res, err := aao.GetHelper().List(ctx, statementAuthAuditOutboxGetTail, tailDate, limit)
 	if err != nil {
 		return []string{}, errs.NewDalError("AuthAuditOutbox.GetTail", "List failed", err)
 	}

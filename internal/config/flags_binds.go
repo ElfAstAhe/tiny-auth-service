@@ -3,7 +3,7 @@ package config
 import (
 	"errors"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libconf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -12,57 +12,57 @@ import (
 func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 	err := errors.Join(
 		// App
-		v.BindPFlag(config.KeyAppEnv, flags.Lookup(config.FlagAppEnv)),
-		v.BindPFlag(config.KeyAppInitTimeout, flags.Lookup(config.FlagAppInitTimeout)),
-		v.BindPFlag(config.KeyAppStopTimeout, flags.Lookup(config.FlagAppStopTimeout)),
-		v.BindPFlag(config.KeyAppCloseTimeout, flags.Lookup(config.FlagAppCloseTimeout)),
+		v.BindPFlag(libconf.KeyAppEnv, flags.Lookup(libconf.FlagAppEnv)),
+		v.BindPFlag(libconf.KeyAppInitTimeout, flags.Lookup(libconf.FlagAppInitTimeout)),
+		v.BindPFlag(libconf.KeyAppStopTimeout, flags.Lookup(libconf.FlagAppStopTimeout)),
+		v.BindPFlag(libconf.KeyAppCloseTimeout, flags.Lookup(libconf.FlagAppCloseTimeout)),
 		v.BindPFlag(keyAppNodeName, flags.Lookup(FlagAppNodeName)),
 		v.BindPFlag(keyAppMaxListLimit, flags.Lookup(FlagAppMaxListLimit)),
 		v.BindPFlag(keyAppTokenIssuer, flags.Lookup(FlagAppTokenIssuer)),
 		v.BindPFlag(keyAppCipherKey, flags.Lookup(FlagAppCipherKey)),
 		v.BindPFlag(keyAppDefShutdownTimeout, flags.Lookup(FlagAppDefShutdownTimeout)),
 		// Auth
-		v.BindPFlag(config.KeyAuthJWTSecret, flags.Lookup(FlagAuthJWTSecret)),
-		v.BindPFlag(config.KeyAuthJWTSigningMethod, flags.Lookup(FlagAuthJWTSigningMethod)),
-		v.BindPFlag(config.KeyAuthAccessTokenTTL, flags.Lookup(FlagAuthAccessTokenTTL)),
-		v.BindPFlag(config.KeyAuthRefreshTokenTTL, flags.Lookup(FlagAuthRefreshTokenTTL)),
-		v.BindPFlag(config.KeyAuthRSAPrivateKeyPath, flags.Lookup(FlagAuthRSAPrivateKeyPath)),
-		v.BindPFlag(config.KeyAuthMasterPasswordSalt, flags.Lookup(FlagAuthMasterPasswordSalt)),
+		v.BindPFlag(libconf.KeyAuthJWTSecret, flags.Lookup(FlagAuthJWTSecret)),
+		v.BindPFlag(libconf.KeyAuthJWTSigningMethod, flags.Lookup(FlagAuthJWTSigningMethod)),
+		v.BindPFlag(libconf.KeyAuthAccessTokenTTL, flags.Lookup(FlagAuthAccessTokenTTL)),
+		v.BindPFlag(libconf.KeyAuthRefreshTokenTTL, flags.Lookup(FlagAuthRefreshTokenTTL)),
+		v.BindPFlag(libconf.KeyAuthRSAPrivateKeyPath, flags.Lookup(FlagAuthRSAPrivateKeyPath)),
+		v.BindPFlag(libconf.KeyAuthMasterPasswordSalt, flags.Lookup(FlagAuthMasterPasswordSalt)),
 		// HTTP
-		v.BindPFlag(config.KeyHTTPAddress, flags.Lookup(FlagHTTPAddress)),
-		v.BindPFlag(config.KeyHTTPReadTimeout, flags.Lookup(FlagHTTPReadTimeout)),
-		v.BindPFlag(config.KeyHTTPWriteTimeout, flags.Lookup(FlagHTTPWriteTimeout)),
-		v.BindPFlag(config.KeyHTTPIdleTimeout, flags.Lookup(FlagHTTPIdleTimeout)),
-		v.BindPFlag(config.KeyHTTPShutdownTimeout, flags.Lookup(FlagHTTPShutdownTimeout)),
-		v.BindPFlag(config.KeyHTTPPrivateKeyPath, flags.Lookup(FlagHTTPPrivateKeyPath)),
-		v.BindPFlag(config.KeyHTTPCertificatePath, flags.Lookup(FlagHTTPCertificatePath)),
-		v.BindPFlag(config.KeyHTTPSecure, flags.Lookup(FlagHTTPSecure)),
-		v.BindPFlag(config.KeyHTTPMaxRequestBodySize, flags.Lookup(FlagHTTPMaxRequestBodySize)),
+		v.BindPFlag(libconf.KeyHTTPAddress, flags.Lookup(FlagHTTPAddress)),
+		v.BindPFlag(libconf.KeyHTTPReadTimeout, flags.Lookup(FlagHTTPReadTimeout)),
+		v.BindPFlag(libconf.KeyHTTPWriteTimeout, flags.Lookup(FlagHTTPWriteTimeout)),
+		v.BindPFlag(libconf.KeyHTTPIdleTimeout, flags.Lookup(FlagHTTPIdleTimeout)),
+		v.BindPFlag(libconf.KeyHTTPShutdownTimeout, flags.Lookup(FlagHTTPShutdownTimeout)),
+		v.BindPFlag(libconf.KeyHTTPPrivateKeyPath, flags.Lookup(FlagHTTPPrivateKeyPath)),
+		v.BindPFlag(libconf.KeyHTTPCertificatePath, flags.Lookup(FlagHTTPCertificatePath)),
+		v.BindPFlag(libconf.KeyHTTPSecure, flags.Lookup(FlagHTTPSecure)),
+		v.BindPFlag(libconf.KeyHTTPMaxRequestBodySize, flags.Lookup(FlagHTTPMaxRequestBodySize)),
 		// gRPC
-		v.BindPFlag(config.KeyGRPCAddress, flags.Lookup(FlagGRPCAddress)),
-		v.BindPFlag(config.KeyGRPCMaxConnIdle, flags.Lookup(FlagGRPCMaxConnIdle)),
-		v.BindPFlag(config.KeyGRPCMaxConnAge, flags.Lookup(FlagGRPCMaxConnAge)),
-		v.BindPFlag(config.KeyGRPCMaxConnAgeGrace, flags.Lookup(FlagGRPCMaxConnAgeGrace)),
-		v.BindPFlag(config.KeyGRPCTimeout, flags.Lookup(FlagGRPCTimeout)),
-		v.BindPFlag(config.KeyGRPCKeepAliveTime, flags.Lookup(FlagGRPCKeepAliveTime)),
-		v.BindPFlag(config.KeyGRPCKeepAliveTimeout, flags.Lookup(FlagGRPCKeepAliveTimeout)),
-		v.BindPFlag(config.KeyGRPCShutdownTimeout, flags.Lookup(FlagGRPCShutdownTimeout)),
+		v.BindPFlag(libconf.KeyGRPCAddress, flags.Lookup(FlagGRPCAddress)),
+		v.BindPFlag(libconf.KeyGRPCMaxConnIdle, flags.Lookup(FlagGRPCMaxConnIdle)),
+		v.BindPFlag(libconf.KeyGRPCMaxConnAge, flags.Lookup(FlagGRPCMaxConnAge)),
+		v.BindPFlag(libconf.KeyGRPCMaxConnAgeGrace, flags.Lookup(FlagGRPCMaxConnAgeGrace)),
+		v.BindPFlag(libconf.KeyGRPCTimeout, flags.Lookup(FlagGRPCTimeout)),
+		v.BindPFlag(libconf.KeyGRPCKeepAliveTime, flags.Lookup(FlagGRPCKeepAliveTime)),
+		v.BindPFlag(libconf.KeyGRPCKeepAliveTimeout, flags.Lookup(FlagGRPCKeepAliveTimeout)),
+		v.BindPFlag(libconf.KeyGRPCShutdownTimeout, flags.Lookup(FlagGRPCShutdownTimeout)),
 		// Log
-		v.BindPFlag(config.KeyLogLevel, flags.Lookup(FlagLogLevel)),
-		v.BindPFlag(config.KeyLogFormat, flags.Lookup(FlagLogFormat)),
+		v.BindPFlag(libconf.KeyLogLevel, flags.Lookup(FlagLogLevel)),
+		v.BindPFlag(libconf.KeyLogFormat, flags.Lookup(FlagLogFormat)),
 		// DB
-		v.BindPFlag(config.KeyDBDriver, flags.Lookup(FlagDBDriver)),
-		v.BindPFlag(config.KeyDBDSN, flags.Lookup(FlagDBDSN)),
-		v.BindPFlag(config.KeyDBMaxOpenConns, flags.Lookup(FlagDBMaxOpenConns)),
-		v.BindPFlag(config.KeyDBMaxIdleConns, flags.Lookup(FlagDBMaxIdleConns)),
-		v.BindPFlag(config.KeyDBConnMaxIdleLifetime, flags.Lookup(FlagDBMaxIdleLifetime)),
-		v.BindPFlag(config.KeyDBConnTimeout, flags.Lookup(FlagDBConnTimeout)),
+		v.BindPFlag(libconf.KeyDBDriver, flags.Lookup(FlagDBDriver)),
+		v.BindPFlag(libconf.KeyDBDSN, flags.Lookup(FlagDBDSN)),
+		v.BindPFlag(libconf.KeyDBMaxOpenConns, flags.Lookup(FlagDBMaxOpenConns)),
+		v.BindPFlag(libconf.KeyDBMaxIdleConns, flags.Lookup(FlagDBMaxIdleConns)),
+		v.BindPFlag(libconf.KeyDBConnMaxIdleLifetime, flags.Lookup(FlagDBMaxIdleLifetime)),
+		v.BindPFlag(libconf.KeyDBConnTimeout, flags.Lookup(FlagDBConnTimeout)),
 		// Telemetry
-		v.BindPFlag(config.KeyTelemetryEnabled, flags.Lookup(FlagTelemetryEnabled)),
-		v.BindPFlag(config.KeyTelemetryExporterEndpoint, flags.Lookup(FlagTelemetryExporterEndpoint)),
-		v.BindPFlag(config.KeyTelemetryServiceName, flags.Lookup(FlagTelemetryServiceName)),
-		v.BindPFlag(config.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
-		v.BindPFlag(config.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
+		v.BindPFlag(libconf.KeyTelemetryEnabled, flags.Lookup(FlagTelemetryEnabled)),
+		v.BindPFlag(libconf.KeyTelemetryExporterEndpoint, flags.Lookup(FlagTelemetryExporterEndpoint)),
+		v.BindPFlag(libconf.KeyTelemetryServiceName, flags.Lookup(FlagTelemetryServiceName)),
+		v.BindPFlag(libconf.KeyTelemetrySampleRate, flags.Lookup(FlagTelemetrySampleRate)),
+		v.BindPFlag(libconf.KeyTelemetryTimeout, flags.Lookup(FlagTelemetryTimeout)),
 		// login attempts sender amqp connector
 		v.BindPFlag(keyLoginAttemptsSenderAMQPConnectorURL, flags.Lookup(FlagLoginAttemptsSenderAMQPConnectorURL)),
 		v.BindPFlag(keyLoginAttemptsSenderAMQPConnectorUsername, flags.Lookup(FlagLoginAttemptsSenderAMQPConnectorUsername)),
@@ -131,6 +131,26 @@ func bindFlags(flags *pflag.FlagSet, v *viper.Viper) error {
 		v.BindPFlag(keyDataAuditSenderKafkaBatchTimeout, flags.Lookup(FlagDataAuditSenderKafkaBatchTimeout)),
 		v.BindPFlag(keyDataAuditSenderKafkaWriteTimeout, flags.Lookup(FlagDataAuditSenderKafkaWriteTimeout)),
 		v.BindPFlag(keyDataAuditSenderKafkaRequiredAcks, flags.Lookup(FlagDataAuditSenderKafkaRequiredAcks)),
+		// auth audit outbox tail cutter
+		v.BindPFlag(keyAuthAuditOutboxTCTailLimit, flags.Lookup(FlagAuthAuditOutboxTCTailLimit)),
+		v.BindPFlag(keyAuthAuditOutboxTCTailInterval, flags.Lookup(FlagAuthAuditOutboxTCTailInterval)),
+		v.BindPFlag(keyAuthAuditOutboxTCTailCut, flags.Lookup(FlagAuthAuditOutboxTCTailCut)),
+		v.BindPFlag(keyAuthAuditOutboxTCWorkerCount, flags.Lookup(FlagAuthAuditOutboxTCWorkerCount)),
+		v.BindPFlag(keyAuthAuditOutboxTCDataCapacity, flags.Lookup(FlagAuthAuditOutboxTCDataCapacity)),
+		v.BindPFlag(keyAuthAuditOutboxTCCompleteProcessing, flags.Lookup(FlagAuthAuditOutboxTCCompleteProcess)),
+		v.BindPFlag(keyAuthAuditOutboxTCStartInterval, flags.Lookup(FlagAuthAuditOutboxTCStartInterval)),
+		v.BindPFlag(keyAuthAuditOutboxTCScheduleInterval, flags.Lookup(FlagAuthAuditOutboxTCScheduleInterval)),
+		v.BindPFlag(keyAuthAuditOutboxTCStopTimeout, flags.Lookup(FlagAuthAuditOutboxTCStopTimeout)),
+		// data audit outbox tail cutter
+		v.BindPFlag(keyDataAuditOutboxTCTailLimit, flags.Lookup(FlagDataAuditOutboxTCTailLimit)),
+		v.BindPFlag(keyDataAuditOutboxTCTailInterval, flags.Lookup(FlagDataAuditOutboxTCTailInterval)),
+		v.BindPFlag(keyDataAuditOutboxTCTailCut, flags.Lookup(FlagDataAuditOutboxTCTailCut)),
+		v.BindPFlag(keyDataAuditOutboxTCWorkerCount, flags.Lookup(FlagDataAuditOutboxTCWorkerCount)),
+		v.BindPFlag(keyDataAuditOutboxTCDataCapacity, flags.Lookup(FlagDataAuditOutboxTCDataCapacity)),
+		v.BindPFlag(keyDataAuditOutboxTCCompleteProcessing, flags.Lookup(FlagDataAuditOutboxTCCompleteProcess)),
+		v.BindPFlag(keyDataAuditOutboxTCStartInterval, flags.Lookup(FlagDataAuditOutboxTCStartInterval)),
+		v.BindPFlag(keyDataAuditOutboxTCScheduleInterval, flags.Lookup(FlagDataAuditOutboxTCScheduleInterval)),
+		v.BindPFlag(keyDataAuditOutboxTCStopTimeout, flags.Lookup(FlagDataAuditOutboxTCStopTimeout)),
 	)
 	if err != nil {
 		return errs.NewConfigError("bind flags with keys", err)

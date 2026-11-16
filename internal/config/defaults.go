@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libextconf "github.com/ElfAstAhe/go-service-template/pkg/ext/config"
 	"github.com/spf13/viper"
 )
 
@@ -77,6 +78,18 @@ const (
 // kafka login attempts target name
 const (
 	defaultLoginAttemptsSenderKafkaTargetName string = "tiny.auth.login.attempts"
+)
+
+// auth audit outbox tail cutter
+const (
+	defaultAuthAuditOutboxTailCutterTailInterval time.Duration = 7 * 24 * time.Hour
+	defaultAuthAuditOutboxTailCutterTailCut      bool          = true
+)
+
+// data audit outbox tail cutter
+const (
+	defaultDataAuditOutboxTailCutterTailInterval time.Duration = 7 * 24 * time.Hour
+	defaultDataAuditOutboxTailCutterTailCut      bool          = true
 )
 
 //goland:noinspection DuplicatedCode
@@ -204,4 +217,26 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault(keyDataAuditSenderKafkaBatchTimeout, config.DefaultKafkaSenderBatchTimeout)
 	v.SetDefault(keyDataAuditSenderKafkaWriteTimeout, config.DefaultKafkaSenderWriteTimeout)
 	v.SetDefault(keyDataAuditSenderKafkaRequiredAcks, config.DefaultKafkaSenderRequiredAcks)
+
+	// auth audit outbox tail cutter
+	v.SetDefault(keyAuthAuditOutboxTCTailLimit, libextconf.DefaultTailCutterTailLimit)
+	v.SetDefault(keyAuthAuditOutboxTCTailInterval, defaultAuthAuditOutboxTailCutterTailInterval)
+	v.SetDefault(keyAuthAuditOutboxTCTailCut, defaultAuthAuditOutboxTailCutterTailCut)
+	v.SetDefault(keyAuthAuditOutboxTCWorkerCount, libextconf.DefaultTailCutterWorkerCount)
+	v.SetDefault(keyAuthAuditOutboxTCDataCapacity, libextconf.DefaultTailCutterDataCapacity)
+	v.SetDefault(keyAuthAuditOutboxTCCompleteProcessing, libextconf.DefaultTailCutterCompleteProcessing)
+	v.SetDefault(keyAuthAuditOutboxTCStartInterval, libextconf.DefaultTailCutterStartInterval)
+	v.SetDefault(keyAuthAuditOutboxTCScheduleInterval, libextconf.DefaultTailCutterScheduleInterval)
+	v.SetDefault(keyAuthAuditOutboxTCStopTimeout, libextconf.DefaultTailCutterStopTimeout)
+
+	// data audit outbox tail cutter
+	v.SetDefault(keyDataAuditOutboxTCTailLimit, libextconf.DefaultTailCutterTailLimit)
+	v.SetDefault(keyDataAuditOutboxTCTailInterval, defaultDataAuditOutboxTailCutterTailInterval)
+	v.SetDefault(keyDataAuditOutboxTCTailCut, defaultDataAuditOutboxTailCutterTailCut)
+	v.SetDefault(keyDataAuditOutboxTCWorkerCount, libextconf.DefaultTailCutterWorkerCount)
+	v.SetDefault(keyDataAuditOutboxTCDataCapacity, libextconf.DefaultTailCutterDataCapacity)
+	v.SetDefault(keyDataAuditOutboxTCCompleteProcessing, libextconf.DefaultTailCutterCompleteProcessing)
+	v.SetDefault(keyDataAuditOutboxTCStartInterval, libextconf.DefaultTailCutterStartInterval)
+	v.SetDefault(keyDataAuditOutboxTCScheduleInterval, libextconf.DefaultTailCutterScheduleInterval)
+	v.SetDefault(keyDataAuditOutboxTCStopTimeout, libextconf.DefaultTailCutterStopTimeout)
 }

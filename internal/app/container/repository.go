@@ -62,10 +62,17 @@ const (
 
 	// InstanceDataAuditOutboxRepo data audit outbox repository
 	InstanceDataAuditOutboxRepo string = "data-audit-outbox-repository"
-	// InstanceDataAuditOutboxMetricsRepo data audit outbox metrics repository
+	// InstanceDataAuditOutboxMetricsRepo data audit outbox metrics repository decorator
 	InstanceDataAuditOutboxMetricsRepo string = "data-audit-outbox-metrics-repository"
-	// InstanceDataAuditOutboxTraceRepo data audit outbox trace repository
+	// InstanceDataAuditOutboxTraceRepo data audit outbox trace repository decorator
 	InstanceDataAuditOutboxTraceRepo string = "data-audit-outbox-trace-repository"
+
+	// InstanceAuthAuditOutboxRepo auth audit outbox repository
+	InstanceAuthAuditOutboxRepo string = "auth-audit-outbox-repository"
+	// InstanceAuthAuditOutboxMetricsRepo auth audit outbox metrics repository decorator
+	InstanceAuthAuditOutboxMetricsRepo string = "auth-audit-outbox-metrics-repository"
+	// InstanceAuthAuditOutboxTraceRepo auth audit outbox trace repository decorator
+	InstanceAuthAuditOutboxTraceRepo string = "auth-audit-outbox-trace-repository"
 )
 
 // RepositoryContainer structures a lazy-loaded lifecycle dependency injection container managing storage layer data access objects and decorators chains.
@@ -125,6 +132,10 @@ func (rc *RepositoryContainer) Init(ctx context.Context) error {
 		rc.RegisterProvider(InstanceDataAuditOutboxRepo, rc.providerDataAuditOutboxRepo),
 		rc.RegisterProvider(InstanceDataAuditOutboxMetricsRepo, rc.providerDataAuditOutboxMetricsRepo),
 		rc.RegisterProvider(InstanceDataAuditOutboxTraceRepo, rc.providerDataAuditOutboxTraceRepo),
+
+		rc.RegisterProvider(InstanceAuthAuditOutboxRepo, rc.providerAuthAuditOutboxRepo),
+		rc.RegisterProvider(InstanceAuthAuditOutboxMetricsRepo, rc.providerAuthAuditOutboxMetricsRepo),
+		rc.RegisterProvider(InstanceAuthAuditOutboxTraceRepo, rc.providerAuthAuditOutboxTraceRepo),
 	)
 	if err != nil {
 		return errs.NewContainerError(rc.GetName(), "container init: register providers failed", err)

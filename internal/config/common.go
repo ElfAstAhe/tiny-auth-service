@@ -280,6 +280,30 @@ const (
 	FlagDataAuditSenderKafkaRequiredAcks string = "data-audit-sender-kafka-required-acks"
 )
 
+const (
+	FlagAuthAuditOutboxTCTailLimit        string = "auth-audit-outbox-tc-tail-limit"
+	FlagAuthAuditOutboxTCTailInterval     string = "auth-audit-outbox-tc-tail-interval"
+	FlagAuthAuditOutboxTCTailCut          string = "auth-audit-outbox-tc-tail-cut"
+	FlagAuthAuditOutboxTCWorkerCount      string = "auth-audit-outbox-tc-worker-count"
+	FlagAuthAuditOutboxTCDataCapacity     string = "auth-audit-outbox-tc-data-capacity"
+	FlagAuthAuditOutboxTCCompleteProcess  string = "auth-audit-outbox-tc-complete-process"
+	FlagAuthAuditOutboxTCStartInterval    string = "auth-audit-outbox-tc-start-interval"
+	FlagAuthAuditOutboxTCScheduleInterval string = "auth-audit-outbox-tc-schedule-interval"
+	FlagAuthAuditOutboxTCStopTimeout      string = "auth-audit-outbox-tc-stop-timeout"
+)
+
+const (
+	FlagDataAuditOutboxTCTailLimit        string = "data-audit-outbox-tc-tail-limit"
+	FlagDataAuditOutboxTCTailInterval     string = "data-audit-outbox-tc-tail-interval"
+	FlagDataAuditOutboxTCTailCut          string = "data-audit-outbox-tc-tail-cut"
+	FlagDataAuditOutboxTCWorkerCount      string = "data-audit-outbox-tc-worker-count"
+	FlagDataAuditOutboxTCDataCapacity     string = "data-audit-outbox-tc-data-capacity"
+	FlagDataAuditOutboxTCCompleteProcess  string = "data-audit-outbox-tc-complete-process"
+	FlagDataAuditOutboxTCStartInterval    string = "data-audit-outbox-tc-start-interval"
+	FlagDataAuditOutboxTCScheduleInterval string = "data-audit-outbox-tc-schedule-interval"
+	FlagDataAuditOutboxTCStopTimeout      string = "data-audit-outbox-tc-stop-timeout"
+)
+
 // app
 //
 //nolint:gosec // G101 : app conf keys
@@ -448,4 +472,28 @@ const (
 	keyDataAuditSenderKafkaWriteTimeout string = "data_audit_sender.kafka_config.write_timeout"
 	// keyDataAuditSenderKafkaRequiredAcks structures consensus verification metrics configuring brokers replication confirmations criteria numbers.
 	keyDataAuditSenderKafkaRequiredAcks string = "data_audit_sender.kafka_config.required_acks"
+)
+
+const (
+	keyAuthAuditOutboxTCTailLimit          string = "auth_audit_outbox_tail_cutter.tail_limit"
+	keyAuthAuditOutboxTCTailInterval       string = "auth_audit_outbox_tail_cutter.tail_interval"
+	keyAuthAuditOutboxTCTailCut            string = "auth_audit_outbox_tail_cutter.tail_cut"
+	keyAuthAuditOutboxTCWorkerCount        string = "auth_audit_outbox_tail_cutter.dispatcher.worker_count"
+	keyAuthAuditOutboxTCDataCapacity       string = "auth_audit_outbox_tail_cutter.dispatcher.data_capacity"
+	keyAuthAuditOutboxTCCompleteProcessing string = "auth_audit_outbox_tail_cutter.dispatcher.complete_process"
+	keyAuthAuditOutboxTCStartInterval      string = "auth_audit_outbox_tail_cutter.dispatcher.start_interval"
+	keyAuthAuditOutboxTCScheduleInterval   string = "auth_audit_outbox_tail_cutter.dispatcher.schedule_interval"
+	keyAuthAuditOutboxTCStopTimeout        string = "auth_audit_outbox_tail_cutter.dispatcher.stop_timeout"
+)
+
+const (
+	keyDataAuditOutboxTCTailLimit          string = "data_audit_outbox_tail_cutter.tail_limit"
+	keyDataAuditOutboxTCTailInterval       string = "data_audit_outbox_tail_cutter.tail_interval"
+	keyDataAuditOutboxTCTailCut            string = "data_audit_outbox_tail_cutter.tail_cut"
+	keyDataAuditOutboxTCWorkerCount        string = "data_audit_outbox_tail_cutter.dispatcher.worker_count"
+	keyDataAuditOutboxTCDataCapacity       string = "data_audit_outbox_tail_cutter.dispatcher.data_capacity"
+	keyDataAuditOutboxTCCompleteProcessing string = "data_audit_outbox_tail_cutter.dispatcher.complete_process"
+	keyDataAuditOutboxTCStartInterval      string = "data_audit_outbox_tail_cutter.dispatcher.start_interval"
+	keyDataAuditOutboxTCScheduleInterval   string = "data_audit_outbox_tail_cutter.dispatcher.schedule_interval"
+	keyDataAuditOutboxTCStopTimeout        string = "data_audit_outbox_tail_cutter.dispatcher.stop_timeout"
 )

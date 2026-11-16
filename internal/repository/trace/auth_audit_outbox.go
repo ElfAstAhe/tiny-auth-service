@@ -31,7 +31,7 @@ func NewAuthAuditOutboxRepository(next domain.AuthAuditOutboxRepository) *AuthAu
 }
 
 // GetTail возвращает срез идентификаторов старых ("хвостовых") записей outbox, созданных до указанной даты.
-func (aao *AuthAuditOutbox) GetTail(ctx context.Context, tailDate time.Time) ([]string, error) {
+func (aao *AuthAuditOutbox) GetTail(ctx context.Context, tailDate time.Time, limit int) ([]string, error) {
 	repoCtx, span := aao.StartSpan(ctx, fmt.Sprintf("%s.GetTail", aao.GetRepositoryName()))
 	defer span.End()
 
@@ -39,7 +39,7 @@ func (aao *AuthAuditOutbox) GetTail(ctx context.Context, tailDate time.Time) ([]
 		attribute.Int64("param.tailDate", tailDate.Unix()),
 	)
 
-	res, err := aao.next.GetTail(repoCtx, tailDate)
+	res, err := aao.next.GetTail(repoCtx, tailDate, limit)
 	if err != nil {
 		span.AddEvent("GetTail_failed")
 		span.RecordError(err)

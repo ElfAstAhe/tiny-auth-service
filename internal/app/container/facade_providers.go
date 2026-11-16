@@ -32,11 +32,11 @@ func (fc *FacadeContainer) providerAuthFacade() (any, error) {
 	//if err != nil {
 	//    return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	//}
-	loginUCInst, err := container.GetInstance[usecase.LoginCipheredUseCase](InstanceLoginUC)
+	loginUCInst, err := container.GetInstance[usecase.LoginCipheredUseCase](InstanceLoginCipheredUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}
-	loginSimpleUCInst, err := container.GetInstance[usecase.LoginBasicUseCase](InstanceLoginSimpleUC)
+	loginSimpleUCInst, err := container.GetInstance[usecase.LoginBasicUseCase](InstanceLoginBasicUC)
 	if err != nil {
 		return nil, errs.NewContainerError(fc.GetName(), "provider: retrieve instance failed", err)
 	}

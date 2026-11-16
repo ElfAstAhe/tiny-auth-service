@@ -139,6 +139,8 @@ func (c *Config) Validate() error {
 		c.LoginAttemptsSender,
 		c.DataAuditConnector,
 		c.DataAuditSender,
+		c.DataAuditOutboxTailCutter,
+		c.AuthAuditOutboxTailCutter,
 	}
 
 	for _, validator := range validators {

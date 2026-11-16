@@ -5,7 +5,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/ElfAstAhe/go-service-template/pkg/config"
+	libconf "github.com/ElfAstAhe/go-service-template/pkg/config"
 	"github.com/ElfAstAhe/go-service-template/pkg/errs"
 	"github.com/ElfAstAhe/go-service-template/pkg/utils"
 )
@@ -13,18 +13,18 @@ import (
 // LoginAttemptsConfig encapsulates the configuration parameters required to initialize
 // and validate outbound infrastructure event streaming publishers for user authentication tracking.
 type LoginAttemptsConfig struct {
-	SenderKind    string                    `mapstructure:"sender_kind" json:"sender_kind,omitempty" yaml:"sender_kind,omitempty"`
-	NotifyTimeout time.Duration             `mapstructure:"notify_timeout" json:"notify_timeout,omitempty" yaml:"notify_timeout,omitempty"`
-	AMQPConfig    *config.AMQPSenderConfig  `mapstructure:"amqp_config" json:"amqp_config,omitempty" yaml:"amqp_config"`
-	KafkaConfig   *config.KafkaSenderConfig `mapstructure:"kafka_config" json:"kafka_config,omitempty" yaml:"kafka_config"`
+	SenderKind    string                     `mapstructure:"sender_kind" json:"sender_kind,omitempty" yaml:"sender_kind,omitempty"`
+	NotifyTimeout time.Duration              `mapstructure:"notify_timeout" json:"notify_timeout,omitempty" yaml:"notify_timeout,omitempty"`
+	AMQPConfig    *libconf.AMQPSenderConfig  `mapstructure:"amqp_config" json:"amqp_config,omitempty" yaml:"amqp_config"`
+	KafkaConfig   *libconf.KafkaSenderConfig `mapstructure:"kafka_config" json:"kafka_config,omitempty" yaml:"kafka_config"`
 }
 
 // NewLoginAttemptsConfig acts as a factory constructor allocating login attempts streaming properties.
 func NewLoginAttemptsConfig(
 	senderKind string,
 	notifyTimeout time.Duration,
-	amqpConfig *config.AMQPSenderConfig,
-	kafkaConfig *config.KafkaSenderConfig,
+	amqpConfig *libconf.AMQPSenderConfig,
+	kafkaConfig *libconf.KafkaSenderConfig,
 ) *LoginAttemptsConfig {
 	return &LoginAttemptsConfig{
 		SenderKind:    senderKind,
@@ -39,8 +39,8 @@ func NewDefaultLoginAttemptsConfig() *LoginAttemptsConfig {
 	return NewLoginAttemptsConfig(
 		defaultLoginAttemptsSenderKind,
 		defaultLoginAttemptsSenderNotifyTimeout,
-		config.NewDefaultAMQPSenderConfig(),
-		config.NewDefaultKafkaSenderConfig(),
+		libconf.NewDefaultAMQPSenderConfig(),
+		libconf.NewDefaultKafkaSenderConfig(),
 	)
 }
 
